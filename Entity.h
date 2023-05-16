@@ -13,10 +13,16 @@ enum AnimationName
 class Entity : public sf::Sprite
 {
 private:
-    float velocity = 100;
+    float speed = 100;
     sf::Vector2f lastPosition;
+    sf::Vector2f velocity;
+    sf::FloatRect nextPosition;
+
     sf::Texture texture;
     std::map<AnimationName, Animation*> animations;
+
+protected:
+    Vector2f origin;
 
 public:
     Entity();
@@ -27,6 +33,8 @@ public:
     void Left(float elapsed);
     void Right(float elapsed);
     void Update(float elapsed);
+
+    void CheckCollisions(sf::RectangleShape *arg);
 
     virtual void Draw(RenderWindow&) = 0;
 };

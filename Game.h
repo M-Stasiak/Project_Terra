@@ -8,6 +8,8 @@
 #include "PauseMenu.h"
 #include "Entity.h"
 #include "Player.h"
+#include "GameWorld.h"
+#include "Block.h"
 
 using namespace sf;
 using namespace std;

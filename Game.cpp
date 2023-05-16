@@ -27,6 +27,22 @@ void Game::dispGame()
 	Player player;
 	vector<Entity*> entities;
 	entities.push_back(&player);
+
+	RectangleShape block(Vector2f(100, 100));
+	block.setPosition(100, 100);
+	block.setFillColor(sf::Color::Red);
+	RectangleShape block2(Vector2f(100, 100));
+	block2.setPosition(400, 100);
+	block2.setFillColor(sf::Color::Red);
+
+	vector<RectangleShape*> blocks;
+	blocks.push_back(&block);
+	blocks.push_back(&block2);
+
+	sf::Texture t1;
+	t1.loadFromFile("Textures/tileset.png");
+	Block block1(t1, { 15, 15, 18, 18 }, sf::Vector2f(0, 0));
+	GameWorld world;
 	Clock clock;
 	while (gameWindow.isOpen()) {
 
@@ -62,9 +78,35 @@ void Game::dispGame()
 			}
 
 			gameWindow.clear(sf::Color::Black);
+			gameWindow.draw(block);
+			gameWindow.draw(block2);
+
+			/*for (auto i : world.world)
+				for (auto j : i)
+				{
+					gameWindow.draw(*j);
+
+				}*/
+			/*for (auto i : world.world)
+				gameWindow.draw(*i);*/
+			for (int i = 0; i < 100; i++)
+			{
+				for (int j = 0; j < 100; j++)
+				{
+					if (world.world[i][j] == IDs::Grass)
+					{
+						block1.setPosition(i * 20, j * 20);
+						gameWindow.draw(block1);
+					}
+				}
+			}
 
 			for (auto i : entities)
 			{
+				for (auto j : blocks)
+				{
+					i->CheckCollisions(j);
+				}
 				i->Update(elapsed.asSeconds());
 				i->Draw(gameWindow);
 			}
