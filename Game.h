@@ -5,6 +5,8 @@
 #include <vector>
 #include <iostream>
 #include "MainMenu.h"
+#include "Entity.h"
+#include "Player.h"
 
 using namespace sf;
 using namespace std;

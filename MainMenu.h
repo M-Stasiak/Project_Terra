@@ -2,8 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
-
 #include <iostream>
+#include "Animation.h"
 using namespace std;
 using namespace sf;
 class MainMenu
@@ -11,6 +11,7 @@ class MainMenu
 private:
 	Texture texture;
 	Sprite sprite;
+	Animation *animation;
 	Text texts[3];
 
 	void initTextures();
@@ -19,6 +20,6 @@ private:
 public:
 	MainMenu(Font& gameFont, RenderWindow& gameWindow);
 	virtual ~MainMenu();
-	void display(RenderWindow & gameWindow);
+	void display(RenderWindow & gameWindow, Time *elapsed);
 };
 

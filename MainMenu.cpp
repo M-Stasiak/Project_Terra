@@ -1,4 +1,5 @@
 #include "MainMenu.h"
+#include "Animation.h"
 
 void MainMenu::initTextures()
 {
@@ -7,6 +8,7 @@ void MainMenu::initTextures()
 
 void MainMenu::initSprites(RenderWindow& gameWindow)
 {
+	animation = new Animation(texture, { {60, 0, 0, 100, 100} });
 	sprite.setTexture(texture);
 	sprite.setTextureRect(IntRect(0, 0, 100, 100));
 	sprite.setScale(20, 20);
@@ -55,8 +57,10 @@ MainMenu::~MainMenu()
 {
 }
 
-void MainMenu::display(RenderWindow& gameWindow)
+void MainMenu::display(RenderWindow& gameWindow, Time *elapsed)
 {
+	animation->Update(elapsed->asSeconds());
+	animation->ApplyToSprite(&sprite);
 	gameWindow.draw(sprite);
 	for (int i = 0; i < 3; i++) {
 		gameWindow.draw(texts[i]);
