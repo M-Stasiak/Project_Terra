@@ -16,6 +16,7 @@ void Game::initWindow()
 Game::Game()
 {
 	mainMenu = new MainMenu(gameFont, gameWindow);
+	pauseMenu = new PauseMenu(gameFont, gameWindow);
 	currentGameMode = gameMode::mainMenu;
 	initWindow();
 	initFont();
@@ -31,16 +32,22 @@ void Game::dispGame()
 
 		Time elapsed = clock.restart();
 
-		if (gameWindow.pollEvent(gameEvent)) {
-			if (gameEvent.type == sf::Event::KeyPressed)
-			{
-				if (gameEvent.key.code == sf::Keyboard::Escape)
-					gameWindow.close();
-				if (gameEvent.key.code == sf::Keyboard::Enter)
-					currentGameMode = gameMode::playing;
-			}
-		}
+		
 		if (currentGameMode == gameMode::mainMenu) {
+			
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+					mainMenu->selectUp();
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+					mainMenu->selectDown();
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && mainMenu->returnPlaySelected()) {
+					currentGameMode = gameMode::playing;
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && mainMenu->returnExitSelected()) {
+					gameWindow.close();
+				}
+				
 			mainMenu->display(gameWindow, &elapsed);
 		}
 
@@ -50,6 +57,9 @@ void Game::dispGame()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) player.Down(elapsed.asSeconds());
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) player.Left(elapsed.asSeconds());
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) player.Right(elapsed.asSeconds());
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+				currentGameMode = gameMode::pauseMenu;
+			}
 
 			gameWindow.clear(sf::Color::Black);
 
@@ -59,6 +69,25 @@ void Game::dispGame()
 				i->Draw(gameWindow);
 			}
 
+		}
+		if (currentGameMode == gameMode::pauseMenu) {
+			gameWindow.clear();
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+				pauseMenu->selectUp();
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+				pauseMenu->selectDown();
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && pauseMenu->returnContinueSelected()) {
+				currentGameMode = gameMode::playing;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && pauseMenu->returnExitSelected()) {
+				gameWindow.close();
+			}
+			
+
+			pauseMenu->display(gameWindow, &elapsed);
 		}
 
 

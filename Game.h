@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include "MainMenu.h"
+#include "PauseMenu.h"
 #include "Entity.h"
 #include "Player.h"
 
@@ -19,6 +20,7 @@ private:
 	Event gameEvent;
 	Font gameFont;
 	MainMenu *mainMenu;
+	PauseMenu* pauseMenu;
 	
 	void initFont();
 	void initWindow();
