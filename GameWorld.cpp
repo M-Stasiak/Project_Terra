@@ -1,38 +1,22 @@
 #include "GameWorld.h"
 
-GameWorld::GameWorld()
+GameWorld::GameWorld(sf::Texture& t, sf::Vector2f playerPosition)
 {
-	sf::Texture t1;
-	t1.loadFromFile("Textures/tileset.png");
-	Block block1(t1, { 15, 15, 18, 18 }, sf::Vector2f(0, 0));
-
-	/*for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 1000; i++)
 	{
-		vector<Block*> pom;
-		for (int j = 0; j < 100; j++)
-		{
-			pom.push_back(new Block(t1, { 15, 15, 18, 18 }, sf::Vector2f(i*20, j*20)));
-		}
-		world.push_back(pom);
-	}*/
-	/*for (int i = 0; i < 100; i++)
-	{
-		for (int j = 0; j < 100; j++)
-		{
-			world.push_back(new Block(t1, { 15, 15, 18, 18 }, sf::Vector2f(i * 20, j * 20)));
-		}
-	}*/
-	for (int i = 0; i < 8000; i++)
-	{
-		vector<IDs> pom;
+		map<int, B> pom;
 		for (int j = 0; j < 10; j++)
 		{
-			pom.push_back(IDs::Air);
+			sf::FloatRect p(i * 16, j * 16, 0, 0);
+			B a(IDs::Air, p);
+			pom[j] = a;
 		}
-		for (int j = 10; j < 6000; j++)
+		for (int j = 10; j < 1000; j++)
 		{
-			pom.push_back(IDs::Grass);
+			sf::FloatRect p(i * 16, j * 16, 16, 16);
+			B a(IDs::Grass, p);
+			pom[j] = a;
 		}
-		world.push_back(pom);
+		world[i] = pom;
 	}
 }

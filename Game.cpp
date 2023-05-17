@@ -29,21 +29,11 @@ void Game::dispGame()
 	vector<Entity*> entities;
 	entities.push_back(&player);
 
-	RectangleShape block(Vector2f(100, 100));
-	block.setPosition(100, 100);
-	block.setFillColor(sf::Color::Red);
-	RectangleShape block2(Vector2f(100, 100));
-	block2.setPosition(400, 100);
-	block2.setFillColor(sf::Color::Red);
-
-	vector<RectangleShape*> blocks;
-	blocks.push_back(&block);
-	blocks.push_back(&block2);
-
 	sf::Texture t1;
 	t1.loadFromFile("Textures/tileset.png");
-	Block block1(t1, { 15, 15, 18, 18 }, sf::Vector2f(0, 0));
-	GameWorld world;
+	Block block1(t1, { 16, 16, 16, 16 }, sf::Vector2f(1000, 800));
+
+	GameWorld world(t1, player.getPosition());
 	Clock clock;
 	while (gameWindow.isOpen()) {
 
@@ -108,37 +98,30 @@ void Game::dispGame()
 				}
 
 				gameWindow.clear(sf::Color::Black);
-				gameWindow.draw(block);
-				gameWindow.draw(block2);
 
-				/*for (auto i : world.world)
-					for (auto j : i)
-					{
-						gameWindow.draw(*j);
-
-					}*/
-					/*for (auto i : world.world)
-						gameWindow.draw(*i);*/
-				for (int i = 0; i < 100; i++)
+				for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 1920); i += 16)
 				{
-					for (int j = 0; j < 100; j++)
+					for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 1080); j += 16)
 					{
-						if (world.world[i][j] == IDs::Grass)
+						if (world.world[i / 16][j / 16].ID == IDs::Grass)
 						{
-							block1.setPosition(i * 20, j * 20);
+							block1.setPosition(world.world[i / 16][j / 16].rect.left, world.world[i / 16][j / 16].rect.top);
 							gameWindow.draw(block1);
 						}
 					}
 				}
 
-				for (auto i : entities)
+				for (auto entity : entities)
 				{
-					for (auto j : blocks)
+					for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 1920); i += 16)
 					{
-						i->CheckCollisions(j);
+						for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 1080); j += 16)
+						{
+							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
+						}
 					}
-					i->Update(elapsed.asSeconds());
-					i->Draw(gameWindow);
+					entity->Update(elapsed.asSeconds());
+					entity->Draw(gameWindow);
 				}
 				inventory->displayQInventory(gameWindow);
 				inventory->displayQInventorySelected(gameWindow);

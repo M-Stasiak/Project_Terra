@@ -34,7 +34,7 @@ public:
     void Right(float elapsed);
     void Update(float elapsed);
 
-    void CheckCollisions(sf::RectangleShape *arg);
+    void CheckCollisions(const sf::FloatRect *arg);
 
     virtual void Draw(RenderWindow&) = 0;
 };

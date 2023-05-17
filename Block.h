@@ -13,11 +13,26 @@ class Block : public sf::Sprite
 {
 private:
 	IDs ID;
-	sf::Texture texture;
 
 public:
 	Block();
-	Block(sf::Texture _texture, std::vector<int> options, sf::Vector2f pos);
-	void setBlock(sf::Texture _texture, std::vector<int> options);
+	Block(sf::Texture& _texture, std::vector<int> options, sf::Vector2f pos);
+	void setBlock(sf::Texture& _texture, std::vector<int> options);
+};
+
+class B
+{
+public:
+	IDs ID;
+	sf::FloatRect rect;
+	B()
+	{
+
+	}
+	B(IDs id, sf::FloatRect r)
+	{
+		ID = id;
+		rect = r;
+	}
 };
 

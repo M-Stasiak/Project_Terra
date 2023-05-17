@@ -28,10 +28,10 @@ void Entity::Down(float elapsed) { velocity.y += speed * elapsed; }
 void Entity::Left(float elapsed) { setScale({ (float)(-1)*abs(getScale().x), getScale().y }); velocity.x += -speed * elapsed; }
 void Entity::Right(float elapsed) { setScale({ (float)abs(getScale().x), getScale().y }); velocity.x += speed * elapsed; }
 
-void Entity::CheckCollisions(sf::RectangleShape* arg)
+void Entity::CheckCollisions(const sf::FloatRect *arg)
 {
     FloatRect playerBounds = getGlobalBounds();
-    FloatRect argBounds = arg->getGlobalBounds();
+    FloatRect argBounds = *arg;
     nextPosition = playerBounds;
     nextPosition.left += velocity.x;
     nextPosition.top += velocity.y;

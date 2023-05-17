@@ -3,6 +3,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include <vector>
+#include <map>
+#include <cmath>
 #include "Block.h"
 
 using namespace std;
@@ -10,11 +12,9 @@ using namespace std;
 class GameWorld
 {
 public:
-	//vector<vector<Block*>> world;
-	vector<vector<IDs>> world;
-	//vector<Block*> world;
+	map<int, map<int, B>> world;
 
 public:
-	GameWorld();
+	GameWorld(sf::Texture& t, sf::Vector2f playerPosition);
 };
 
