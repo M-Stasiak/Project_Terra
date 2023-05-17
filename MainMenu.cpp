@@ -49,8 +49,14 @@ void MainMenu::initTexts(Font& gameFont, RenderWindow& gameWindow)
 	texts[2].setOutlineThickness(2);
 }
 
-void MainMenu::update()
+void MainMenu::update(RenderWindow& gameWindow)
 {
+	if (Mouse::getPosition(gameWindow).x > texts[1].getGlobalBounds().left && Mouse::getPosition(gameWindow).x < (texts[1].getGlobalBounds().left + texts[1].getGlobalBounds().width) && Mouse::getPosition(gameWindow).y > texts[1].getGlobalBounds().top && Mouse::getPosition(gameWindow).y < texts[1].getGlobalBounds().top + texts[1].getGlobalBounds().height) {
+		selectedButton = Play;
+	}
+	else if (Mouse::getPosition(gameWindow).x > texts[2].getGlobalBounds().left && Mouse::getPosition(gameWindow).x < texts[2].getGlobalBounds().left + texts[2].getGlobalBounds().width && Mouse::getPosition(gameWindow).y > texts[2].getGlobalBounds().top && Mouse::getPosition(gameWindow).y < texts[2].getGlobalBounds().top + texts[2].getGlobalBounds().height) {
+		selectedButton = Exit;
+	}
 	if (selectedButton == Play) {
 		texts[1].setFillColor(Color::Green);
 		texts[2].setFillColor(Color::White);
@@ -59,6 +65,8 @@ void MainMenu::update()
 		texts[2].setFillColor(Color::Green);
 		texts[1].setFillColor(Color::White);
 	}
+	cout << texts[1].getGlobalBounds().left << endl;
+	cout << Mouse::getPosition(gameWindow).x << endl;
 }
 
 
@@ -79,7 +87,7 @@ void MainMenu::display(RenderWindow& gameWindow, Time *elapsed)
 	animation->Update(elapsed->asSeconds());
 	animation->ApplyToSprite(&sprite);
 	gameWindow.draw(sprite);
-	update();
+	update(gameWindow);
 	for (int i = 0; i < 3; i++) {
 		gameWindow.draw(texts[i]);
 	}
@@ -101,6 +109,7 @@ bool MainMenu::returnPlaySelected()
 	if (selectedButton == Play) {
 		return true;
 	}
+	
 	return false;
 }
 
@@ -109,5 +118,6 @@ bool MainMenu::returnExitSelected()
 	if (selectedButton == Exit) {
 		return true;
 	}
+	
 	return false;
 }

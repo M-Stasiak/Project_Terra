@@ -9,13 +9,16 @@ using namespace sf;
 class PauseMenu
 {
 private:
-	
+	Texture background;
+	Sprite backgroundSprite;
 	Text texts[3];
 	enum select { Continue = 1, Exit = 0 };
 	select selectedButton;
 
+	void initTextures();
+	void initSprites();
 	void initTexts(Font& gameFont, RenderWindow& gameWindow);
-	void update();
+	void update(RenderWindow& gameWindow);
 public:
 	PauseMenu(Font& gameFont, RenderWindow& gameWindow);
 	void display(RenderWindow& gameWindow, Time* elapsed);

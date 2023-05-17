@@ -21,7 +21,7 @@ private:
 	void initTextures();
 	void initSprites(RenderWindow& gameWindow);
 	void initTexts(Font & gameFont,RenderWindow & gameWindow);
-	void update();
+	void update(RenderWindow& gameWindow);
 public:
 	MainMenu(Font& gameFont, RenderWindow& gameWindow);
 	void display(RenderWindow & gameWindow, Time *elapsed);

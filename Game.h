@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "GameWorld.h"
 #include "Block.h"
+#include "Inventory.h"
 
 using namespace sf;
 using namespace std;
@@ -23,6 +24,7 @@ private:
 	Font gameFont;
 	MainMenu *mainMenu;
 	PauseMenu* pauseMenu;
+	Inventory* inventory;
 	
 	void initFont();
 	void initWindow();

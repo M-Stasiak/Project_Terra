@@ -1,5 +1,16 @@
 #include "PauseMenu.h"
 
+void PauseMenu::initTextures()
+{
+	if (!background.loadFromFile("Textures/pauseMenu_background.png")) { cout << "No texture found" << endl; }
+}
+
+void PauseMenu::initSprites()
+{
+	backgroundSprite.setTexture(background);
+	backgroundSprite.setScale(1.3, 1.3);
+}
+
 void PauseMenu::initTexts(Font& gameFont, RenderWindow& gameWindow)
 {
 	texts[0].setFont(gameFont);
@@ -27,8 +38,14 @@ void PauseMenu::initTexts(Font& gameFont, RenderWindow& gameWindow)
 	texts[2].setOutlineThickness(2);
 }
 
-void PauseMenu::update()
+void PauseMenu::update(RenderWindow& gameWindow)
 {
+	if (Mouse::getPosition(gameWindow).x > texts[1].getGlobalBounds().left && Mouse::getPosition(gameWindow).x < (texts[1].getGlobalBounds().left + texts[1].getGlobalBounds().width) && Mouse::getPosition(gameWindow).y > texts[1].getGlobalBounds().top && Mouse::getPosition(gameWindow).y < texts[1].getGlobalBounds().top + texts[1].getGlobalBounds().height) {
+		selectedButton = Continue;
+	}
+	else if (Mouse::getPosition(gameWindow).x > texts[2].getGlobalBounds().left && Mouse::getPosition(gameWindow).x < texts[2].getGlobalBounds().left + texts[2].getGlobalBounds().width && Mouse::getPosition(gameWindow).y > texts[2].getGlobalBounds().top && Mouse::getPosition(gameWindow).y < texts[2].getGlobalBounds().top + texts[2].getGlobalBounds().height) {
+		selectedButton = Exit;
+	}
 	if (selectedButton == Continue) {
 		texts[1].setFillColor(Color::Green);
 		texts[2].setFillColor(Color::White);
@@ -41,6 +58,8 @@ void PauseMenu::update()
 
 PauseMenu::PauseMenu(Font& gameFont, RenderWindow& gameWindow)
 {
+	initTextures();
+	initSprites();
 	initTexts(gameFont, gameWindow);
 	selectedButton = Continue;
 	
@@ -48,7 +67,8 @@ PauseMenu::PauseMenu(Font& gameFont, RenderWindow& gameWindow)
 
 void PauseMenu::display(RenderWindow& gameWindow, Time* elapsed)
 {
-	update();
+	update(gameWindow);
+	gameWindow.draw(backgroundSprite);
 	for (int i = 0; i < 3; i++) {
 		gameWindow.draw(texts[i]);
 	}
