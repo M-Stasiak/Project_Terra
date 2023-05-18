@@ -17,6 +17,8 @@ private:
 	Text texts[3];
 	enum select { Play = 1, Exit = 0 };
 	select selectedButton;
+	enum mouse { play = 1, exit = 0,none = 2 };
+	mouse mouseOnButton;
 
 	void initTextures();
 	void initSprites(RenderWindow& gameWindow);
@@ -27,7 +29,8 @@ public:
 	void display(RenderWindow & gameWindow, Time *elapsed);
 	void selectUp();
 	void selectDown();
-	bool returnPlaySelected();
-	bool returnExitSelected();
+	int returnSelectedButton();
+	int returnMouseOnButton();
+	
 };
 

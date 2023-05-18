@@ -9,7 +9,7 @@ void Game::initFont()
 
 void Game::initWindow()
 {
-	gameWindow.create(VideoMode::getDesktopMode(), "Project Terra", Style::Default);
+	gameWindow.create(VideoMode::getDesktopMode(), "Project Terra", Style::Fullscreen);
 	gameWindow.setFramerateLimit(60);
 }
 
@@ -51,16 +51,16 @@ void Game::dispGame()
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 					mainMenu->selectDown();
 				}
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && mainMenu->returnPlaySelected()) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && mainMenu->returnSelectedButton()==1) {
 					currentGameMode = gameMode::playing;
 				}
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && mainMenu->returnExitSelected()) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && mainMenu->returnSelectedButton() == 0) {
 					gameWindow.close();
 				}
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mainMenu->returnPlaySelected()) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mainMenu->returnSelectedButton() == 1 && mainMenu->returnMouseOnButton()==1) {
 					currentGameMode = gameMode::playing;
 				}
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mainMenu->returnExitSelected()) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mainMenu->returnSelectedButton() == 0 && mainMenu->returnMouseOnButton() == 0) {
 					gameWindow.close();
 				}
 
@@ -136,18 +136,18 @@ void Game::dispGame()
 						case (Keyboard::Down): { pauseMenu->selectDown(); break; }
 						case (Keyboard::Escape): {currentGameMode = gameMode::playing; break; }
 						}
-						if (gameEvent.key.code == Keyboard::Enter && pauseMenu->returnContinueSelected()) {
+						if (gameEvent.key.code == Keyboard::Enter && pauseMenu->returnSelectedButton()==1 ) {
 							currentGameMode = gameMode::playing;
 						}
-						if (gameEvent.key.code == Keyboard::Enter && pauseMenu->returnExitSelected()) {
+						if (gameEvent.key.code == Keyboard::Enter && pauseMenu->returnSelectedButton() == 0) {
 							gameWindow.close();
 						}
 					}
 				}
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && pauseMenu->returnContinueSelected()) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && pauseMenu->returnSelectedButton() == 1 && pauseMenu->returnMouseOnButton() == 1) {
 					currentGameMode = gameMode::playing;
 				}
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && pauseMenu->returnExitSelected()) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && pauseMenu->returnSelectedButton() == 0 && pauseMenu->returnMouseOnButton() == 0) {
 					gameWindow.close();
 				}
 				
