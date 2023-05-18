@@ -110,9 +110,10 @@ void Game::dispGame()
 						}
 					}
 				}
-
+				
 				for (auto entity : entities)
 				{
+					entity->GravityUpdate(elapsed.asSeconds(), 20);
 					for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 1920); i += 16)
 					{
 						for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 1080); j += 16)

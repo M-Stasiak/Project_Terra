@@ -14,6 +14,9 @@ class Entity : public sf::Sprite
 {
 private:
     float speed = 100;
+    float jumpSpeed = 400;
+    float jumpVelocity = 0;
+    bool jumping = false;
     sf::Vector2f lastPosition;
     sf::Vector2f velocity;
     sf::FloatRect nextPosition;
@@ -34,6 +37,7 @@ public:
     void Right(float elapsed);
     void Update(float elapsed);
 
+    void GravityUpdate(float elapsed, float gravity);
     void CheckCollisions(const sf::FloatRect *arg);
 
     virtual void Draw(RenderWindow&) = 0;

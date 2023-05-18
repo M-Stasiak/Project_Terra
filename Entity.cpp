@@ -23,7 +23,7 @@ void Entity::setEntity(sf::Texture _texture, std::vector<std::vector<int>> optio
     animations[AnimationName::Walk] = new Animation(texture, options[1]);
 }
 
-void Entity::Up(float elapsed) { velocity.y += -speed * elapsed; }
+void Entity::Up(float elapsed) { if (!jumping) { jumping = true; jumpVelocity = -jumpSpeed; } }
 void Entity::Down(float elapsed) { velocity.y += speed * elapsed; }
 void Entity::Left(float elapsed) { setScale({ (float)(-1)*abs(getScale().x), getScale().y }); velocity.x += -speed * elapsed; }
 void Entity::Right(float elapsed) { setScale({ (float)abs(getScale().x), getScale().y }); velocity.x += speed * elapsed; }
@@ -46,6 +46,7 @@ void Entity::CheckCollisions(const sf::FloatRect *arg)
         {
             velocity.y = 0;
             setPosition(playerBounds.left + origin.x, argBounds.top - playerBounds.height + origin.y);
+            jumping = false;
         }
 
         // Top collision
@@ -78,6 +79,12 @@ void Entity::CheckCollisions(const sf::FloatRect *arg)
             setPosition(argBounds.left + argBounds.width + origin.x, playerBounds.top + origin.y);
         }
     }
+}
+
+void Entity::GravityUpdate(float elapsed, float gravity)
+{
+    if (jumpVelocity < 200) jumpVelocity += gravity;
+    velocity.y += jumpVelocity * elapsed;
 }
 
 void Entity::Update(float elapsed)
