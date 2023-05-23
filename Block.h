@@ -5,19 +5,19 @@
 
 enum IDs
 {
-	Air = 0,
-	Grass = 1
+	AirID,
+	GrassID,
+	DirtID
 };
 
 class Block : public sf::Sprite
 {
-private:
+protected:
 	IDs ID;
 
 public:
 	Block();
-	Block(sf::Texture& _texture, std::vector<int> options, sf::Vector2f pos);
-	void setBlock(sf::Texture& _texture, std::vector<int> options);
+	virtual void test() = 0;
 };
 
 class B

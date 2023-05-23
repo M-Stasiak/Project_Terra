@@ -4,7 +4,6 @@
 #include <SFML/System.hpp>
 #include <vector>
 #include <map>
-#include <cmath>
 #include "Block.h"
 
 using namespace std;
@@ -15,6 +14,6 @@ public:
 	map<int, map<int, B>> world;
 
 public:
-	GameWorld(sf::Texture& t, sf::Vector2f playerPosition);
+	GameWorld();
 };
 

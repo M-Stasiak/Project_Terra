@@ -36,11 +36,12 @@ void Game::dispGame()
 	vector<Entity*> entities;
 	entities.push_back(&player);
 
-	sf::Texture t1;
-	t1.loadFromFile("Textures/tileset.png");
-	Block block1(t1, { 16, 16, 16, 16 }, sf::Vector2f(1000, 800));
+	map <IDs, Texture*> Textures;
+	map <IDs, Block*> Blocks;
+	prepareTextures(Textures);
+	prepareBlocksMap(Blocks, Textures);
 
-	GameWorld world(t1, player.getPosition());
+	GameWorld world;
 	Clock clock;
 	while (gameWindow.isOpen()) {
 
@@ -109,16 +110,16 @@ void Game::dispGame()
 				}
 				
 				gameWindow.clear();
-				
+				cout << player.getPosition().x << " " << player.getPosition().y << endl;
 
 				for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 1920); i += 16)
 				{
 					for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 1080); j += 16)
 					{
-						if (world.world[i / 16][j / 16].ID == IDs::Grass)
+						if (world.world[i / 16][j / 16].ID != IDs::AirID)
 						{
-							block1.setPosition(world.world[i / 16][j / 16].rect.left, world.world[i / 16][j / 16].rect.top);
-							gameWindow.draw(block1);
+							Blocks[world.world[i / 16][j / 16].ID]->setPosition(world.world[i / 16][j / 16].rect.left, world.world[i / 16][j / 16].rect.top);
+							gameWindow.draw(*Blocks[world.world[i / 16][j / 16].ID]);
 						}
 					}
 				}
@@ -179,10 +180,10 @@ void Game::dispGame()
 				{
 					for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 1080); j += 16)
 					{
-						if (world.world[i / 16][j / 16].ID == IDs::Grass)
+						if (world.world[i / 16][j / 16].ID != IDs::AirID)
 						{
-							block1.setPosition(world.world[i / 16][j / 16].rect.left, world.world[i / 16][j / 16].rect.top);
-							gameWindow.draw(block1);
+							Blocks[world.world[i / 16][j / 16].ID]->setPosition(world.world[i / 16][j / 16].rect.left, world.world[i / 16][j / 16].rect.top);
+							gameWindow.draw(*Blocks[world.world[i / 16][j / 16].ID]);
 						}
 					}
 				}

@@ -9,7 +9,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "GameWorld.h"
-#include "Block.h"
+#include "Blocks.h"
 #include "Inventory.h"
 
 using namespace sf;
