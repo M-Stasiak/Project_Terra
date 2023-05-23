@@ -13,12 +13,15 @@ class Inventory
 	Sprite qInvSprite;
 	Sprite invSprite;
 	Sprite invSSprite;
+	FloatRect invSquare[44];
 	int selected;
+	bool invSelected;
 
 	void initTextures();
 	void initSprites(RenderWindow& gameWindow);
-	void updateInventory();
-	void updateQInventory();
+	void initSquares();
+	void updateInventory(RenderWindow& gameWindow);
+	void updateQInventory(RenderWindow& gameWindow);
 
  public:
 	 Inventory(RenderWindow& gameWindow);
@@ -26,6 +29,7 @@ class Inventory
 	 void displayQInventory(RenderWindow& gameWindow);
 	 void qInvSelect(int selec);
 	 void displayQInventorySelected(RenderWindow& gameWindow);
+	 void displayInventorySelected(RenderWindow& gameWindow);
 
 };
 

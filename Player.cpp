@@ -1,5 +1,7 @@
 #include "Player.h"
 
+
+
 Player::Player()
 {
 	Texture entityTexture;
@@ -8,6 +10,7 @@ Player::Player()
 	origin.x = 25; origin.y = 18.5;
 	setOrigin(origin);
 }
+
 
 void Player::Draw(RenderWindow &gameWindow)
 {

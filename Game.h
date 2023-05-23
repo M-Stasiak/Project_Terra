@@ -25,9 +25,11 @@ private:
 	MainMenu *mainMenu;
 	PauseMenu* pauseMenu;
 	Inventory* inventory;
+	Player player;
 	
 	void initFont();
 	void initWindow();
+	void setGameView();
 	
 
 public:

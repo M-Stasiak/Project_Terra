@@ -12,6 +12,12 @@ void Game::initWindow()
 	gameWindow.create(VideoMode::getDesktopMode(), "Project Terra", Style::Fullscreen);
 	gameWindow.setFramerateLimit(60);
 }
+void Game::setGameView()
+{
+	gameWindow.setView(player.getEntityView());
+}
+
+
 
 Game::Game()
 {
@@ -21,11 +27,12 @@ Game::Game()
 	currentGameMode = gameMode::mainMenu;
 	initWindow();
 	initFont();
+	
 }
 
 void Game::dispGame()
 {
-	Player player;
+	
 	vector<Entity*> entities;
 	entities.push_back(&player);
 
@@ -40,7 +47,7 @@ void Game::dispGame()
 		
 		
 			Time elapsed = clock.restart();
-
+			
 
 
 			if (currentGameMode == gameMode::mainMenu) {
@@ -63,12 +70,14 @@ void Game::dispGame()
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mainMenu->returnSelectedButton() == 0 && mainMenu->returnMouseOnButton() == 0) {
 					gameWindow.close();
 				}
-
+				if (gameWindow.pollEvent(gameEvent)) {}
+				gameWindow.clear();
 				mainMenu->display(gameWindow, &elapsed);
 			}
 
 			else if (currentGameMode == gameMode::playing)
 			{
+				setGameView();
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) player.Up(elapsed.asSeconds());
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) player.Down(elapsed.asSeconds());
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) player.Left(elapsed.asSeconds());
@@ -76,9 +85,11 @@ void Game::dispGame()
 				if (gameWindow.pollEvent(gameEvent)) {
 					if (gameEvent.type == sf::Event::KeyPressed) {
 						if (gameEvent.key.code == Keyboard::Escape) {
+					
 							currentGameMode = gameMode::pauseMenu;
 						}
 						else if (gameEvent.key.code == Keyboard::E) {
+							
 							currentGameMode = gameMode::inventory;
 						}
 						switch (gameEvent.key.code) {
@@ -96,8 +107,9 @@ void Game::dispGame()
 						}
 					}
 				}
-
-				gameWindow.clear(sf::Color::Black);
+				
+				gameWindow.clear();
+				
 
 				for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 1920); i += 16)
 				{
@@ -124,11 +136,15 @@ void Game::dispGame()
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 				}
+				
+				
+				
 				inventory->displayQInventory(gameWindow);
 				inventory->displayQInventorySelected(gameWindow);
 			}
 			else if (currentGameMode == gameMode::pauseMenu) {
 				gameWindow.clear();
+				gameWindow.setView(gameWindow.getDefaultView());
 
 				if (gameWindow.pollEvent(gameEvent)) {
 					if (gameEvent.type == sf::Event::KeyPressed) {
@@ -137,7 +153,7 @@ void Game::dispGame()
 						case (Keyboard::Down): { pauseMenu->selectDown(); break; }
 						case (Keyboard::Escape): {currentGameMode = gameMode::playing; break; }
 						}
-						if (gameEvent.key.code == Keyboard::Enter && pauseMenu->returnSelectedButton()==1 ) {
+						if (gameEvent.key.code == Keyboard::Enter && pauseMenu->returnSelectedButton() == 1) {
 							currentGameMode = gameMode::playing;
 						}
 						if (gameEvent.key.code == Keyboard::Enter && pauseMenu->returnSelectedButton() == 0) {
@@ -152,22 +168,58 @@ void Game::dispGame()
 					gameWindow.close();
 				}
 				
+				
 				pauseMenu->display(gameWindow, &elapsed);
 			}
 			else if (currentGameMode == gameMode::inventory) {
+		
+				setGameView();
+				gameWindow.clear();
+				for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 1920); i += 16)
+				{
+					for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 1080); j += 16)
+					{
+						if (world.world[i / 16][j / 16].ID == IDs::Grass)
+						{
+							block1.setPosition(world.world[i / 16][j / 16].rect.left, world.world[i / 16][j / 16].rect.top);
+							gameWindow.draw(block1);
+						}
+					}
+				}
+
+				for (auto entity : entities)
+				{
+					entity->GravityUpdate(elapsed.asSeconds(), 20);
+					for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 1920); i += 16)
+					{
+						for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 1080); j += 16)
+						{
+							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
+						}
+					}
+					entity->Update(elapsed.asSeconds());
+					entity->Draw(gameWindow);
+				}
 				inventory->displayInventory(gameWindow);
+				inventory->displayInventorySelected(gameWindow);
 				if (gameWindow.pollEvent(gameEvent)) {
 					if (gameEvent.type == sf::Event::KeyPressed) {
 						if (gameEvent.key.code == Keyboard::E) {
 							currentGameMode = gameMode::playing;
 						}
+						if (gameEvent.key.code == Keyboard::Escape) {
+							currentGameMode = gameMode::pauseMenu;
+						}
 					}
 				}
+				
+				
 			}
-		
-
+			
 			gameWindow.display();
 		}
 	
 }
+
+
 

@@ -1,5 +1,11 @@
 #include "Entity.h"
 
+void Entity::setEntityView()
+{
+    entityView.setCenter(lastPosition.x+10, lastPosition.y+10);
+    entityView.setSize(int((VideoMode::getDesktopMode().width) * 0.5), int((VideoMode::getDesktopMode().height) * 0.5));
+}
+
 Entity::Entity()
 {
 
@@ -103,4 +109,12 @@ void Entity::Update(float elapsed)
     lastPosition = getPosition();
 
     velocity = sf::Vector2f(0, 0);
+    setEntityView();
 }
+
+View Entity::getEntityView()
+{
+    return entityView;
+}
+
+

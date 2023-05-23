@@ -20,9 +20,10 @@ private:
     sf::Vector2f lastPosition;
     sf::Vector2f velocity;
     sf::FloatRect nextPosition;
-
+    View entityView;
     sf::Texture texture;
     std::map<AnimationName, Animation*> animations;
+    void setEntityView();
 
 protected:
     Vector2f origin;
@@ -36,6 +37,8 @@ public:
     void Left(float elapsed);
     void Right(float elapsed);
     void Update(float elapsed);
+    View getEntityView();
+    
 
     void GravityUpdate(float elapsed, float gravity);
     void CheckCollisions(const sf::FloatRect *arg);

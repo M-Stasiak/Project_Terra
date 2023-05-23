@@ -9,10 +9,8 @@ class Player : public Entity
 {
 private:
 	int x;
-
 public:
 	Player();
-
 	void Draw(RenderWindow& gameWindow);
 };
 
