@@ -37,7 +37,7 @@ public:
     void Down(float elapsed);
     void Left(float elapsed);
     void Right(float elapsed);
-    void Update(float elapsed);
+    virtual void Update(float elapsed);
     View getEntityView();
     
 

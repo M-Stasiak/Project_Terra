@@ -21,9 +21,19 @@ Grass::Grass(std::map <IDs, sf::Texture*> &arg)
 	setTextureRect(sf::IntRect(32, 464, 16, 16));
 }
 
+IDs Grass::getDropID()
+{
+	return dropID;
+}
+
 Dirt::Dirt(std::map <IDs, sf::Texture*>& arg)
 {
 	ID = IDs::DirtID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(32, 480, 16, 16));
+}
+
+IDs Dirt::getDropID()
+{
+	return dropID;
 }

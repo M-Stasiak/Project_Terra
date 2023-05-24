@@ -10,9 +10,17 @@ class Player : public Entity
 {
 private:
 	int x;
+	FloatRect *playerReach;
+	IDs destroyedBlockID;
+	Vector2f destroyedBlockPosition;
+	bool blockDestroyed;
 public:
 	Player();
-	void DestroyBlock(map<int, map<int, B>> &world);
+	void DestroyBlock(map<int, map<int, B>> &world, RenderWindow& gameWindow);
 	void Draw(RenderWindow& gameWindow);
+	void updateReach();
+	IDs getDestroyedBlockID();
+	Vector2f getDestroyedBlockPosition();
+	bool isBlockDestroyed();
 };
 

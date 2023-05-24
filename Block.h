@@ -18,6 +18,7 @@ protected:
 public:
 	Block();
 	virtual void test() = 0;
+	virtual IDs getDropID() = 0;
 };
 
 class B
@@ -34,5 +35,6 @@ public:
 		ID = id;
 		rect = r;
 	}
+
 };
 

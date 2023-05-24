@@ -9,7 +9,7 @@ void Game::initFont()
 
 void Game::initWindow()
 {
-	gameWindow.create(VideoMode::getDesktopMode(), "Project Terra", Style::Fullscreen);
+	gameWindow.create(VideoMode::getDesktopMode(), "Project Terra", Style::Default);
 	gameWindow.setFramerateLimit(60);
 }
 void Game::setGameView()
@@ -86,8 +86,13 @@ void Game::dispGame()
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) player.Right(elapsed.asSeconds());
 				if (gameWindow.pollEvent(gameEvent)) {
 					if (gameEvent.type == sf::Event::MouseButtonPressed)
-						if (gameEvent.mouseButton.button == sf::Mouse::Left)
-							player.DestroyBlock(world.world);
+						if (gameEvent.mouseButton.button == sf::Mouse::Left) {
+							player.DestroyBlock(world.world, gameWindow);
+							if (player.isBlockDestroyed() == true) {
+								world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), Textures, player.getDestroyedBlockPosition());
+							}
+						}
+
 					if (gameEvent.type == sf::Event::KeyPressed) {
 						if (gameEvent.key.code == Keyboard::Escape) {
 					
@@ -149,8 +154,8 @@ void Game::dispGame()
 				rectangle.setSize(Vector2f(player.getGlobalBounds().width, player.getGlobalBounds().height));
 				gameWindow.draw(rectangle);
 				
-				
-				
+				world.drawItemsOnGround(gameWindow);
+				player.updateReach();
 				inventory->displayQInventory(gameWindow);
 				inventory->displayQInventorySelected(gameWindow);
 			}

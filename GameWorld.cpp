@@ -147,3 +147,18 @@ GameWorld::GameWorld()
 
 	//world = rotateMap(world);
 }
+
+void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg, Vector2f pos)
+{
+	switch (id) {
+	case 2: items_on_ground.emplace_back(new Block_Item(arg,id,pos));
+	}
+	
+}
+
+void GameWorld::drawItemsOnGround(RenderWindow& gameWindow)
+{
+	for (auto item : items_on_ground) {
+		gameWindow.draw(*item);
+	}
+}
