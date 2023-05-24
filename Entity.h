@@ -2,6 +2,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <iostream>
 #include "Animation.h"
 
 enum AnimationName

@@ -35,6 +35,7 @@ void Game::dispGame()
 	
 	vector<Entity*> entities;
 	entities.push_back(&player);
+	RectangleShape rectangle;
 
 	map <IDs, Texture*> Textures;
 	map <IDs, Block*> Blocks;
@@ -84,6 +85,9 @@ void Game::dispGame()
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) player.Left(elapsed.asSeconds());
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) player.Right(elapsed.asSeconds());
 				if (gameWindow.pollEvent(gameEvent)) {
+					if (gameEvent.type == sf::Event::MouseButtonPressed)
+						if (gameEvent.mouseButton.button == sf::Mouse::Left)
+							player.DestroyBlock(world.world);
 					if (gameEvent.type == sf::Event::KeyPressed) {
 						if (gameEvent.key.code == Keyboard::Escape) {
 					
@@ -110,11 +114,11 @@ void Game::dispGame()
 				}
 				
 				gameWindow.clear();
-				cout << player.getPosition().x << " " << player.getPosition().y << endl;
+				//cout << player.getPosition().x << " " << player.getPosition().y << endl;
 
-				for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 1920); i += 16)
+				for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 16000); i += 16)
 				{
-					for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 1080); j += 16)
+					for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 16000); j += 16)
 					{
 						if (world.world[i / 16][j / 16].ID != IDs::AirID)
 						{
@@ -127,9 +131,9 @@ void Game::dispGame()
 				for (auto entity : entities)
 				{
 					entity->GravityUpdate(elapsed.asSeconds(), 20);
-					for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 1920); i += 16)
+					for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 16000); i += 16)
 					{
-						for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 1080); j += 16)
+						for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 16000); j += 16)
 						{
 							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
 						}
@@ -137,6 +141,13 @@ void Game::dispGame()
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 				}
+
+				rectangle.setFillColor(sf::Color::Transparent);
+				rectangle.setOutlineThickness(1);
+				rectangle.setOutlineColor(Color::White);
+				rectangle.setPosition(player.getGlobalBounds().left, player.getGlobalBounds().top);
+				rectangle.setSize(Vector2f(player.getGlobalBounds().width, player.getGlobalBounds().height));
+				gameWindow.draw(rectangle);
 				
 				
 				
@@ -176,9 +187,9 @@ void Game::dispGame()
 		
 				setGameView();
 				gameWindow.clear();
-				for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 1920); i += 16)
+				for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 16000); i += 16)
 				{
-					for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 1080); j += 16)
+					for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 16000); j += 16)
 					{
 						if (world.world[i / 16][j / 16].ID != IDs::AirID)
 						{
@@ -191,9 +202,9 @@ void Game::dispGame()
 				for (auto entity : entities)
 				{
 					entity->GravityUpdate(elapsed.asSeconds(), 20);
-					for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 1920); i += 16)
+					for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 16000); i += 16)
 					{
-						for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 1080); j += 16)
+						for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 16000); j += 16)
 						{
 							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
 						}

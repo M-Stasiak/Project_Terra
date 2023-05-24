@@ -4,6 +4,7 @@
 #include <SFML/System.hpp>
 #include <vector>
 #include <map>
+#include <iostream>
 #include "Block.h"
 
 using namespace std;
