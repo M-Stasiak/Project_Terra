@@ -79,6 +79,11 @@ void Inventory::updateQInventory(RenderWindow& gameWindow)
 	qInvSprite.setPosition(gameWindow.getView().getCenter().x - (invSprite.getScale().x * 203.f*0.95f), gameWindow.getView().getCenter().y - (invSprite.getScale().x * 32.f * 3.25));
 }
 
+void Inventory::initInventory()
+{
+
+}
+
 Inventory::Inventory(RenderWindow& gameWindow)
 {
 	selected = 1;

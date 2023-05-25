@@ -36,6 +36,7 @@ void Game::dispGame()
 	vector<Entity*> entities;
 	entities.push_back(&player);
 	RectangleShape rectangle;
+	RectangleShape rectangle1;
 
 	map <IDs, Texture*> Textures;
 	map <IDs, Block*> Blocks;
@@ -84,14 +85,14 @@ void Game::dispGame()
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) player.Down(elapsed.asSeconds());
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) player.Left(elapsed.asSeconds());
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) player.Right(elapsed.asSeconds());
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					player.DestroyBlock(world.world, gameWindow);
+					if (player.isBlockDestroyed() == true) {
+						world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), Textures, player.getDestroyedBlockPosition());
+					}
+
+				}
 				if (gameWindow.pollEvent(gameEvent)) {
-					if (gameEvent.type == sf::Event::MouseButtonPressed)
-						if (gameEvent.mouseButton.button == sf::Mouse::Left) {
-							player.DestroyBlock(world.world, gameWindow);
-							if (player.isBlockDestroyed() == true) {
-								world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), Textures, player.getDestroyedBlockPosition());
-							}
-						}
 
 					if (gameEvent.type == sf::Event::KeyPressed) {
 						if (gameEvent.key.code == Keyboard::Escape) {
@@ -146,6 +147,24 @@ void Game::dispGame()
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 				}
+				for (auto &&item : world.items_on_ground)
+				{
+					player.updatePickUpRange();
+					if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange())) {
+						item->goToPlayer(player.getPosition());
+					}
+					else {
+						item->GravityUpdate(elapsed.asSeconds(), 5);
+						for (int i = max((int)item->getPosition().x - 60 * 16, 0); i < min((int)item->getPosition().x + 60 * 16, 16000); i += 16)
+						{
+							for (int j = max((int)item->getPosition().y - 34 * 16, 0); j < min((int)item->getPosition().y + 34 * 16, 16000); j += 16)
+							{
+								item->CheckCollisions(&world.world[i / 16][j / 16].rect);
+							}
+						}
+					}
+					world.drawItemsOnGround(gameWindow);
+				}
 
 				rectangle.setFillColor(sf::Color::Transparent);
 				rectangle.setOutlineThickness(1);
@@ -154,8 +173,10 @@ void Game::dispGame()
 				rectangle.setSize(Vector2f(player.getGlobalBounds().width, player.getGlobalBounds().height));
 				gameWindow.draw(rectangle);
 				
-				world.drawItemsOnGround(gameWindow);
+				
+				
 				player.updateReach();
+				
 				inventory->displayQInventory(gameWindow);
 				inventory->displayQInventorySelected(gameWindow);
 			}

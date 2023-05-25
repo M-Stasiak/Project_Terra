@@ -3,6 +3,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include "Block.h";
+#include <iostream>
 
 using namespace sf;
 using namespace std;
@@ -16,11 +17,19 @@ class Item : public Sprite
 {
 private:
     item_type type;
+    sf::FloatRect nextPosition;
+    Vector2f origin;
+    sf::Vector2f velocity;
+
+protected:
+    
 
 public:
-    Item() {};
-
+    Item();
     virtual void nothing() = 0;
+    void GravityUpdate(float elapsed, float gravity);
+    void CheckCollisions(const sf::FloatRect* arg);
+    void goToPlayer(Vector2f playerPosition);
 
 };
 

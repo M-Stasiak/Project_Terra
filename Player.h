@@ -10,7 +10,9 @@ class Player : public Entity
 {
 private:
 	int x;
-	FloatRect *playerReach;
+	
+	FloatRect* playerPickUpRange;
+	
 	IDs destroyedBlockID;
 	Vector2f destroyedBlockPosition;
 	bool blockDestroyed;
@@ -22,5 +24,10 @@ public:
 	IDs getDestroyedBlockID();
 	Vector2f getDestroyedBlockPosition();
 	bool isBlockDestroyed();
+	void updatePickUpRange();
+	FloatRect getPlayerPickUpRange();
+	FloatRect* playerReach;
+	
+
 };
 

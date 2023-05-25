@@ -10,7 +10,8 @@ Player::Player()
 	setEntity(entityTexture, { {4, 0, 0, 50, 37}, {6, 50, 37, 50, 37} });
 	origin.x = 25; origin.y = 18.5;
 	setOrigin(origin);
-	playerReach = new FloatRect(0, 0, 100, 100);
+	playerReach = new FloatRect(0, 0, 150, 150);
+	playerPickUpRange = new FloatRect(0, 0, 100, 100);
 }
 
 void Player::DestroyBlock(map<int, map<int, B>> &world, RenderWindow& gameWindow)
@@ -38,10 +39,8 @@ void Player::Draw(RenderWindow &gameWindow)
 void Player::updateReach()
 {
 	blockDestroyed = false;
-	playerReach->left = getPosition().x - (playerReach->width / 2);
-	playerReach->top = getPosition().y - (playerReach->height / 2);
-	cout << playerReach->left << " " << playerReach->top << endl;
-	cout << getPosition().x << " " << getPosition().y << endl;
+	playerReach->left = getPosition().x - float(playerReach->width / 2) ;
+	playerReach->top = getPosition().y - float(playerReach->height / 2) ;
 
 }
 
@@ -58,4 +57,15 @@ Vector2f Player::getDestroyedBlockPosition()
 bool Player::isBlockDestroyed()
 {
 	return blockDestroyed;
+}
+
+void Player::updatePickUpRange()
+{
+	playerPickUpRange->left = getPosition().x - playerPickUpRange->width/2;
+	playerPickUpRange->top = getPosition().y - playerPickUpRange->height / 2;
+}
+
+FloatRect Player::getPlayerPickUpRange()
+{
+	return *playerPickUpRange;
 }

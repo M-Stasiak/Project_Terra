@@ -3,6 +3,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include "Item.h"
 using namespace std;
 using namespace sf;
 class Inventory
@@ -14,6 +15,7 @@ class Inventory
 	Sprite invSprite;
 	Sprite invSSprite;
 	FloatRect invSquare[44];
+	
 	int selected;
 	bool invSelected;
 
@@ -22,8 +24,11 @@ class Inventory
 	void initSquares();
 	void updateInventory(RenderWindow& gameWindow);
 	void updateQInventory(RenderWindow& gameWindow);
+	void initInventory();
+
 
  public:
+	 multimap < unique_ptr<Item>, int > inventory;
 	 Inventory(RenderWindow& gameWindow);
 	 void displayInventory(RenderWindow& gameWindow);
 	 void displayQInventory(RenderWindow& gameWindow);

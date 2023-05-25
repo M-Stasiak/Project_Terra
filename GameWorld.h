@@ -16,7 +16,7 @@ class GameWorld
 {
 public:
 	map<int, map<int, B>> world;
-	vector<Item*> items_on_ground;
+	vector<unique_ptr<Item>> items_on_ground;
 
 public:
 	GameWorld();
