@@ -81,6 +81,10 @@ void Inventory::updateQInventory(RenderWindow& gameWindow)
 
 void Inventory::initInventory()
 {
+	for (int i = 1; i <= 44;i++) {
+		inv_vector.emplace_back(nullptr, 0);
+
+	}
 
 }
 
@@ -90,6 +94,7 @@ Inventory::Inventory(RenderWindow& gameWindow)
 	initTextures();
 	initSprites(gameWindow);
 	initSquares();
+	initInventory();
 }
 
 void Inventory::displayInventory(RenderWindow& gameWindow)

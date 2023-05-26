@@ -89,7 +89,13 @@ void Game::dispGame()
 					player.DestroyBlock(world.world, gameWindow);
 					if (player.isBlockDestroyed() == true) {
 						world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), Textures, player.getDestroyedBlockPosition());
+						for (auto& el : inventory->inv_vector) {
+							if (el.first != nullptr) {
+								cout << el.second <<" ";
+							}
+						}
 					}
+					
 
 				}
 				if (gameWindow.pollEvent(gameEvent)) {
@@ -147,19 +153,43 @@ void Game::dispGame()
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 				}
-				for (auto &&item : world.items_on_ground)
+				
+				for (auto &item : world.items_on_ground)
 				{
-					player.updatePickUpRange();
-					if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange())) {
-						item->goToPlayer(player.getPosition());
-					}
-					else {
-						item->GravityUpdate(elapsed.asSeconds(), 5);
-						for (int i = max((int)item->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)item->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
-						{
-							for (int j = max((int)item->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)item->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
+					if (item != nullptr) {
+						player.updatePickUpRange();
+						if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange())) {
+							item->goToPlayer(player.getPosition());
+							if (item->getGlobalBounds().intersects(player.getGlobalBounds())) {
+								for (auto& el : inventory->inv_vector) {
+									if (el.first != nullptr && item->getID() == el.first->getID()) {
+										el.second++;
+										auto it = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
+										world.items_on_ground.erase(it);
+										break;
+									}
+									else {
+										el.first.swap(item);
+										el.second++;
+										if (item == nullptr) {
+											auto it = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
+											world.items_on_ground.erase(it);
+										}
+										break;
+									}
+								}
+								cout << inventory->inv_vector.size() << endl;
+
+							}
+						}
+						else {
+							item->GravityUpdate(elapsed.asSeconds(), 5);
+							for (int i = max((int)item->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)item->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
 							{
-								item->CheckCollisions(&world.world[i / 16][j / 16].rect);
+								for (int j = max((int)item->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)item->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
+								{
+									item->CheckCollisions(&world.world[i / 16][j / 16].rect);
+								}
 							}
 						}
 					}

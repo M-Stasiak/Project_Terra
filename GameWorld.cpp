@@ -140,6 +140,7 @@ void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg, Vector2f pos)
 void GameWorld::drawItemsOnGround(RenderWindow& gameWindow)
 {
 	for (auto &&item : items_on_ground) {
-		gameWindow.draw(*item);
+			gameWindow.draw(*item);
+		
 	}
 }

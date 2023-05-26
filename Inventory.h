@@ -28,7 +28,7 @@ class Inventory
 
 
  public:
-	 multimap < unique_ptr<Item>, int > inventory;
+	 vector<pair<unique_ptr<Item>, int>> inv_vector;
 	 Inventory(RenderWindow& gameWindow);
 	 void displayInventory(RenderWindow& gameWindow);
 	 void displayQInventory(RenderWindow& gameWindow);
