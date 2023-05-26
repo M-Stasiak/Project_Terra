@@ -19,6 +19,9 @@ using namespace std;
 class Game
 {
 private:
+	int renderWidth = 23, renderHeight = 14;
+	//int renderWidth = 3, renderHeight = 3;
+	int collisionsCheckWidth = 3, collisionsCheckHeight = 3;
 	enum class gameMode{mainMenu,pauseMenu,playing,inventory};
 	gameMode currentGameMode;
 	RenderWindow gameWindow;

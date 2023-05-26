@@ -89,7 +89,7 @@ void Entity::CheckCollisions(const sf::FloatRect *arg)
 
 void Entity::GravityUpdate(float elapsed, float gravity)
 {
-    if (jumpVelocity < 200) jumpVelocity += gravity;
+    if (jumpVelocity < 300) jumpVelocity += gravity;
     velocity.y += jumpVelocity * elapsed;
 }
 

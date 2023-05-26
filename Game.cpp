@@ -81,10 +81,10 @@ void Game::dispGame()
 			else if (currentGameMode == gameMode::playing)
 			{
 				setGameView();
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) player.Up(elapsed.asSeconds());
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) player.Down(elapsed.asSeconds());
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) player.Left(elapsed.asSeconds());
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) player.Right(elapsed.asSeconds());
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) player.Up(0.02);
+				//if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) player.Down(0.02);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) player.Left(0.02);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) player.Right(0.02);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					player.DestroyBlock(world.world, gameWindow);
 					if (player.isBlockDestroyed() == true) {
@@ -122,9 +122,9 @@ void Game::dispGame()
 				gameWindow.clear();
 				//cout << player.getPosition().x << " " << player.getPosition().y << endl;
 
-				for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 16000); i += 16)
+				for (int i = max((int)player.getPosition().x - renderWidth * 16, 0); i < min((int)player.getPosition().x + renderWidth * 16, 16000); i += 16)
 				{
-					for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 16000); j += 16)
+					for (int j = max((int)player.getPosition().y - renderHeight * 16, 0); j < min((int)player.getPosition().y + renderHeight * 16, 16000); j += 16)
 					{
 						if (world.world[i / 16][j / 16].ID != IDs::AirID)
 						{
@@ -136,10 +136,10 @@ void Game::dispGame()
 				
 				for (auto entity : entities)
 				{
-					entity->GravityUpdate(elapsed.asSeconds(), 20);
-					for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 16000); i += 16)
+					entity->GravityUpdate(0.02, 20);
+					for (int i = max((int)player.getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)player.getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
 					{
-						for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 16000); j += 16)
+						for (int j = max((int)player.getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)player.getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
 						{
 							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
 						}
@@ -155,16 +155,16 @@ void Game::dispGame()
 					}
 					else {
 						item->GravityUpdate(elapsed.asSeconds(), 5);
-						for (int i = max((int)item->getPosition().x - 60 * 16, 0); i < min((int)item->getPosition().x + 60 * 16, 16000); i += 16)
+						for (int i = max((int)item->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)item->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
 						{
-							for (int j = max((int)item->getPosition().y - 34 * 16, 0); j < min((int)item->getPosition().y + 34 * 16, 16000); j += 16)
+							for (int j = max((int)item->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)item->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
 							{
 								item->CheckCollisions(&world.world[i / 16][j / 16].rect);
 							}
 						}
 					}
-					world.drawItemsOnGround(gameWindow);
 				}
+				world.drawItemsOnGround(gameWindow);
 
 				rectangle.setFillColor(sf::Color::Transparent);
 				rectangle.setOutlineThickness(1);
@@ -213,9 +213,9 @@ void Game::dispGame()
 		
 				setGameView();
 				gameWindow.clear();
-				for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 16000); i += 16)
+				for (int i = max((int)player.getPosition().x - renderWidth * 16, 0); i < min((int)player.getPosition().x + renderWidth * 16, 16000); i += 16)
 				{
-					for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 16000); j += 16)
+					for (int j = max((int)player.getPosition().y - renderHeight * 16, 0); j < min((int)player.getPosition().y + renderHeight * 16, 16000); j += 16)
 					{
 						if (world.world[i / 16][j / 16].ID != IDs::AirID)
 						{
@@ -227,10 +227,10 @@ void Game::dispGame()
 
 				for (auto entity : entities)
 				{
-					entity->GravityUpdate(elapsed.asSeconds(), 20);
-					for (int i = max((int)player.getPosition().x - 60 * 16, 0); i < min((int)player.getPosition().x + 60 * 16, 16000); i += 16)
+					entity->GravityUpdate(0.02, 20);
+					for (int i = max((int)player.getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)player.getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
 					{
-						for (int j = max((int)player.getPosition().y - 34 * 16, 0); j < min((int)player.getPosition().y + 34 * 16, 16000); j += 16)
+						for (int j = max((int)player.getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)player.getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
 						{
 							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
 						}

@@ -42,26 +42,6 @@ template <typename T> vector<T> Interpolation(vector<T> xw, vector<T> yw, vector
 	return result;
 }
 
-map<int, map<int, B>> rotateMap(const map<int, map<int, B>> arg)
-{
-	map<int, map<int, B>> rotatedMap;
-
-	// Przepisywanie wartoœci z oryginalnej mapy do obróconej
-	for (const auto entry : arg) {
-		int row = entry.first;
-		const std::map<int, B> rowData = entry.second;
-
-		for (const auto data : rowData) {
-			int col = data.first;
-			B value = data.second;
-
-			rotatedMap[col][row] = value;
-		}
-	}
-
-	return rotatedMap;
-}
-
 GameWorld::GameWorld()
 {
 	/*for (int i = 0; i < 1000; i++)
@@ -85,6 +65,7 @@ GameWorld::GameWorld()
 		world[i] = pom;
 	}*/
 
+	srand(time(NULL));
 	vector<float> xw, yw, x, y;
 	for (int i = 0; i <= 1000; i += 100)
 	{

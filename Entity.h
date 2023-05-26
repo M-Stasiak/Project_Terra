@@ -14,7 +14,7 @@ enum AnimationName
 class Entity : public sf::Sprite
 {
 private:
-    float speed = 100;
+    float speed = 200;
     float jumpSpeed = 400;
     float jumpVelocity = 0;
     bool jumping = false;
