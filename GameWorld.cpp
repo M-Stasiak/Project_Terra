@@ -65,6 +65,7 @@ GameWorld::GameWorld()
 		world[i] = pom;
 	}*/
 
+	int idInt = AirID;
 	srand(time(NULL));
 	vector<float> xw, yw, x, y;
 	for (int i = 0; i <= 1000; i += 100)
@@ -95,9 +96,13 @@ GameWorld::GameWorld()
 			}
 			else if (j > (int)y[i])
 			{
+				if (idInt == 0) idInt++;
+				IDs xd = static_cast<IDs>(idInt);
 				sf::FloatRect p(i * 16, j * 16, 16, 16);
-				B a(IDs::DirtID, p);
+				B a(xd, p);
 				pom[j] = a;
+				idInt++;
+				if (idInt == SandID) idInt = AirID;
 			}
 		}
 		/*for (int j = 0; j < 1000; j++)
@@ -129,10 +134,10 @@ GameWorld::GameWorld()
 	//world = rotateMap(world);
 }
 
-void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg, Vector2f pos)
+void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Vector2f pos)
 {
-	if (id == 2){
-	items_on_ground.emplace_back(new Block_Item(arg,id,pos));
+	if (id != 0){
+	items_on_ground.emplace_back(new Block_Item(arg1, arg2, id, pos));
 	}
 	
 }

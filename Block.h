@@ -7,18 +7,25 @@ enum IDs
 {
 	AirID,
 	GrassID,
-	DirtID
+	DirtID,
+	RockID,
+	WoodID,
+	PlankID,
+	LeavesID,
+	CactusID,
+	SandID
 };
 
 class Block : public sf::Sprite
 {
 protected:
 	IDs ID;
+	IDs dropID;
 
 public:
 	Block();
 	virtual void test() = 0;
-	virtual IDs getDropID() = 0;
+	IDs getDropID();
 };
 
 class B
@@ -26,10 +33,7 @@ class B
 public:
 	IDs ID;
 	sf::FloatRect rect;
-	B()
-	{
-
-	}
+	B() {}
 	B(IDs id, sf::FloatRect r)
 	{
 		ID = id;

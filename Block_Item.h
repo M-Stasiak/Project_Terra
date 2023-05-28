@@ -16,7 +16,7 @@ private:
 	IDs ID;
 
 public:
-	Block_Item(map <IDs, sf::Texture*>& arg,IDs id, Vector2f pos);
+	Block_Item(map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, IDs id, Vector2f pos);
 	int getID();
 	void nothing() {};
 };

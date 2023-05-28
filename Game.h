@@ -6,6 +6,7 @@
 #include <iostream>
 #include "MainMenu.h"
 #include "PauseMenu.h"
+#include "Background.h"
 #include "Entity.h"
 #include "Player.h"
 #include "GameWorld.h"
@@ -34,6 +35,7 @@ private:
 	
 	void initFont();
 	void initWindow();
+	void initBackground();
 	void setGameView();
 	
 
