@@ -102,7 +102,7 @@ GameWorld::GameWorld()
 				B a(xd, p);
 				pom[j] = a;
 				idInt++;
-				if (idInt == SandID) idInt = AirID;
+				if (idInt > ChestID) idInt = AirID;
 			}
 		}
 		/*for (int j = 0; j < 1000; j++)

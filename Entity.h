@@ -14,8 +14,6 @@ enum AnimationName
 class Entity : public sf::Sprite
 {
 private:
-    float speed = 200;
-    float jumpSpeed = 400;
     float jumpVelocity = 0;
     bool jumping = false;
     sf::Vector2f lastPosition;
@@ -27,6 +25,8 @@ private:
     void setEntityView();
 
 protected:
+    float speed = 200;
+    float jumpSpeed = 400;
     Vector2f origin;
 
 public:

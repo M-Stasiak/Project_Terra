@@ -64,3 +64,10 @@ public:
 	void test() {};
 };
 
+class Chest : public Block
+{
+public:
+	Chest(std::map <IDs, sf::Texture*>& arg);
+	void test() {};
+};
+

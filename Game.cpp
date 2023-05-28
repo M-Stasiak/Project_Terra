@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Zombie.h"
 
 void Game::initFont()
 {
@@ -34,9 +35,10 @@ Game::Game()
 
 void Game::dispGame()
 {
-	
+	Zombie zombie;
 	vector<Entity*> entities;
 	entities.push_back(&player);
+	entities.push_back(&zombie);
 	RectangleShape rectangle;
 	RectangleShape rectangle1;
 
@@ -141,13 +143,13 @@ void Game::dispGame()
 						}
 					}
 				}
-				
+				zombie.UpdateAI(elapsed.asSeconds(), player, world.world);
 				for (auto entity : entities)
 				{
 					entity->GravityUpdate(0.02, 20);
-					for (int i = max((int)player.getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)player.getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
+					for (int i = max((int)entity->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)entity->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
 					{
-						for (int j = max((int)player.getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)player.getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
+						for (int j = max((int)entity->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)entity->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
 						{
 							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
 						}
@@ -271,9 +273,9 @@ void Game::dispGame()
 				for (auto entity : entities)
 				{
 					entity->GravityUpdate(0.02, 20);
-					for (int i = max((int)player.getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)player.getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
+					for (int i = max((int)entity->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)entity->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
 					{
-						for (int j = max((int)player.getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)player.getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
+						for (int j = max((int)entity->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)entity->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
 						{
 							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
 						}

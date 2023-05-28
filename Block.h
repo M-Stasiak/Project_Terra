@@ -13,7 +13,8 @@ enum IDs
 	PlankID,
 	LeavesID,
 	CactusID,
-	SandID
+	SandID,
+	ChestID
 };
 
 class Block : public sf::Sprite
