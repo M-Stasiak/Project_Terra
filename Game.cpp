@@ -28,7 +28,7 @@ Game::Game()
 	initFont();
 	mainMenu = new MainMenu(gameFont, gameWindow);
 	pauseMenu = new PauseMenu(gameFont, gameWindow);
-	inventory = new Inventory(gameWindow);
+	inventory = new Inventory(gameWindow, gameFont);
 	currentGameMode = gameMode::mainMenu;
 	
 }
@@ -93,11 +93,6 @@ void Game::dispGame()
 					player.DestroyBlock(world.world, gameWindow);
 					if (player.isBlockDestroyed() == true) {
 						world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), Textures, Blocks, player.getDestroyedBlockPosition());
-						for (auto& el : inventory->inv_vector) {
-							if (el.first != nullptr) {
-								cout << el.second <<" ";
-							}
-						}
 					}
 					
 
@@ -158,11 +153,11 @@ void Game::dispGame()
 					entity->Draw(gameWindow);
 				}
 				
-				for (auto &item : world.items_on_ground)
+				for (auto& item : world.items_on_ground)
 				{
 					if (item != nullptr) {
 						player.updatePickUpRange();
-						if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange())) {
+						if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange()) && inventory->isInventoryFull(item->getID()) == false) {
 							item->goToPlayer(player.getPosition());
 							if (item->getGlobalBounds().intersects(player.getGlobalBounds())) {
 								for (auto& el : inventory->inv_vector) {
@@ -176,7 +171,7 @@ void Game::dispGame()
 										}
 										break;
 									}
-									else if (el.first != nullptr && item->getID() == el.first->getID()) {
+									else if (el.first != nullptr && item->getID() == el.first->getID() && el.second < item->getStackingQuantity()) {
 										el.second++;
 										auto it = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
 										world.items_on_ground.erase(it);
@@ -192,7 +187,7 @@ void Game::dispGame()
 										break;
 									}*/
 								}
-								cout << inventory->inv_vector.size() << endl;
+
 
 							}
 						}

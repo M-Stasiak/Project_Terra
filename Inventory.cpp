@@ -1,5 +1,13 @@
 #include "Inventory.h"
 
+
+void Inventory::initFont(Font& gameFont)
+{
+	for (int i = 0; i < 40; i++) {
+		itemQuantity[i].setFont(gameFont);
+	}
+}
+
 void Inventory::initTextures()
 {
 	if (!invTexture.loadFromFile("Textures/inventory.png")) { cout << "No texture found" << endl; }
@@ -22,62 +30,120 @@ void Inventory::initSprites(RenderWindow& gameWindow)
 void Inventory::updateInventory(RenderWindow& gameWindow)
 {
 
-	invSprite.setPosition(gameWindow.getView().getCenter().x - (invSprite.getScale().x * 101.f), gameWindow.getView().getCenter().y - (invSprite.getScale().x * 68.f));
-	invSquare[0].top = invSprite.getPosition().y + 12 + 2;
-	invSquare[0].left = invSprite.getPosition().x + 12 + 2;
-	invSquare[1].top = invSprite.getPosition().y + 12 + invSquare[0].height + 4;
-	invSquare[1].left = invSprite.getPosition().x + 12 + 2;
-	invSquare[2].top = invSprite.getPosition().y + 12 + 2;
-	invSquare[2].left = invSprite.getPosition().x + 12 + 2 + 96;
-	invSquare[3].top = invSprite.getPosition().y + 12 + invSquare[0].height + 4;
-	invSquare[3].left = invSprite.getPosition().x + 12 + 2 + 96;
 
-	invSquare[4].top = invSprite.getPosition().y + 12 + (invSquare[0].height + 4) * 5 + 10;
-	invSquare[4].left = invSprite.getPosition().x + 12 + 2;
-	for (int i = 5; i <= 13; i++) {
+	invSprite.setPosition(gameWindow.getView().getCenter().x - (invSprite.getScale().x * 101.f), gameWindow.getView().getCenter().y - (invSprite.getScale().x * 68.f));
+	/*invSquare[40].top = invSprite.getPosition().y + 12 + 2;
+	invSquare[40].left = invSprite.getPosition().x + 12 + 2;
+	invSquare[41].top = invSprite.getPosition().y + 12 + invSquare[0].height + 4;
+	invSquare[41].left = invSprite.getPosition().x + 12 + 2;
+	invSquare[42].top = invSprite.getPosition().y + 12 + 2;
+	invSquare[42].left = invSprite.getPosition().x + 12 + 2 + 96;
+	invSquare[43].top = invSprite.getPosition().y + 12 + invSquare[0].height + 4;
+	invSquare[43].left = invSprite.getPosition().x + 12 + 2 + 96;*/
+	invSSprite.setScale(invSprite.getScale());
+	for (int i = 0; i < 40; i++) {
+		invSquare[i].width = invSSprite.getGlobalBounds().width - 4;
+		invSquare[i].height = invSSprite.getGlobalBounds().height - 4;
+	}
+
+	invSquare[0].top = invSprite.getPosition().y + 12 + (invSquare[0].height + 4) * 5 + 10;
+	invSquare[0].left = invSprite.getPosition().x + 12 + 2;
+
+	for (int i = 1; i <= 9; i++) {
 		invSquare[i].top = invSprite.getPosition().y + 12 + (invSquare[0].height + 4) * 5 + 10;
 		invSquare[i].left = (invSquare[i - 1].left + invSquare[i].width + 2);
-    }
-	invSquare[14].top = invSprite.getPosition().y + 12 + 2;
-	invSquare[14].left = invSprite.getPosition().x + 12 + 2 + 96+invSquare[14].width+20;
-	for (int i = 15; i <= 19; i++) {
+	}
+	invSquare[10].top = invSprite.getPosition().y + 12 + 2;
+	invSquare[10].left = invSprite.getPosition().x + 12 + 2 + 96 + invSquare[0].width + 20;
+	for (int i = 11; i <= 15; i++) {
 		invSquare[i].top = invSprite.getPosition().y + 12 + 2;
 		invSquare[i].left = (invSquare[i - 1].left + invSquare[i].width + 2);
 	}
-	invSquare[20].top = invSprite.getPosition().y + 12 + 2 + invSquare[14].height+2;
-	invSquare[20].left = invSprite.getPosition().x + 12 + 2 + 96 + invSquare[14].width + 20;
-	for (int i = 21; i <= 25; i++) {
-		invSquare[i].top = invSprite.getPosition().y + 12 + 2 + invSquare[14].height+2;
+	invSquare[16].top = invSprite.getPosition().y + 12 + 2 + invSquare[0].height + 2;
+	invSquare[16].left = invSprite.getPosition().x + 12 + 2 + 96 + invSquare[0].width + 20;
+	for (int i = 17; i <= 21; i++) {
+		invSquare[i].top = invSprite.getPosition().y + 12 + 2 + invSquare[0].height + 2;
 		invSquare[i].left = (invSquare[i - 1].left + invSquare[i].width + 2);
 	}
-	invSquare[26].top = invSprite.getPosition().y + 12 + 2 + 2*(invSquare[14].height + 2);
-	invSquare[26].left = invSprite.getPosition().x + 12 + 2 + 96 + invSquare[14].width + 20;
-	for (int i = 27; i <= 31; i++) {
-		invSquare[i].top = invSprite.getPosition().y + 12 + 2 + 2*(invSquare[14].height + 2);
+	invSquare[22].top = invSprite.getPosition().y + 12 + 2 + 2 * (invSquare[0].height + 2);
+	invSquare[22].left = invSprite.getPosition().x + 12 + 2 + 96 + invSquare[0].width + 20;
+	for (int i = 23; i <= 27; i++) {
+		invSquare[i].top = invSprite.getPosition().y + 12 + 2 + 2 * (invSquare[0].height + 2);
 		invSquare[i].left = (invSquare[i - 1].left + invSquare[i].width + 2);
 	}
-	invSquare[32].top = invSprite.getPosition().y + 12 + 2 + 3 * (invSquare[14].height + 2);
-	invSquare[32].left = invSprite.getPosition().x + 12 + 2 + 96 + invSquare[14].width + 20;
-	for (int i = 33; i <= 37; i++) {
-		invSquare[i].top = invSprite.getPosition().y + 12 + 2 + 3 * (invSquare[14].height + 2);
+	invSquare[28].top = invSprite.getPosition().y + 12 + 2 + 3 * (invSquare[0].height + 2);
+	invSquare[28].left = invSprite.getPosition().x + 12 + 2 + 96 + invSquare[0].width + 20;
+	for (int i = 29; i <= 33; i++) {
+		invSquare[i].top = invSprite.getPosition().y + 12 + 2 + 3 * (invSquare[0].height + 2);
 		invSquare[i].left = (invSquare[i - 1].left + invSquare[i].width + 2);
 	}
-	invSquare[38].top = invSprite.getPosition().y + 12 + 2 + 4 * (invSquare[14].height + 2);
-	invSquare[38].left = invSprite.getPosition().x + 12 + 2 + 96 + invSquare[14].width + 20;
-	for (int i = 39; i <= 43; i++) {
-		invSquare[i].top = invSprite.getPosition().y + 12 + 2 + 4 * (invSquare[14].height + 2);
+	invSquare[34].top = invSprite.getPosition().y + 12 + 2 + 4 * (invSquare[0].height + 2);
+	invSquare[34].left = invSprite.getPosition().x + 12 + 2 + 96 + invSquare[0].width + 20;
+	for (int i = 35; i <= 39; i++) {
+		invSquare[i].top = invSprite.getPosition().y + 12 + 2 + 4 * (invSquare[0].height + 2);
 		invSquare[i].left = (invSquare[i - 1].left + invSquare[i].width + 2);
 	}
 
 
-	
+	for (int i = 0; i < inv_vector.size(); i++) {
+		if (inv_vector[i].first != nullptr) {
+			inv_vector[i].first->setPosition(invSquare[i].left + 4, invSquare[i].top + 4);
+			inv_vector[i].first->setScale(1.75, 1.75);
+		}
+	}
+
+	for (int i = 0; i < 40; i++) {
+		if (inv_vector[i].first != nullptr) {
+
+			itemQuantity[i].setScale(0.5, 0.5);
+			itemQuantity[i].setPosition(inv_vector[i].first->getPosition().x + 1, inv_vector[i].first->getPosition().y - 6);
+			itemQuantity[i].setString(to_string(inv_vector[i].second));
+
+
+		}
+	}
+
+
 }
+
 
 void Inventory::updateQInventory(RenderWindow& gameWindow)
 {
 	invSSprite.setScale(qInvSprite.getScale());
-	qInvSprite.setPosition(gameWindow.getView().getCenter().x - (invSprite.getScale().x * 203.f*0.95f), gameWindow.getView().getCenter().y - (invSprite.getScale().x * 32.f * 3.25));
+	qInvSprite.setPosition(gameWindow.getView().getCenter().x - (invSprite.getScale().x * 203.f * 0.95f), gameWindow.getView().getCenter().y - (invSprite.getScale().x * 32.f * 3.25));
+
+	for (int i = 0; i <= 9; i++) {
+		invSquare[i].width = invSSprite.getGlobalBounds().width - 4;
+		invSquare[i].height = invSSprite.getGlobalBounds().height - 4;
+	}
+
+	invSquare[0].top = qInvSprite.getPosition().y + 8;
+	invSquare[0].left = qInvSprite.getPosition().x + 8;
+
+	for (int i = 1; i <= 9; i++) {
+		invSquare[i].top = qInvSprite.getPosition().y + 8;
+		invSquare[i].left = invSquare[i - 1].left + invSquare[i].width + 3;
+	}
+
+	for (int i = 0; i <= 9; i++) {
+		if (inv_vector[i].first != nullptr) {
+			inv_vector[i].first->setPosition(invSquare[i].left + 1, invSquare[i].top + 1);
+			inv_vector[i].first->setScale(0.88, 0.86);
+		}
+	}
+
+	for (int i = 0; i <= 9; i++) {
+		if (inv_vector[i].first != nullptr) {
+
+			itemQuantity[i].setScale(0.25, 0.25);
+			itemQuantity[i].setPosition(inv_vector[i].first->getPosition().x + 1, inv_vector[i].first->getPosition().y - 3);
+			itemQuantity[i].setString(to_string(inv_vector[i].second));
+
+
+		}
+	}
 }
+
 
 void Inventory::initInventory()
 {
@@ -88,12 +154,12 @@ void Inventory::initInventory()
 
 }
 
-Inventory::Inventory(RenderWindow& gameWindow)
+Inventory::Inventory(RenderWindow& gameWindow, Font& gameFont)
 {
 	selected = 1;
+	initFont(gameFont);
 	initTextures();
 	initSprites(gameWindow);
-	initSquares();
 	initInventory();
 }
 
@@ -101,13 +167,30 @@ void Inventory::displayInventory(RenderWindow& gameWindow)
 {
 	updateInventory(gameWindow);
 	gameWindow.draw(invSprite);
-	
+
+	for (auto& it : inv_vector) {
+		if (it.first != nullptr) {
+			gameWindow.draw(*it.first);
+		}
+	}
+	for (int i = 0; i < 40; i++) {
+		gameWindow.draw(itemQuantity[i]);
+	}
+
 }
 
 void Inventory::displayQInventory(RenderWindow& gameWindow)
 {
 	updateQInventory(gameWindow);
 	gameWindow.draw(qInvSprite);
+	for (int i = 0; i <= 9; i++) {
+		if (inv_vector[i].first != nullptr) {
+			gameWindow.draw(*inv_vector[i].first);
+		}
+	}
+	for (int i = 0; i <= 9; i++) {
+		gameWindow.draw(itemQuantity[i]);
+	}
 }
 
 void Inventory::qInvSelect(int selec)
@@ -146,12 +229,12 @@ void Inventory::displayInventorySelected(RenderWindow& gameWindow)
 	}
 }
 
-void Inventory::initSquares()
+bool Inventory::isInventoryFull(int id)
 {
-	for (int i = 0; i < 44; i++) {
-		invSquare[i].width = invSSprite.getGlobalBounds().width-4;
-		invSquare[i].height = invSSprite.getGlobalBounds().height-4;
+	for (auto& el : inv_vector) {
+		if (el.first == nullptr || (el.first != nullptr && el.second < el.first->getStackingQuantity() && el.first->getID() == id)) {
+			return false;
+		}
 	}
-
-
+	return true;
 }
