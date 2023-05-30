@@ -44,8 +44,10 @@ void Game::dispGame()
 
 	map <IDs, Texture*> Textures;
 	map <IDs, Block*> Blocks;
+	map <IDs, Item*> Items;
 	prepareTextures(Textures);
 	prepareBlocksMap(Blocks, Textures);
+	prepareItemsMap(Items, Textures, Blocks);
 	Background background;
 
 	GameWorld world;
@@ -92,7 +94,7 @@ void Game::dispGame()
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					player.DestroyBlock(world.world, gameWindow);
 					if (player.isBlockDestroyed() == true) {
-						world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), Textures, Blocks, player.getDestroyedBlockPosition());
+						world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), player.getDestroyedBlockPosition());
 					}
 					
 
@@ -156,54 +158,57 @@ void Game::dispGame()
 				for (auto& item : world.items_on_ground)
 				{
 					if (item != nullptr) {
-						player.updatePickUpRange();
-						if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange()) && inventory->isInventoryFull(item->getID()) == false) {
-							item->goToPlayer(player.getPosition());
-							if (item->getGlobalBounds().intersects(player.getGlobalBounds())) {
-								for (auto& el : inventory->inv_vector) {
-									if (el.first == nullptr)
-									{
-										el.first.swap(item);
-										el.second++;
-										if (item == nullptr) {
+						if (item->rect.left > player.getPosition().x - renderWidth * 16 and item->rect.left < player.getPosition().x + renderWidth * 16 and item->rect.top > player.getPosition().y - renderHeight * 16 and item->rect.top < player.getPosition().y + renderHeight * 16)
+						{
+							player.updatePickUpRange();
+							if (item->rect.intersects(player.getPlayerPickUpRange()) && inventory->isInventoryFull(item->ID, Items) == false) {
+								goToPlayer(*item, player.getPosition());
+								if (item->rect.intersects(player.getGlobalBounds())) {
+									for (auto& el : inventory->inv_vector) {
+										if (el.first == nullptr)
+										{
+											el.first.swap(item);
+											el.second++;
+											if (item == nullptr) {
+												auto it = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
+												world.items_on_ground.erase(it);
+											}
+											break;
+										}
+										else if (el.first != nullptr && item->ID == el.first->ID && el.second < Items[item->ID]->getStackingQuantity()) {
+											el.second++;
 											auto it = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
 											world.items_on_ground.erase(it);
+											break;
 										}
-										break;
+										/*else {
+											el.first.swap(item);
+											el.second++;
+											if (item == nullptr) {
+												auto it = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
+												world.items_on_ground.erase(it);
+											}
+											break;
+										}*/
 									}
-									else if (el.first != nullptr && item->getID() == el.first->getID() && el.second < item->getStackingQuantity()) {
-										el.second++;
-										auto it = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
-										world.items_on_ground.erase(it);
-										break;
-									}
-									/*else {
-										el.first.swap(item);
-										el.second++;
-										if (item == nullptr) {
-											auto it = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
-											world.items_on_ground.erase(it);
-										}
-										break;
-									}*/
+
+
 								}
-
-
 							}
-						}
-						else {
-							item->GravityUpdate(elapsed.asSeconds(), 5);
-							for (int i = max((int)item->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)item->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
-							{
-								for (int j = max((int)item->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)item->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
+							else {
+								GravityUpdate(*item, elapsed.asSeconds(), 5);
+								for (int i = max((int)item->rect.left - collisionsCheckWidth * 16, 0); i < min((int)item->rect.left + collisionsCheckWidth * 16, 16000); i += 16)
 								{
-									item->CheckCollisions(&world.world[i / 16][j / 16].rect);
+									for (int j = max((int)item->rect.top - collisionsCheckHeight * 16, 0); j < min((int)item->rect.top + collisionsCheckHeight * 16, 16000); j += 16)
+									{
+										CheckCollisions(*item, &world.world[i / 16][j / 16].rect);
+									}
 								}
 							}
 						}
 					}
 				}
-				world.drawItemsOnGround(gameWindow);
+				world.drawItemsOnGround(gameWindow, Items, player.getPosition(), renderWidth, renderHeight);
 
 				rectangle.setFillColor(sf::Color::Transparent);
 				rectangle.setOutlineThickness(1);
@@ -216,7 +221,7 @@ void Game::dispGame()
 				
 				player.updateReach();
 				
-				inventory->displayQInventory(gameWindow);
+				inventory->displayQInventory(gameWindow, Items);
 				inventory->displayQInventorySelected(gameWindow);
 			}
 			else if (currentGameMode == gameMode::pauseMenu) {
@@ -278,7 +283,7 @@ void Game::dispGame()
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 				}
-				inventory->displayInventory(gameWindow);
+				inventory->displayInventory(gameWindow, Items);
 				inventory->displayInventorySelected(gameWindow);
 				if (gameWindow.pollEvent(gameEvent)) {
 					if (gameEvent.type == sf::Event::KeyPressed) {

@@ -29,13 +29,13 @@ class Inventory
 
 
  public:
-	 vector<pair<unique_ptr<Item>, int>> inv_vector;
+	 vector<pair<unique_ptr<I>, int>> inv_vector;
 	 Inventory(RenderWindow& gameWindow, Font& gameFont);
-	 void displayInventory(RenderWindow& gameWindow);
-	 void displayQInventory(RenderWindow& gameWindow);
+	 void displayInventory(RenderWindow& gameWindow, map <IDs, Item*>& items);
+	 void displayQInventory(RenderWindow& gameWindow, map <IDs, Item*>& items);
 	 void qInvSelect(int selec);
 	 void displayQInventorySelected(RenderWindow& gameWindow);
 	 void displayInventorySelected(RenderWindow& gameWindow);
-	 bool isInventoryFull(int id);
+	 bool isInventoryFull(int id, map <IDs, Item*>& items);
 };
 

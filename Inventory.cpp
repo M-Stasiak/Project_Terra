@@ -87,8 +87,7 @@ void Inventory::updateInventory(RenderWindow& gameWindow)
 
 	for (int i = 0; i < inv_vector.size(); i++) {
 		if (inv_vector[i].first != nullptr) {
-			inv_vector[i].first->setPosition(invSquare[i].left + 4, invSquare[i].top + 4);
-			inv_vector[i].first->setScale(1.75, 1.75);
+			inv_vector[i].first->rect = FloatRect(invSquare[i].left + 4, invSquare[i].top + 4, inv_vector[i].first->rect.width * 1.75, inv_vector[i].first->rect.height * 1.75);
 		}
 	}
 
@@ -96,7 +95,7 @@ void Inventory::updateInventory(RenderWindow& gameWindow)
 		if (inv_vector[i].first != nullptr) {
 
 			itemQuantity[i].setScale(0.5, 0.5);
-			itemQuantity[i].setPosition(inv_vector[i].first->getPosition().x + 1, inv_vector[i].first->getPosition().y - 6);
+			itemQuantity[i].setPosition(inv_vector[i].first->rect.left + 1, inv_vector[i].first->rect.top - 6);
 			itemQuantity[i].setString(to_string(inv_vector[i].second));
 
 
@@ -127,8 +126,7 @@ void Inventory::updateQInventory(RenderWindow& gameWindow)
 
 	for (int i = 0; i <= 9; i++) {
 		if (inv_vector[i].first != nullptr) {
-			inv_vector[i].first->setPosition(invSquare[i].left + 1, invSquare[i].top + 1);
-			inv_vector[i].first->setScale(0.88, 0.86);
+			inv_vector[i].first->rect = FloatRect(invSquare[i].left + 1, invSquare[i].top + 1, inv_vector[i].first->rect.width * 0.88, inv_vector[i].first->rect.height * 0.86);
 		}
 	}
 
@@ -136,7 +134,7 @@ void Inventory::updateQInventory(RenderWindow& gameWindow)
 		if (inv_vector[i].first != nullptr) {
 
 			itemQuantity[i].setScale(0.25, 0.25);
-			itemQuantity[i].setPosition(inv_vector[i].first->getPosition().x + 1, inv_vector[i].first->getPosition().y - 3);
+			itemQuantity[i].setPosition(inv_vector[i].first->rect.left + 1, inv_vector[i].first->rect.top - 3);
 			itemQuantity[i].setString(to_string(inv_vector[i].second));
 
 
@@ -163,14 +161,15 @@ Inventory::Inventory(RenderWindow& gameWindow, Font& gameFont)
 	initInventory();
 }
 
-void Inventory::displayInventory(RenderWindow& gameWindow)
+void Inventory::displayInventory(RenderWindow& gameWindow, map <IDs, Item*>& items)
 {
 	updateInventory(gameWindow);
 	gameWindow.draw(invSprite);
 
 	for (auto& it : inv_vector) {
 		if (it.first != nullptr) {
-			gameWindow.draw(*it.first);
+			items[it.first->ID]->setPosition(it.first->rect.left, it.first->rect.top);
+			gameWindow.draw(*items[it.first->ID]);
 		}
 	}
 	for (int i = 0; i < 40; i++) {
@@ -179,13 +178,14 @@ void Inventory::displayInventory(RenderWindow& gameWindow)
 
 }
 
-void Inventory::displayQInventory(RenderWindow& gameWindow)
+void Inventory::displayQInventory(RenderWindow& gameWindow, map <IDs, Item*>& items)
 {
 	updateQInventory(gameWindow);
 	gameWindow.draw(qInvSprite);
 	for (int i = 0; i <= 9; i++) {
 		if (inv_vector[i].first != nullptr) {
-			gameWindow.draw(*inv_vector[i].first);
+			items[inv_vector[i].first->ID]->setPosition(inv_vector[i].first->rect.left, inv_vector[i].first->rect.top);
+			gameWindow.draw(*items[inv_vector[i].first->ID]);
 		}
 	}
 	for (int i = 0; i <= 9; i++) {
@@ -229,10 +229,10 @@ void Inventory::displayInventorySelected(RenderWindow& gameWindow)
 	}
 }
 
-bool Inventory::isInventoryFull(int id)
+bool Inventory::isInventoryFull(int id, map <IDs, Item*>& items)
 {
 	for (auto& el : inv_vector) {
-		if (el.first == nullptr || (el.first != nullptr && el.second < el.first->getStackingQuantity() && el.first->getID() == id)) {
+		if (el.first == nullptr || (el.first != nullptr && el.second < items[el.first->ID]->getStackingQuantity() && el.first->ID == id)) {
 			return false;
 		}
 	}

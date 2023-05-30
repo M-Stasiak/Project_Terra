@@ -17,21 +17,31 @@ class Item : public Sprite
 {
 private:
     item_type type;
-    sf::FloatRect nextPosition;
-    Vector2f origin;
-    sf::Vector2f velocity;
-
-protected:
-    
 
 public:
     Item();
     virtual void nothing() = 0;
-    void GravityUpdate(float elapsed, float gravity);
-    void CheckCollisions(const sf::FloatRect* arg);
-    void goToPlayer(Vector2f playerPosition);
     virtual int getID()=0;
     virtual int getStackingQuantity() = 0;
 
 };
+
+class I
+{
+public:
+    IDs ID;
+    sf::FloatRect rect;
+    sf::Vector2f velocity;
+    I() {}
+    I(IDs id, sf::FloatRect r)
+    {
+        ID = id;
+        rect = r;
+    }
+
+};
+
+void CheckCollisions(I& item, const sf::FloatRect* arg);
+void GravityUpdate(I& item, float elapsed, float gravity);
+void goToPlayer(I& item, Vector2f playerPosition);
 

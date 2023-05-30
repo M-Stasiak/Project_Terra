@@ -134,18 +134,21 @@ GameWorld::GameWorld()
 	//world = rotateMap(world);
 }
 
-void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Vector2f pos)
+void GameWorld::dropItem(IDs id, Vector2f pos)
 {
 	if (id != 0){
-	items_on_ground.emplace_back(new Block_Item(arg1, arg2, id, pos));
+	items_on_ground.emplace_back(new I(id, FloatRect(pos.x, pos.y, 8, 8)));
 	}
 	
 }
 
-void GameWorld::drawItemsOnGround(RenderWindow& gameWindow)
+void GameWorld::drawItemsOnGround(RenderWindow& gameWindow, map <IDs, Item*>& items, Vector2f playerPosition, int renderWidth, int renderHeight)
 {
 	for (auto &&item : items_on_ground) {
-			gameWindow.draw(*item);
-		
+		if (item->rect.left > playerPosition.x - renderWidth * 16 and item->rect.left < playerPosition.x + renderWidth * 16 and item->rect.top > playerPosition.y - renderHeight * 16 and item->rect.top < playerPosition.y + renderHeight * 16)
+		{
+			items[item->ID]->setPosition(item->rect.left, item->rect.top);
+			gameWindow.draw(*items[item->ID]);
+		}
 	}
 }

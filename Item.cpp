@@ -1,16 +1,16 @@
 #include "Item.h"
 
-Item::Item() {
-    velocity.x = 0;
-    velocity.y = 0;
-}
-void Item::CheckCollisions(const sf::FloatRect* arg)
+Item::Item() 
 {
-    FloatRect itemBounds = getGlobalBounds();
+
+}
+void CheckCollisions(I& item, const sf::FloatRect* arg)
+{
+    FloatRect itemBounds = item.rect;
     FloatRect argBounds = *arg;
-    nextPosition = itemBounds;
-    nextPosition.left += velocity.x;
-    nextPosition.top += velocity.y;
+    sf::FloatRect nextPosition = itemBounds;
+    nextPosition.left += item.velocity.x;
+    nextPosition.top += item.velocity.y;
 
     if (argBounds.intersects(nextPosition))
     {
@@ -20,8 +20,9 @@ void Item::CheckCollisions(const sf::FloatRect* arg)
             and itemBounds.left < argBounds.left + argBounds.width
             and itemBounds.left + itemBounds.width > argBounds.left)
         {
-            velocity.y = 0;
-            setPosition(itemBounds.left + origin.x, argBounds.top - itemBounds.height + origin.y);
+            item.velocity.y = 0;
+            item.rect.left = itemBounds.left;
+            item.rect.top = argBounds.top - itemBounds.height;
         }
 
         // Top collision
@@ -30,8 +31,9 @@ void Item::CheckCollisions(const sf::FloatRect* arg)
             and itemBounds.left < argBounds.left + argBounds.width
             and itemBounds.left + itemBounds.width > argBounds.left)
         {
-            velocity.y = 0;
-            setPosition(itemBounds.left + origin.x, argBounds.top + argBounds.height + origin.y);
+            item.velocity.y = 0;
+            item.rect.left = itemBounds.left;
+            item.rect.top = argBounds.top + argBounds.height;
         }
 
         // Right collision
@@ -40,8 +42,9 @@ void Item::CheckCollisions(const sf::FloatRect* arg)
             and itemBounds.top < argBounds.top + argBounds.height
             and itemBounds.top + itemBounds.height > argBounds.top)
         {
-            velocity.x = 0;
-            setPosition(argBounds.left - itemBounds.width + origin.x, itemBounds.top + origin.y);
+            item.velocity.x = 0;
+            item.rect.left = argBounds.left - itemBounds.width;
+            item.rect.top = itemBounds.top;
         }
 
         // Left collision
@@ -50,22 +53,23 @@ void Item::CheckCollisions(const sf::FloatRect* arg)
             and itemBounds.top < argBounds.top + argBounds.height
             and itemBounds.top + itemBounds.height > argBounds.top)
         {
-            velocity.x = 0;
-            setPosition(argBounds.left + argBounds.width + origin.x, itemBounds.top + origin.y);
+            item.velocity.x = 0;
+            item.rect.left = argBounds.left + argBounds.width;
+            item.rect.top = itemBounds.top;
         }
     }
 }
 
-void Item::goToPlayer(Vector2f playerPosition)
+void GravityUpdate(I& item, float elapsed, float gravity)
 {
-    velocity.x = (playerPosition.x - getPosition().x)/5;
-    velocity.y = (playerPosition.y - getPosition().y)/5;
-    move(velocity);
+    item.velocity.y += gravity * elapsed;
+    item.rect.top += item.velocity.y;
 }
 
-void Item::GravityUpdate(float elapsed, float gravity)
+void goToPlayer(I& item, Vector2f playerPosition)
 {
-   
-    velocity.y += gravity * elapsed;
-    move(velocity);
+    item.velocity.x = (playerPosition.x - item.rect.left) / 5;
+    item.velocity.y = (playerPosition.y - item.rect.top) / 5;
+    item.rect.left += item.velocity.x;
+    item.rect.top += item.velocity.y;
 }
