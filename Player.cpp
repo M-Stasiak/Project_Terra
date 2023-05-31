@@ -6,9 +6,9 @@ Player::Player()
 {
 	blockDestroyed = false;
 	Texture entityTexture;
-	entityTexture.loadFromFile("Textures/adventurer.png");
-	setEntity(entityTexture, { {4, 0, 0, 50, 37}, {6, 50, 37, 50, 37} });
-	origin.x = 25; origin.y = 18.5;
+	entityTexture.loadFromFile("Textures/Entities/CharacterSpriteSheet.png");
+	setEntity(entityTexture, { {8, 1344, 0, 64, 64}, {8, 5824, 0, 64, 64}, {16, 16, -32, -32} });
+	origin.x = 16; origin.y = 16;
 	setOrigin(origin);
 	playerReach = new FloatRect(0, 0, 150, 150);
 	playerPickUpRange = new FloatRect(0, 0, 100, 100);

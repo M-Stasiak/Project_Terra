@@ -18,7 +18,7 @@ private:
     void ChangeFrame();
 
 public:
-    Animation(sf::Texture _texture, std::vector<int> options);
+    Animation(sf::Texture _texture, std::vector<int> options, std::vector<int> extraOptions = {0,0,0,0});
     void ApplyToSprite(sf::Sprite* s);
     void Update(float elapsed);
 };

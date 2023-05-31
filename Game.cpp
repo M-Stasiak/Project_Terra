@@ -155,7 +155,8 @@ void Game::dispGame()
 				
 				for (auto& item : world.items_on_ground)
 				{
-					if (item != nullptr) {
+					if (item != nullptr and (item->getPosition().x > player.getPosition().x - renderWidth * 16 and item->getPosition().x < player.getPosition().x + renderWidth * 16 and item->getPosition().y > player.getPosition().y - renderHeight * 16 and item->getPosition().y < player.getPosition().y + renderHeight * 16))
+					{
 						player.updatePickUpRange();
 						if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange()) && inventory->isInventoryFull(item->getID()) == false) {
 							item->goToPlayer(player.getPosition());
@@ -203,7 +204,7 @@ void Game::dispGame()
 						}
 					}
 				}
-				world.drawItemsOnGround(gameWindow);
+				world.drawItemsOnGround(gameWindow, player.getPosition(), renderWidth, renderHeight);
 
 				rectangle.setFillColor(sf::Color::Transparent);
 				rectangle.setOutlineThickness(1);

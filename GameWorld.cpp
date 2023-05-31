@@ -142,10 +142,13 @@ void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Block*
 	
 }
 
-void GameWorld::drawItemsOnGround(RenderWindow& gameWindow)
+void GameWorld::drawItemsOnGround(RenderWindow& gameWindow, Vector2f playerPosition, int renderWidth, int renderHeight)
 {
 	for (auto &&item : items_on_ground) {
+		if (item->getPosition().x > playerPosition.x - renderWidth * 16 and item->getPosition().x < playerPosition.x + renderWidth * 16 and item->getPosition().y > playerPosition.y - renderHeight * 16 and item->getPosition().y < playerPosition.y + renderHeight * 16)
+		{
 			gameWindow.draw(*item);
+		}
 		
 	}
 }

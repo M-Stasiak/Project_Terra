@@ -25,8 +25,10 @@ private:
     void setEntityView();
 
 protected:
+    int health = 100, maxHealth = 100;
     float speed = 200;
     float jumpSpeed = 400;
+    float attackTime, holdAttackTime = 2;
     Vector2f origin;
 
 public:
@@ -37,6 +39,8 @@ public:
     void Down(float elapsed);
     void Left(float elapsed);
     void Right(float elapsed);
+    void TakeDamage(int damage);
+    virtual void Attack(float elapsed, Entity& entity);
     virtual void Update(float elapsed);
     View getEntityView();
     

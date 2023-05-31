@@ -21,6 +21,6 @@ public:
 public:
 	GameWorld();
 	void dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Vector2f pos);
-	void drawItemsOnGround(RenderWindow& gameWindow);
+	void drawItemsOnGround(RenderWindow& gameWindow, Vector2f playerPosition, int renderWidth, int renderHeight);
 };
 

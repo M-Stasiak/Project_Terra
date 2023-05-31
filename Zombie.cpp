@@ -3,8 +3,8 @@
 Zombie::Zombie()
 {
 	Texture entityTexture;
-	entityTexture.loadFromFile("Textures/Entities/ZombieSprite.png");
-	setEntity(entityTexture, { {5, 0, 64, 32, 32}, {5, 0, 64, 32, 32} });
+	entityTexture.loadFromFile("Textures/Entities/ZombieSpriteSheet.png");
+	setEntity(entityTexture, { {5, 352, 64, 32, 32}, {10, 0, 64, 32, 32} });
 	origin.x = 16; origin.y = 16;
 	setOrigin(origin);
 	speed = 100;
@@ -26,4 +26,9 @@ void Zombie::UpdateAI(float elapsed, Entity& player, map<int, map<int, B>>& worl
 		Up(elapsed);
 	else if (getScale().x < 0 and world[getPosition().x / 16 - 2][getPosition().y / 16].ID != IDs::AirID)
 		Up(elapsed);
+
+	if (this->getGlobalBounds().intersects(player.getGlobalBounds()))
+	{
+		Attack(elapsed, player);
+	}
 }

@@ -7,8 +7,6 @@
 using namespace sf;
 using namespace std;
 
-
-
 class Block_Item : public Item
 {
 private:

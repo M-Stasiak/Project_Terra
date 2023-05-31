@@ -16,8 +16,8 @@ Entity::Entity(sf::Texture _texture, std::vector<std::vector<int>> options)
     texture = _texture;
     setTexture(texture);
 
-    animations[AnimationName::Idle] = new Animation(texture, options[0]);
-    animations[AnimationName::Walk] = new Animation(texture, options[1]);
+    animations[AnimationName::Idle] = new Animation(texture, options[0], options.size() > 2 ? options[2] : vector<int>{ 0,0,0,0 });
+    animations[AnimationName::Walk] = new Animation(texture, options[1], options.size() > 2 ? options[2] : vector<int>{ 0,0,0,0 });
 }
 
 void Entity::setEntity(sf::Texture _texture, std::vector<std::vector<int>> options)
@@ -25,14 +25,25 @@ void Entity::setEntity(sf::Texture _texture, std::vector<std::vector<int>> optio
     texture = _texture;
     setTexture(texture);
 
-    animations[AnimationName::Idle] = new Animation(texture, options[0]);
-    animations[AnimationName::Walk] = new Animation(texture, options[1]);
+    animations[AnimationName::Idle] = new Animation(texture, options[0], options.size() > 2 ? options[2] : vector<int>{ 0,0,0,0 });
+    animations[AnimationName::Walk] = new Animation(texture, options[1], options.size() > 2 ? options[2] : vector<int>{ 0,0,0,0 });
 }
 
 void Entity::Up(float elapsed) { if (!jumping) { jumping = true; jumpVelocity = -jumpSpeed; } }
 void Entity::Down(float elapsed) { velocity.y += speed * elapsed; }
 void Entity::Left(float elapsed) { setScale({ (float)(-1)*abs(getScale().x), getScale().y }); velocity.x += -speed * elapsed; }
 void Entity::Right(float elapsed) { setScale({ (float)abs(getScale().x), getScale().y }); velocity.x += speed * elapsed; }
+void Entity::Attack(float elapsed, Entity& entity)
+{
+    attackTime += elapsed;
+    if (attackTime > holdAttackTime)
+    {
+        entity.TakeDamage(10);
+        attackTime = 0;
+    }
+}
+
+void Entity::TakeDamage(int damage) { health -= damage; }
 
 void Entity::CheckCollisions(const sf::FloatRect *arg)
 {
@@ -95,6 +106,7 @@ void Entity::GravityUpdate(float elapsed, float gravity)
 
 void Entity::Update(float elapsed)
 {
+    cout << "Health: " << health << " " << maxHealth << endl;
     move(velocity);
     if (getPosition() != lastPosition)
     {
