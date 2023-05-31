@@ -16,11 +16,11 @@ class GameWorld
 {
 public:
 	map<int, map<int, B>> world;
-	vector<unique_ptr<I>> items_on_ground;
+	vector<unique_ptr<Item>> items_on_ground;
 
 public:
 	GameWorld();
-	void dropItem(IDs id, Vector2f pos);
-	void drawItemsOnGround(RenderWindow& gameWindow, map <IDs, Item*>& items, Vector2f playerPosition, int renderWidth, int renderHeight);
+	void dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Vector2f pos);
+	void drawItemsOnGround(RenderWindow& gameWindow);
 };
 

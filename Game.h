@@ -20,7 +20,7 @@ using namespace std;
 class Game
 {
 private:
-	int renderWidth = 32, renderHeight = 19;
+	int renderWidth = 23, renderHeight = 14;
 	//int renderWidth = 3, renderHeight = 3;
 	int collisionsCheckWidth = 3, collisionsCheckHeight = 3;
 	enum class gameMode{mainMenu,pauseMenu,playing,inventory};
