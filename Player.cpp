@@ -30,6 +30,22 @@ void Player::DestroyBlock(map<int, map<int, B>> &world, RenderWindow& gameWindow
 	}
 }
 
+void Player::EmplaceBlock(map<int, map<int, B>>& world, RenderWindow& gameWindow, IDs id)
+{
+	Vector2f worldPos = gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView());
+	if (worldPos.x > playerReach->left && worldPos.x < (playerReach->left + playerReach->width) && worldPos.y > playerReach->top && worldPos.y < playerReach->top + playerReach->height) {
+		if (world[worldPos.x / 16][worldPos.y / 16].ID == IDs::AirID) {
+
+			sf::FloatRect p((int)worldPos.x, (int)worldPos.y, 16,16);
+			B a(id, p);
+			world[worldPos.x / 16][worldPos.y / 16] = a;
+			blockPlaced = true;
+		
+		}
+	}
+
+}
+
 
 void Player::Draw(RenderWindow &gameWindow)
 {
@@ -39,6 +55,7 @@ void Player::Draw(RenderWindow &gameWindow)
 void Player::updateReach()
 {
 	blockDestroyed = false;
+	blockPlaced = false;
 	playerReach->left = getPosition().x - float(playerReach->width / 2) ;
 	playerReach->top = getPosition().y - float(playerReach->height / 2) ;
 
@@ -57,6 +74,11 @@ Vector2f Player::getDestroyedBlockPosition()
 bool Player::isBlockDestroyed()
 {
 	return blockDestroyed;
+}
+
+bool Player::isBlockPlaced()
+{
+	return blockPlaced;
 }
 
 void Player::updatePickUpRange()

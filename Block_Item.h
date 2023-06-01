@@ -15,7 +15,7 @@ private:
 	int stackingQuantity;
 public:
 	Block_Item(map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, IDs id, Vector2f pos);
-	int getID();
+	IDs getID();
 	void nothing() {};
 	int getStackingQuantity();
 };

@@ -6,6 +6,7 @@ void Inventory::initFont(Font& gameFont)
 	for (int i = 0; i < 40; i++) {
 		itemQuantity[i].setFont(gameFont);
 	}
+	mouseItemQuantity.setFont(gameFont);
 }
 
 void Inventory::initTextures()
@@ -93,6 +94,13 @@ void Inventory::updateInventory(RenderWindow& gameWindow)
 	}
 
 	for (int i = 0; i < 40; i++) {
+		if (inv_vector[i].second == 0) {
+			inv_vector[i].first = nullptr;
+
+		}
+		if (inv_vector[i].first == nullptr) {
+			inv_vector[i].second = 0;
+		}
 		if (inv_vector[i].first != nullptr) {
 
 			itemQuantity[i].setScale(0.5, 0.5);
@@ -101,6 +109,20 @@ void Inventory::updateInventory(RenderWindow& gameWindow)
 
 
 		}
+		else { itemQuantity[i].setString(""); }
+	}
+	if (mouseItem.first != nullptr) {
+		Vector2f worldPos = gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView());
+
+		mouseItem.first->setPosition(worldPos.x - float(mouseItem.first->getGlobalBounds().width / 2), worldPos.y - float(mouseItem.first->getGlobalBounds().height / 2));
+		mouseItemQuantity.setScale(0.5, 0.5);
+		mouseItemQuantity.setPosition(worldPos.x-float(mouseItem.first->getGlobalBounds().width/2)+1, worldPos.y - float(mouseItem.first->getGlobalBounds().height / 2)-6);
+		mouseItemQuantity.setString(to_string(mouseItem.second));
+
+
+	}
+	if (mouseItem.second == 0) {
+		mouseItem.first = nullptr;
 	}
 
 
@@ -133,6 +155,12 @@ void Inventory::updateQInventory(RenderWindow& gameWindow)
 	}
 
 	for (int i = 0; i <= 9; i++) {
+		if (inv_vector[i].second == 0) {
+			inv_vector[i].first = nullptr;
+		}
+		if (inv_vector[i].first == nullptr) {
+			inv_vector[i].second = 0;
+		}
 		if (inv_vector[i].first != nullptr) {
 
 			itemQuantity[i].setScale(0.25, 0.25);
@@ -141,7 +169,9 @@ void Inventory::updateQInventory(RenderWindow& gameWindow)
 
 
 		}
+		else { itemQuantity[i].setString(""); }
 	}
+
 }
 
 
@@ -151,12 +181,13 @@ void Inventory::initInventory()
 		inv_vector.emplace_back(nullptr, 0);
 
 	}
-
+	mouseItem.first = nullptr;
+	mouseItem.second = 0;
 }
 
 Inventory::Inventory(RenderWindow& gameWindow, Font& gameFont)
 {
-	selected = 1;
+	qInvSelected = 0;
 	initFont(gameFont);
 	initTextures();
 	initSprites(gameWindow);
@@ -167,14 +198,21 @@ void Inventory::displayInventory(RenderWindow& gameWindow)
 {
 	updateInventory(gameWindow);
 	gameWindow.draw(invSprite);
+	displayInventorySelected(gameWindow);
 
 	for (auto& it : inv_vector) {
 		if (it.first != nullptr) {
 			gameWindow.draw(*it.first);
 		}
 	}
+	
+
 	for (int i = 0; i < 40; i++) {
 		gameWindow.draw(itemQuantity[i]);
+	}
+	if (mouseItem.first != nullptr) {
+		gameWindow.draw(*mouseItem.first);
+		gameWindow.draw(mouseItemQuantity);
 	}
 
 }
@@ -183,6 +221,7 @@ void Inventory::displayQInventory(RenderWindow& gameWindow)
 {
 	updateQInventory(gameWindow);
 	gameWindow.draw(qInvSprite);
+	displayQInventorySelected(gameWindow);
 	for (int i = 0; i <= 9; i++) {
 		if (inv_vector[i].first != nullptr) {
 			gameWindow.draw(*inv_vector[i].first);
@@ -195,22 +234,22 @@ void Inventory::displayQInventory(RenderWindow& gameWindow)
 
 void Inventory::qInvSelect(int selec)
 {
-	selected = selec;
+	qInvSelected = selec;
 }
 
 void Inventory::displayQInventorySelected(RenderWindow& gameWindow)
 {
-	switch (selected) {
-	case(1): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
-	case(2): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) +invSSprite.getLocalBounds().width-1, qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
-	case(3): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 2*(invSSprite.getGlobalBounds().width-1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
-	case(4): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 3* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
-	case(5): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 4* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
-	case(6): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 5* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
-	case(7): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 6* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
-	case(8): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 7* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
-	case(9): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 8* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
-	case(0): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 9 * (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
+	switch (qInvSelected) {
+	case(0): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
+	case(1): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) +invSSprite.getLocalBounds().width-1, qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
+	case(2): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 2*(invSSprite.getGlobalBounds().width-1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
+	case(3): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 3* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
+	case(4): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 4* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
+	case(5): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 5* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
+	case(6): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 6* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
+	case(7): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 7* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
+	case(8): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 8* (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
+	case(9): {invSSprite.setPosition(qInvSprite.getPosition().x + (6 * qInvSprite.getScale().x) + 9 * (invSSprite.getGlobalBounds().width - 1), qInvSprite.getPosition().y + (6 * qInvSprite.getScale().y)); break; }
 	}
 	gameWindow.draw(invSSprite);
 }
@@ -218,12 +257,12 @@ void Inventory::displayQInventorySelected(RenderWindow& gameWindow)
 void Inventory::displayInventorySelected(RenderWindow& gameWindow)
 {
 	Vector2f worldPos = gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow),gameWindow.getView());
-	cout << worldPos.x << endl;
 	for (int i = 0; i < 44; i++) {
 		if (worldPos.x > invSquare[i].left && worldPos.x < (invSquare[i].left + invSquare[i].width) && worldPos.y > invSquare[i].top && worldPos.y < invSquare[i].top + invSquare[i].height) {
 			invSSprite.setScale(invSprite.getScale());
 			invSSprite.setPosition(invSquare[i].left-2, invSquare[i].top-2);
 			gameWindow.draw(invSSprite);
+			invSelected = i;
 		}
 
 	}
@@ -237,4 +276,21 @@ bool Inventory::isInventoryFull(int id)
 		}
 	}
 	return true;
+}
+
+int Inventory::getInventorySelected()
+{
+	return invSelected;
+}
+
+IDs Inventory::getQInventorySelectedID()
+{
+	if (inv_vector[qInvSelected].first != nullptr) {
+		return inv_vector[qInvSelected].first->getID();
+	}
+}
+
+int Inventory::getQInventorySelected()
+{
+	return qInvSelected;
 }

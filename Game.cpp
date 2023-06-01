@@ -109,17 +109,25 @@ void Game::dispGame()
 							currentGameMode = gameMode::inventory;
 						}
 						switch (gameEvent.key.code) {
-						case(Keyboard::Num1): {inventory->qInvSelect(1); break; }
-						case(Keyboard::Num2): {inventory->qInvSelect(2);  break; }
-						case(Keyboard::Num3): { inventory->qInvSelect(3); break; }
-						case(Keyboard::Num4): {inventory->qInvSelect(4); break; }
-						case(Keyboard::Num5): {inventory->qInvSelect(5); break; }
-						case(Keyboard::Num6): { inventory->qInvSelect(6); break; }
-						case(Keyboard::Num7): {inventory->qInvSelect(7); break; }
-						case(Keyboard::Num8): {inventory->qInvSelect(8); break; }
-						case(Keyboard::Num9): {inventory->qInvSelect(9); break; }
-						case(Keyboard::Num0): {inventory->qInvSelect(0); break; }
+						case(Keyboard::Num1): {inventory->qInvSelect(0); break; }
+						case(Keyboard::Num2): {inventory->qInvSelect(1);  break; }
+						case(Keyboard::Num3): { inventory->qInvSelect(2); break; }
+						case(Keyboard::Num4): {inventory->qInvSelect(3); break; }
+						case(Keyboard::Num5): {inventory->qInvSelect(4); break; }
+						case(Keyboard::Num6): { inventory->qInvSelect(5); break; }
+						case(Keyboard::Num7): {inventory->qInvSelect(6); break; }
+						case(Keyboard::Num8): {inventory->qInvSelect(7); break; }
+						case(Keyboard::Num9): {inventory->qInvSelect(8); break; }
+						case(Keyboard::Num0): {inventory->qInvSelect(9); break; }
 
+						}
+					}
+					if (gameEvent.type == sf::Event::MouseButtonPressed) {
+						if (gameEvent.key.code == Mouse::Right) {
+							player.EmplaceBlock(world.world, gameWindow, inventory->getQInventorySelectedID());
+							if (player.isBlockPlaced() == true) {
+								inventory->inv_vector[inventory->getQInventorySelected()].second--;
+							}
 						}
 					}
 				}
@@ -161,36 +169,25 @@ void Game::dispGame()
 						if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange()) && inventory->isInventoryFull(item->getID()) == false) {
 							item->goToPlayer(player.getPosition());
 							if (item->getGlobalBounds().intersects(player.getGlobalBounds())) {
-								for (auto& el : inventory->inv_vector) {
-									if (el.first == nullptr)
-									{
-										el.first.swap(item);
-										el.second++;
-										if (item == nullptr) {
-											auto it = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
-											world.items_on_ground.erase(it);
-										}
-										break;
-									}
-									else if (el.first != nullptr && item->getID() == el.first->getID() && el.second < item->getStackingQuantity()) {
-										el.second++;
-										auto it = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
-										world.items_on_ground.erase(it);
-										break;
-									}
-									/*else {
-										el.first.swap(item);
-										el.second++;
-										if (item == nullptr) {
-											auto it = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
-											world.items_on_ground.erase(it);
-										}
-										break;
-									}*/
+								auto it = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [&item](auto& el) {return el.first != nullptr && item->getID() == el.first->getID() && el.second < item->getStackingQuantity(); });
+								if (it != inventory->inv_vector.end()) {
+									it->second++;
+									auto ite = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
+									world.items_on_ground.erase(ite);
 								}
+								else {
+									auto ite1 = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [](auto& el) {return el.first == nullptr; });
+									ite1->first.swap(item);
+									ite1->second++;
+									if (item == nullptr) {
+										auto ite = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
+										world.items_on_ground.erase(ite);
+									}
 
-
+								}
 							}
+								
+						
 						}
 						else {
 							item->GravityUpdate(elapsed.asSeconds(), 5);
@@ -218,7 +215,6 @@ void Game::dispGame()
 				player.updateReach();
 				
 				inventory->displayQInventory(gameWindow);
-				inventory->displayQInventorySelected(gameWindow);
 			}
 			else if (currentGameMode == gameMode::pauseMenu) {
 				gameWindow.clear();
@@ -280,7 +276,6 @@ void Game::dispGame()
 					entity->Draw(gameWindow);
 				}
 				inventory->displayInventory(gameWindow);
-				inventory->displayInventorySelected(gameWindow);
 				if (gameWindow.pollEvent(gameEvent)) {
 					if (gameEvent.type == sf::Event::KeyPressed) {
 						if (gameEvent.key.code == Keyboard::E) {
@@ -288,6 +283,34 @@ void Game::dispGame()
 						}
 						if (gameEvent.key.code == Keyboard::Escape) {
 							currentGameMode = gameMode::pauseMenu;
+						}
+					}
+					else if (gameEvent.type == Event::MouseButtonPressed) {
+						if (gameEvent.key.code == Mouse::Left) {
+							if (inventory->mouseItem.first == nullptr || inventory->inv_vector[inventory->getInventorySelected()].first == nullptr) {
+								inventory->mouseItem.swap(inventory->inv_vector[inventory->getInventorySelected()]);
+							}
+							else if (inventory->mouseItem.first != nullptr && inventory->inv_vector[inventory->getInventorySelected()].first != nullptr) {
+
+								if (inventory->mouseItem.first->getID() != inventory->inv_vector[inventory->getInventorySelected()].first->getID()) {
+									inventory->mouseItem.swap(inventory->inv_vector[inventory->getInventorySelected()]);
+								}
+								else if (inventory->mouseItem.first->getID() == inventory->inv_vector[inventory->getInventorySelected()].first->getID()) {
+									if (inventory->mouseItem.second + inventory->inv_vector[inventory->getInventorySelected()].second < inventory->mouseItem.first->getStackingQuantity()) {
+										inventory->inv_vector[inventory->getInventorySelected()].second += inventory->mouseItem.second;
+										inventory->mouseItem.second -= inventory->mouseItem.second;
+									}
+									else {
+										int difference = inventory->mouseItem.first->getStackingQuantity() - inventory->inv_vector[inventory->getInventorySelected()].second;
+										if (difference > 0) {
+											inventory->inv_vector[inventory->getInventorySelected()].second += difference;
+											inventory->mouseItem.second -= difference;
+										}
+										else { inventory->mouseItem.swap(inventory->inv_vector[inventory->getInventorySelected()]); }
+
+									}
+								}
+							}
 						}
 					}
 				}

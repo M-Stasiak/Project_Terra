@@ -30,7 +30,7 @@ public:
     void GravityUpdate(float elapsed, float gravity);
     void CheckCollisions(const sf::FloatRect* arg);
     void goToPlayer(Vector2f playerPosition);
-    virtual int getID()=0;
+    virtual IDs getID()=0;
     virtual int getStackingQuantity() = 0;
 
 };

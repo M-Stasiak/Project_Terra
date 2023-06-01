@@ -15,7 +15,7 @@ int Block_Item::getStackingQuantity()
 	return stackingQuantity;
 }
 
-int Block_Item::getID()
+IDs Block_Item::getID()
 {
 	return ID;
 }

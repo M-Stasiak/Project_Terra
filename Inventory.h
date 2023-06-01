@@ -16,9 +16,10 @@ class Inventory
 	Sprite invSSprite;
 	FloatRect invSquare[44];
 	Text itemQuantity[40];
+	Text mouseItemQuantity;
 	
-	int selected;
-	bool invSelected;
+	int qInvSelected;
+	int invSelected;
 
 	void initFont(Font& gameFont);
 	void initTextures();
@@ -30,6 +31,7 @@ class Inventory
 
  public:
 	 vector<pair<unique_ptr<Item>, int>> inv_vector;
+	 pair<unique_ptr<Item>, int> mouseItem;
 	 Inventory(RenderWindow& gameWindow, Font& gameFont);
 	 void displayInventory(RenderWindow& gameWindow);
 	 void displayQInventory(RenderWindow& gameWindow);
@@ -37,5 +39,8 @@ class Inventory
 	 void displayQInventorySelected(RenderWindow& gameWindow);
 	 void displayInventorySelected(RenderWindow& gameWindow);
 	 bool isInventoryFull(int id);
+	 int getInventorySelected();
+	 IDs getQInventorySelectedID();
+	 int getQInventorySelected();
 };
 

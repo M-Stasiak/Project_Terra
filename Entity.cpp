@@ -106,7 +106,7 @@ void Entity::GravityUpdate(float elapsed, float gravity)
 
 void Entity::Update(float elapsed)
 {
-    cout << "Health: " << health << " " << maxHealth << endl;
+    //cout << "Health: " << health << " " << maxHealth << endl;
     move(velocity);
     if (getPosition() != lastPosition)
     {
