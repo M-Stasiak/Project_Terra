@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include "Animation.h"
+#include "HealthBar.h"
 
 enum AnimationName
 {
@@ -30,6 +31,7 @@ protected:
     float jumpSpeed = 400;
     float attackTime, holdAttackTime = 2;
     Vector2f origin;
+    HealthBar healthBar;
 
 public:
     Entity();

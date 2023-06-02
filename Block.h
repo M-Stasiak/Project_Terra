@@ -14,7 +14,9 @@ enum IDs
 	LeavesID,
 	CactusID,
 	SandID,
-	ChestID
+	ChestID,
+
+	WeaponID
 };
 
 class Block : public sf::Sprite

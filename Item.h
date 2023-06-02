@@ -3,6 +3,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include "Block.h";
+#include "Entity.h"
 #include <iostream>
 
 using namespace sf;
@@ -16,22 +17,28 @@ enum item_type {
 class Item : public Sprite
 {
 private:
-    item_type type;
     sf::FloatRect nextPosition;
-    Vector2f origin;
     sf::Vector2f velocity;
 
 protected:
-    
+    IDs ID;
+    Vector2f origin;
+    int stackingQuantity, step = 0, nSteps;
+    bool isUsing = false, tymczasowa_zmienna = true;
 
 public:
+    item_type type;
+
     Item();
     virtual void nothing() = 0;
     void GravityUpdate(float elapsed, float gravity);
     void CheckCollisions(const sf::FloatRect* arg);
     void goToPlayer(Vector2f playerPosition);
-    virtual IDs getID()=0;
-    virtual int getStackingQuantity() = 0;
+    int getStackingQuantity();
+    IDs getID() { return ID; };
+    item_type getItemType() { return type; };
+    virtual void Update(float elapsed, Entity& entity, vector<Entity*>& entities) = 0;
+    virtual void Use() = 0;
 
 };
 

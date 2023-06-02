@@ -69,3 +69,8 @@ void Item::GravityUpdate(float elapsed, float gravity)
     velocity.y += gravity * elapsed;
     move(velocity);
 }
+
+int Item::getStackingQuantity()
+{
+    return stackingQuantity;
+}

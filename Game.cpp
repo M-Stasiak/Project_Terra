@@ -48,7 +48,11 @@ void Game::dispGame()
 	prepareBlocksMap(Blocks, Textures);
 	Background background;
 
+	Weapon miecz;
+	miecz.setPosition(100, 100);
+
 	GameWorld world;
+	world.items_on_ground.emplace_back(&miecz);
 	Clock clock;
 	while (gameWindow.isOpen()) {
 		
@@ -90,12 +94,17 @@ void Game::dispGame()
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) player.Left(0.02);
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) player.Right(0.02);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					player.DestroyBlock(world.world, gameWindow);
-					if (player.isBlockDestroyed() == true) {
-						world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), Textures, Blocks, player.getDestroyedBlockPosition());
+					if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool)
+					{
+						inventory->inv_vector[inventory->getQInventorySelected()].first->Use();
 					}
-					
-
+					else
+					{
+						player.DestroyBlock(world.world, gameWindow);
+						if (player.isBlockDestroyed() == true) {
+							world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), Textures, Blocks, player.getDestroyedBlockPosition());
+						}
+					}
 				}
 				if (gameWindow.pollEvent(gameEvent)) {
 
@@ -124,9 +133,15 @@ void Game::dispGame()
 					}
 					if (gameEvent.type == sf::Event::MouseButtonPressed) {
 						if (gameEvent.key.code == Mouse::Right) {
-							player.EmplaceBlock(world.world, gameWindow, inventory->getQInventorySelectedID());
-							if (player.isBlockPlaced() == true) {
-								inventory->inv_vector[inventory->getQInventorySelected()].second--;
+							if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr)
+							{
+								if (inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::block)
+								{
+									player.EmplaceBlock(world.world, gameWindow, inventory->getQInventorySelectedID());
+									if (player.isBlockPlaced() == true) {
+										inventory->inv_vector[inventory->getQInventorySelected()].second--;
+									}
+								}
 							}
 						}
 					}
@@ -159,6 +174,11 @@ void Game::dispGame()
 					}
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
+				}
+				if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool)
+				{
+					inventory->inv_vector[inventory->getQInventorySelected()].first->Update(elapsed.asSeconds(), player, entities);
+					gameWindow.draw(*inventory->inv_vector[inventory->getQInventorySelected()].first);
 				}
 				
 				for (auto& item : world.items_on_ground)
@@ -208,7 +228,7 @@ void Game::dispGame()
 				rectangle.setOutlineColor(Color::White);
 				rectangle.setPosition(player.getGlobalBounds().left, player.getGlobalBounds().top);
 				rectangle.setSize(Vector2f(player.getGlobalBounds().width, player.getGlobalBounds().height));
-				gameWindow.draw(rectangle);
+				//gameWindow.draw(rectangle);
 				
 				
 				

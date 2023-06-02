@@ -13,6 +13,7 @@ Zombie::Zombie()
 void Zombie::Draw(RenderWindow& gameWindow)
 {
 	gameWindow.draw(*this);
+	healthBar.Draw(gameWindow, health, this->getGlobalBounds());
 }
 
 void Zombie::UpdateAI(float elapsed, Entity& player, map<int, map<int, B>>& world)

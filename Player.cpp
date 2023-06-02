@@ -19,7 +19,7 @@ void Player::DestroyBlock(map<int, map<int, B>> &world, RenderWindow& gameWindow
 	Vector2f worldPos = gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView());
 	if (worldPos.x > playerReach->left && worldPos.x < (playerReach->left + playerReach->width) && worldPos.y > playerReach->top && worldPos.y < playerReach->top + playerReach->height) {
 		if (world[worldPos.x / 16][worldPos.y / 16].ID != IDs::AirID) {
-			sf::FloatRect p((int)worldPos.x, (int)worldPos.y, 0, 0);
+			sf::FloatRect p(int(worldPos.x / 16) * 16, int(worldPos.y / 16) * 16, 0, 0);
 			B a(IDs::AirID, p);
 			destroyedBlockID = world[worldPos.x / 16][worldPos.y / 16].ID;
 			destroyedBlockPosition.x = world[worldPos.x / 16][worldPos.y / 16].rect.left;
@@ -36,7 +36,7 @@ void Player::EmplaceBlock(map<int, map<int, B>>& world, RenderWindow& gameWindow
 	if (worldPos.x > playerReach->left && worldPos.x < (playerReach->left + playerReach->width) && worldPos.y > playerReach->top && worldPos.y < playerReach->top + playerReach->height) {
 		if (world[worldPos.x / 16][worldPos.y / 16].ID == IDs::AirID) {
 
-			sf::FloatRect p((int)worldPos.x, (int)worldPos.y, 16,16);
+			sf::FloatRect p(int(worldPos.x / 16) * 16, int(worldPos.y / 16) * 16, 16, 16);
 			B a(id, p);
 			world[worldPos.x / 16][worldPos.y / 16] = a;
 			blockPlaced = true;
@@ -50,6 +50,7 @@ void Player::EmplaceBlock(map<int, map<int, B>>& world, RenderWindow& gameWindow
 void Player::Draw(RenderWindow &gameWindow)
 {
 	gameWindow.draw(*this);
+	healthBar.Draw(gameWindow, health, this->getGlobalBounds());
 }
 
 void Player::updateReach()

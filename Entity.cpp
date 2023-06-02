@@ -15,6 +15,7 @@ Entity::Entity(sf::Texture _texture, std::vector<std::vector<int>> options)
 {
     texture = _texture;
     setTexture(texture);
+    healthBar.setHealthBar(health, maxHealth);
 
     animations[AnimationName::Idle] = new Animation(texture, options[0], options.size() > 2 ? options[2] : vector<int>{ 0,0,0,0 });
     animations[AnimationName::Walk] = new Animation(texture, options[1], options.size() > 2 ? options[2] : vector<int>{ 0,0,0,0 });
@@ -24,6 +25,7 @@ void Entity::setEntity(sf::Texture _texture, std::vector<std::vector<int>> optio
 {
     texture = _texture;
     setTexture(texture);
+    healthBar.setHealthBar(health, maxHealth);
 
     animations[AnimationName::Idle] = new Animation(texture, options[0], options.size() > 2 ? options[2] : vector<int>{ 0,0,0,0 });
     animations[AnimationName::Walk] = new Animation(texture, options[1], options.size() > 2 ? options[2] : vector<int>{ 0,0,0,0 });
