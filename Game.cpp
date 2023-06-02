@@ -28,7 +28,6 @@ Game::Game()
 	initFont();
 	mainMenu = new MainMenu(gameFont, gameWindow);
 	pauseMenu = new PauseMenu(gameFont, gameWindow);
-	inventory = new Inventory(gameWindow, gameFont);
 	currentGameMode = gameMode::mainMenu;
 	
 }
@@ -46,13 +45,14 @@ void Game::dispGame()
 	map <IDs, Block*> Blocks;
 	prepareTextures(Textures);
 	prepareBlocksMap(Blocks, Textures);
+	inventory = new Inventory(gameWindow, gameFont,Textures,Blocks);
 	Background background;
 
 	Weapon miecz;
 	miecz.setPosition(100, 100);
 
 	GameWorld world;
-	world.items_on_ground.emplace_back(&miecz);
+	//world.items_on_ground.emplace_back(&miecz);
 	Clock clock;
 	while (gameWindow.isOpen()) {
 		
@@ -295,7 +295,7 @@ void Game::dispGame()
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 				}
-				inventory->displayInventory(gameWindow);
+				inventory->displayInventory(gameWindow,Textures);
 				if (gameWindow.pollEvent(gameEvent)) {
 					if (gameEvent.type == sf::Event::KeyPressed) {
 						if (gameEvent.key.code == Keyboard::E) {
@@ -330,6 +330,9 @@ void Game::dispGame()
 
 									}
 								}
+							}
+							if (inventory->isMouseOnCrafitng() == true) {
+								inventory->setCraftSelected(inventory->getMouseOnCraft());
 							}
 						}
 					}

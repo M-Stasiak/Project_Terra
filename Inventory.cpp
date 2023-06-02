@@ -7,6 +7,7 @@ void Inventory::initFont(Font& gameFont)
 		itemQuantity[i].setFont(gameFont);
 	}
 	mouseItemQuantity.setFont(gameFont);
+	craftingItemQuantity.setFont(gameFont);
 }
 
 void Inventory::initTextures()
@@ -14,6 +15,7 @@ void Inventory::initTextures()
 	if (!invTexture.loadFromFile("Textures/inventory.png")) { cout << "No texture found" << endl; }
 	if (!qInvTexture.loadFromFile("Textures/qInventory.png")) { cout << "No texture found" << endl; }
 	if (!invSTexture.loadFromFile("Textures/inventorySelect.png")) { cout << "No texture found" << endl; }
+	if (!craftingSlotTexture.loadFromFile("Textures/Inventory_Slot.png")) { cout << "No texture found" << endl; }
 }
 
 void Inventory::initSprites(RenderWindow& gameWindow)
@@ -24,6 +26,8 @@ void Inventory::initSprites(RenderWindow& gameWindow)
 	qInvSprite.setScale(1, 1);
 	invSSprite.setTexture(invSTexture);
 	invSSprite.setScale(invSprite.getScale());
+	craftingSelectedSprite.setTexture(invSTexture);
+	craftingSelectedSprite.setScale(3, 3);
 }
 
 
@@ -31,7 +35,7 @@ void Inventory::initSprites(RenderWindow& gameWindow)
 void Inventory::updateInventory(RenderWindow& gameWindow)
 {
 
-
+	mouseOnCrafting = false;
 	invSprite.setPosition(gameWindow.getView().getCenter().x - (invSprite.getScale().x * 101.f), gameWindow.getView().getCenter().y - (invSprite.getScale().x * 68.f));
 	/*invSquare[40].top = invSprite.getPosition().y + 12 + 2;
 	invSquare[40].left = invSprite.getPosition().x + 12 + 2;
@@ -125,6 +129,26 @@ void Inventory::updateInventory(RenderWindow& gameWindow)
 		mouseItem.first = nullptr;
 	}
 
+	craftingSelectedSprite.setPosition(invSprite.getPosition().x + 530, invSprite.getPosition().y + 100);
+
+	itemsToCraft[craftSelected]->setPosition(craftingSelectedSprite.getPosition().x + 10, craftingSelectedSprite.getPosition().y + 10);
+
+	for (int i = craftSelected-1; i >= 0; i--) {
+		itemsToCraft[i]->setPosition(craftingSelectedSprite.getPosition().x+10, craftingSelectedSprite.getPosition().y+10 - ((craftSelected - i) * (craftingSelectedSprite.getGlobalBounds().height-3)));
+	}
+	for (int i = craftSelected + 1; i<itemsToCraft.size(); i++) {
+		itemsToCraft[i]->setPosition(craftingSelectedSprite.getPosition().x + 10, craftingSelectedSprite.getPosition().y+10 + ((i-craftSelected) * (craftingSelectedSprite.getGlobalBounds().height-3)));
+	}
+	for (int i = 0; i < slotSprites.size(); i++) {
+		slotSprites[i]->setPosition(itemsToCraft[i]->getPosition().x - 10, itemsToCraft[i]->getPosition().y - 10);
+
+	}
+
+	for (int i = 0; i < slotSprites.size(); i++) {
+		itemsToCraft[i]->setColor(itemsToCraft[craftSelected]->getColor());
+		slotSprites[i]->setColor(itemsToCraft[craftSelected]->getColor());
+	}
+
 
 }
 
@@ -175,7 +199,7 @@ void Inventory::updateQInventory(RenderWindow& gameWindow)
 }
 
 
-void Inventory::initInventory()
+void Inventory::initInventory(map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2)
 {
 	for (int i = 1; i <= 44;i++) {
 		inv_vector.emplace_back(nullptr, 0);
@@ -183,18 +207,48 @@ void Inventory::initInventory()
 	}
 	mouseItem.first = nullptr;
 	mouseItem.second = 0;
+
+	itemsToCraft.emplace_back(new Block_Item(arg1,arg2,IDs::GrassID,craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::DirtID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::RockID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::WoodID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::PlankID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::LeavesID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::CactusID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::SandID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::ChestID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::RockID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::ChestID, craftingSelectedSprite.getPosition()));
+
+	for (int i = 0; i < itemsToCraft.size(); i++) {
+		slotSprites.emplace_back(new Sprite);
+		slotSprites[i]->setTexture(craftingSlotTexture);
+	}
 }
 
-Inventory::Inventory(RenderWindow& gameWindow, Font& gameFont)
+void Inventory::craftSelect(RenderWindow& gameWindow)
+{
+	Vector2f worldPos = gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView());
+	for (int i = 0; i <itemsToCraft.size(); i++) {
+		if (worldPos.x > itemsToCraft[i]->getGlobalBounds().left && worldPos.x < (itemsToCraft[i]->getGlobalBounds().left + itemsToCraft[i]->getGlobalBounds().width) && worldPos.y > itemsToCraft[i]->getGlobalBounds().top && worldPos.y < itemsToCraft[i]->getGlobalBounds().top + itemsToCraft[i]->getGlobalBounds().height) {
+			mouseOnCraft = i;
+			mouseOnCrafting = true;
+		}
+
+	}
+}
+
+Inventory::Inventory(RenderWindow& gameWindow, Font& gameFont, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2)
 {
 	qInvSelected = 0;
+	craftSelected = 0;
 	initFont(gameFont);
 	initTextures();
 	initSprites(gameWindow);
-	initInventory();
+	initInventory(arg1,arg2);
 }
 
-void Inventory::displayInventory(RenderWindow& gameWindow)
+void Inventory::displayInventory(RenderWindow& gameWindow, map <IDs, sf::Texture*>& arg)
 {
 	updateInventory(gameWindow);
 	gameWindow.draw(invSprite);
@@ -213,7 +267,40 @@ void Inventory::displayInventory(RenderWindow& gameWindow)
 	if (mouseItem.first != nullptr) {
 		gameWindow.draw(*mouseItem.first);
 		gameWindow.draw(mouseItemQuantity);
+
+		
 	}
+	for (int i = 0; i < slotSprites.size(); i++) {
+		slotSprites[i]->setScale(3, 3);
+		if (itemsToCraft[i]->getPosition().y <= craftingSelectedSprite.getPosition().y + 10 - (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
+			slotSprites[i]->setColor(Color(0, 0, 0, 0));
+		}
+		if (itemsToCraft[i]->getPosition().y >= craftingSelectedSprite.getPosition().y + 10 + (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
+			slotSprites[i]->setColor(Color(0, 0, 0, 0));
+		}
+		
+		gameWindow.draw(*slotSprites[i]);
+
+	}
+	
+
+	for (int i = 0; i < itemsToCraft.size(); i++) {
+		itemsToCraft[i]->setScale(2.5, 2.5);
+		if (itemsToCraft[i]->getPosition().y <= craftingSelectedSprite.getPosition().y + 10 - (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
+			itemsToCraft[i]->setColor(Color(0, 0, 0, 0));
+		}
+		if (itemsToCraft[i]->getPosition().y >= craftingSelectedSprite.getPosition().y + 10 + (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
+			itemsToCraft[i]->setColor(Color(0, 0, 0, 0));
+		}
+		
+		gameWindow.draw(*itemsToCraft[i]);
+		
+	}
+	
+	
+
+	gameWindow.draw(craftingSelectedSprite);
+	craftSelect(gameWindow);
 
 }
 
@@ -278,6 +365,7 @@ bool Inventory::isInventoryFull(int id)
 	return true;
 }
 
+
 int Inventory::getInventorySelected()
 {
 	return invSelected;
@@ -293,4 +381,17 @@ IDs Inventory::getQInventorySelectedID()
 int Inventory::getQInventorySelected()
 {
 	return qInvSelected;
+}
+
+int Inventory::getMouseOnCraft() {
+	return mouseOnCraft;
+	
+}
+
+void Inventory::setCraftSelected(int s) {
+	craftSelected = s;
+}
+
+bool Inventory::isMouseOnCrafitng() {
+	return mouseOnCrafting;
 }

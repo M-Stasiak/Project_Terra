@@ -136,7 +136,7 @@ GameWorld::GameWorld()
 
 void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Vector2f pos)
 {
-	if (id != 0){
+	if (id != 0 && id<=9){
 	items_on_ground.emplace_back(new Block_Item(arg1, arg2, id, pos));
 	}
 	

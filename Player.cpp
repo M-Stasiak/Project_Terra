@@ -35,11 +35,12 @@ void Player::EmplaceBlock(map<int, map<int, B>>& world, RenderWindow& gameWindow
 	Vector2f worldPos = gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView());
 	if (worldPos.x > playerReach->left && worldPos.x < (playerReach->left + playerReach->width) && worldPos.y > playerReach->top && worldPos.y < playerReach->top + playerReach->height) {
 		if (world[worldPos.x / 16][worldPos.y / 16].ID == IDs::AirID) {
-
-			sf::FloatRect p(int(worldPos.x / 16) * 16, int(worldPos.y / 16) * 16, 16, 16);
-			B a(id, p);
-			world[worldPos.x / 16][worldPos.y / 16] = a;
-			blockPlaced = true;
+			if (world[(worldPos.x / 16) + 1][worldPos.y / 16].ID != IDs::AirID || world[(worldPos.x / 16) - 1][worldPos.y / 16].ID != IDs::AirID || world[worldPos.x / 16][(worldPos.y / 16) + 1].ID != IDs::AirID || world[worldPos.x / 16][(worldPos.y / 16) - 1].ID != IDs::AirID) {
+				sf::FloatRect p(int(worldPos.x / 16) * 16, int(worldPos.y / 16) * 16, 16, 16);
+				B a(id, p);
+				world[worldPos.x / 16][worldPos.y / 16] = a;
+				blockPlaced = true;
+			}
 		
 		}
 	}
