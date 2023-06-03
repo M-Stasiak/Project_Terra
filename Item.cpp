@@ -63,6 +63,16 @@ void Item::goToPlayer(Vector2f playerPosition)
     move(velocity);
 }
 
+vector<pair<IDs, int>> Item::getItemsRequiredToCraft()
+{
+    return itmsRequiredToCraft;
+}
+
+int Item::getCraftedQuantity()
+{
+    return craftedQuantity;
+}
+
 void Item::GravityUpdate(float elapsed, float gravity)
 {
    

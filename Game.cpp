@@ -10,7 +10,7 @@ void Game::initFont()
 
 void Game::initWindow()
 {
-	gameWindow.create(VideoMode::getDesktopMode(), "Project Terra", Style::Fullscreen);
+	gameWindow.create(VideoMode::getDesktopMode(), "Project Terra", Style::Default);
 	gameWindow.setFramerateLimit(60);
 	gameWindow.setVerticalSyncEnabled(true);
 }
@@ -295,7 +295,7 @@ void Game::dispGame()
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 				}
-				inventory->displayInventory(gameWindow,Textures);
+				inventory->displayInventory(gameWindow);
 				if (gameWindow.pollEvent(gameEvent)) {
 					if (gameEvent.type == sf::Event::KeyPressed) {
 						if (gameEvent.key.code == Keyboard::E) {
@@ -332,7 +332,7 @@ void Game::dispGame()
 								}
 							}
 							if (inventory->isMouseOnCrafitng() == true) {
-								inventory->setCraftSelected(inventory->getMouseOnCraft());
+								inventory->setCraftSelected(inventory->getMouseOnCraft(),Textures,Blocks,gameFont);
 							}
 						}
 					}

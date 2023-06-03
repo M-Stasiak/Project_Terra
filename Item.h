@@ -25,9 +25,13 @@ protected:
     Vector2f origin;
     int stackingQuantity, step = 0, nSteps;
     bool isUsing = false, tymczasowa_zmienna = true;
+    item_type type;
+    vector<pair<IDs, int>> itmsRequiredToCraft;
+    int craftedQuantity;
+
 
 public:
-    item_type type;
+  
 
     Item();
     virtual void nothing() = 0;
@@ -39,6 +43,9 @@ public:
     item_type getItemType() { return type; };
     virtual void Update(float elapsed, Entity& entity, vector<Entity*>& entities) = 0;
     virtual void Use() = 0;
+    vector<pair<IDs, int>> getItemsRequiredToCraft();
+    int getCraftedQuantity();
+
 
 };
 

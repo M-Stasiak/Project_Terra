@@ -10,6 +10,16 @@ Block_Item::Block_Item(map<IDs,Texture*>& arg1, map <IDs, Block*>& arg2, IDs id,
 	setPosition(pos);
 	stackingQuantity = 64;
 	type = item_type::block;
+	if (id == IDs::PlankID) {
+		craftedQuantity = 4;
+		this->itmsRequiredToCraft.emplace_back(IDs::WoodID, 1);
+
+	}
+	if (id == IDs::ChestID) {
+		craftedQuantity = 1;
+		this->itmsRequiredToCraft.emplace_back(IDs::PlankID, 8);
+
+	}
 }
 
 Weapon::Weapon()
