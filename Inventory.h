@@ -46,6 +46,7 @@ class Inventory
 
 
  public:
+	 unique_ptr<Item> selectedItem;
 	 vector<pair<unique_ptr<Item>, int>> inv_vector;
 	 pair<unique_ptr<Item>, int> mouseItem;
 	 vector<unique_ptr<Item>> itemsToCraft;
@@ -62,5 +63,6 @@ class Inventory
 	 int getMouseOnCraft();
 	 void setCraftSelected(int s, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Font& gameFont);
 	 bool isMouseOnCrafitng();
+	 void checkSelectedItem();
 };
 

@@ -477,3 +477,19 @@ void Inventory::setCraftSelected(int s, map <IDs, sf::Texture*>& arg1, map <IDs,
 bool Inventory::isMouseOnCrafitng() {
 	return mouseOnCrafting;
 }
+
+void Inventory::checkSelectedItem()
+{
+	if (inv_vector[qInvSelected].first != nullptr and selectedItem != nullptr and getQInventorySelectedID() != selectedItem->getID())
+	{
+		selectedItem = inv_vector[getQInventorySelected()].first->clone();
+	}
+	else if (inv_vector[qInvSelected].first != nullptr and selectedItem == nullptr)
+	{
+		selectedItem = inv_vector[getQInventorySelected()].first->clone();
+	}
+	else if (inv_vector[qInvSelected].first == nullptr and selectedItem != nullptr)
+	{
+		selectedItem = nullptr;
+	}
+}

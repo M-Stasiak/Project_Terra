@@ -45,7 +45,10 @@ void Entity::Attack(float elapsed, Entity& entity)
     }
 }
 
-void Entity::TakeDamage(int damage) { health -= damage; }
+void Entity::TakeDamage(int damage)
+{
+    health -= damage;
+}
 
 void Entity::CheckCollisions(const sf::FloatRect *arg)
 {

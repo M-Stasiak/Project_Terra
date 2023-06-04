@@ -23,8 +23,8 @@ private:
 protected:
     IDs ID;
     Vector2f origin;
-    int stackingQuantity, step = 0, nSteps;
-    bool isUsing = false, tymczasowa_zmienna = true;
+    int stackingQuantity;
+    bool isUsing = false;
     item_type type;
     vector<pair<IDs, int>> itmsRequiredToCraft;
     int craftedQuantity;
@@ -39,10 +39,12 @@ public:
     void CheckCollisions(const sf::FloatRect* arg);
     void goToPlayer(Vector2f playerPosition);
     int getStackingQuantity();
+    Vector2f getSpecialOrigin() { return origin; };
     IDs getID() { return ID; };
     item_type getItemType() { return type; };
     virtual void Update(float elapsed, Entity& entity, vector<Entity*>& entities) = 0;
     virtual void Use() = 0;
+    virtual unique_ptr<Item> clone() const = 0;
     vector<pair<IDs, int>> getItemsRequiredToCraft();
     int getCraftedQuantity();
 

@@ -48,11 +48,17 @@ void Game::dispGame()
 	inventory = new Inventory(gameWindow, gameFont,Textures,Blocks);
 	Background background;
 
-	Weapon miecz;
-	miecz.setPosition(100, 100);
+	Wooden_Sword sword1;
+	Stone_Sword sword2;
+	Gold_Sword sword3;
+	sword1.setPosition(100, 100);
+	sword2.setPosition(200, 100);
+	sword3.setPosition(300, 100);
 
 	GameWorld world;
-	//world.items_on_ground.emplace_back(&miecz);
+	world.items_on_ground.emplace_back(&sword1);
+	world.items_on_ground.emplace_back(&sword2);
+	world.items_on_ground.emplace_back(&sword3);
 	Clock clock;
 	while (gameWindow.isOpen()) {
 		
@@ -89,14 +95,16 @@ void Game::dispGame()
 			else if (currentGameMode == gameMode::playing)
 			{
 				setGameView();
+				inventory->checkSelectedItem();
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) player.Up(0.02);
 				//if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) player.Down(0.02);
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) player.Left(0.02);
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) player.Right(0.02);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool)
+					if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool)
 					{
-						inventory->inv_vector[inventory->getQInventorySelected()].first->Use();
+						//inventory->inv_vector[inventory->getQInventorySelected()].first->Use();
+						inventory->selectedItem->Use();
 					}
 					else
 					{
@@ -175,10 +183,12 @@ void Game::dispGame()
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 				}
-				if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool)
+				if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool)
 				{
-					inventory->inv_vector[inventory->getQInventorySelected()].first->Update(elapsed.asSeconds(), player, entities);
-					gameWindow.draw(*inventory->inv_vector[inventory->getQInventorySelected()].first);
+					//inventory->inv_vector[inventory->getQInventorySelected()].first->Update(elapsed.asSeconds(), player, entities);
+					//gameWindow.draw(*inventory->inv_vector[inventory->getQInventorySelected()].first);
+					inventory->selectedItem->Update(elapsed.asSeconds(), player, entities);
+					gameWindow.draw(*inventory->selectedItem);
 				}
 				
 				for (auto& item : world.items_on_ground)

@@ -21,7 +21,7 @@ void Item::CheckCollisions(const sf::FloatRect* arg)
             and itemBounds.left + itemBounds.width > argBounds.left)
         {
             velocity.y = 0;
-            setPosition(itemBounds.left + origin.x, argBounds.top - itemBounds.height + origin.y);
+            setPosition(itemBounds.left + getOrigin().x, argBounds.top - itemBounds.height + getOrigin().y);
         }
 
         // Top collision
@@ -31,7 +31,7 @@ void Item::CheckCollisions(const sf::FloatRect* arg)
             and itemBounds.left + itemBounds.width > argBounds.left)
         {
             velocity.y = 0;
-            setPosition(itemBounds.left + origin.x, argBounds.top + argBounds.height + origin.y);
+            setPosition(itemBounds.left + getOrigin().x, argBounds.top + argBounds.height + getOrigin().y);
         }
 
         // Right collision
@@ -41,7 +41,7 @@ void Item::CheckCollisions(const sf::FloatRect* arg)
             and itemBounds.top + itemBounds.height > argBounds.top)
         {
             velocity.x = 0;
-            setPosition(argBounds.left - itemBounds.width + origin.x, itemBounds.top + origin.y);
+            setPosition(argBounds.left - itemBounds.width + getOrigin().x, itemBounds.top + getOrigin().y);
         }
 
         // Left collision
@@ -51,7 +51,7 @@ void Item::CheckCollisions(const sf::FloatRect* arg)
             and itemBounds.top + itemBounds.height > argBounds.top)
         {
             velocity.x = 0;
-            setPosition(argBounds.left + argBounds.width + origin.x, itemBounds.top + origin.y);
+            setPosition(argBounds.left + argBounds.width + getOrigin().x, itemBounds.top + getOrigin().y);
         }
     }
 }
@@ -75,8 +75,10 @@ int Item::getCraftedQuantity()
 
 void Item::GravityUpdate(float elapsed, float gravity)
 {
-   
-    velocity.y += gravity * elapsed;
+    if (velocity.y < 6)
+    {
+        velocity.y += gravity * elapsed;
+    }
     move(velocity);
 }
 

@@ -15,16 +15,59 @@ public:
 	void nothing() {};
 	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
 	void Use() {};
+	unique_ptr<Item> clone() const override {
+		return std::make_unique<Block_Item>(*this);
+	}
+
 };
 
-class Weapon : public Item
+class Sword : public Item
 {
-private:
+protected:
 	set<Entity*> entitiesToTakeDamage;
 public:
-	Weapon();
+	Sword();
 	void nothing() {};
 	void Update(float elapsed, Entity& entity, vector<Entity*>& entities);
 	void Use();
+};
+
+class Wooden_Sword : public Sword
+{
+public:
+	Wooden_Sword();
+	unique_ptr<Item> clone() const override {
+		unique_ptr<Item> result = make_unique<Wooden_Sword>(*this);
+		result->setOrigin(result->getSpecialOrigin());
+		result->setScale(1, 1);
+		return result;
+	}
+
+};
+
+class Stone_Sword : public Sword
+{
+public:
+	Stone_Sword();
+	unique_ptr<Item> clone() const override {
+		unique_ptr<Item> result = make_unique<Stone_Sword>(*this);
+		result->setOrigin(result->getSpecialOrigin());
+		result->setScale(1, 1);
+		return result;
+	}
+
+};
+
+class Gold_Sword : public Sword
+{
+public:
+	Gold_Sword();
+	unique_ptr<Item> clone() const override {
+		unique_ptr<Item> result = make_unique<Gold_Sword>(*this);
+		result->setOrigin(result->getSpecialOrigin());
+		result->setScale(1, 1);
+		return result;
+	}
+
 };
 

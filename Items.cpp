@@ -22,23 +22,16 @@ Block_Item::Block_Item(map<IDs,Texture*>& arg1, map <IDs, Block*>& arg2, IDs id,
 	}
 }
 
-Weapon::Weapon()
+Sword::Sword()
 {
-	Texture* texture = new Texture;
-	texture->loadFromFile("Textures/itemsSpriteSheet.png");
-	setTexture(*texture);
-	setTextureRect(IntRect(16, 336, -16, 16));
-	origin.x = -10; origin.y = 26;
-	setOrigin(origin);
-	type = item_type::tool;
-	nSteps = 2;
+	
 }
 
-void Weapon::Update(float elapsed, Entity& entity, vector<Entity*>& entities)
+void Sword::Update(float elapsed, Entity& entity, vector<Entity*>& entities)
 {
 	setPosition(entity.getPosition().x, entity.getPosition().y);
-	setScale((entity.getScale().x >= 0 ? 1 : -1) * getScale().x, getScale().y);
-	tymczasowa_zmienna = (entity.getScale().x >= 0 ? true : false);
+	if (entity.getScale().x > 0 and getScale().x < 0) setScale(abs(getScale().x), getScale().y);
+	else if (entity.getScale().x < 0 and getScale().x > 0) setScale((-1) * abs(getScale().x), getScale().y);
 
 	if (isUsing)
 	{
@@ -48,7 +41,7 @@ void Weapon::Update(float elapsed, Entity& entity, vector<Entity*>& entities)
 				if (this->getGlobalBounds().intersects(i->getGlobalBounds()))
 					entitiesToTakeDamage.insert(i);
 		}
-		if (tymczasowa_zmienna)
+		if (getScale().x >= 0)
 		{
 			//cout << getRotation() << endl;
 			if (getRotation() > 70 and getRotation() < 150)
@@ -77,13 +70,46 @@ void Weapon::Update(float elapsed, Entity& entity, vector<Entity*>& entities)
 	}
 }
 
-void Weapon::Use()
+void Sword::Use()
 {
 	if (!isUsing)
 	{
-		if (tymczasowa_zmienna) setRotation(-100);
+		if (getScale().x >= 0) setRotation(-100);
 		else setRotation(100);
 		isUsing = true;
 	}
+}
+
+Wooden_Sword::Wooden_Sword()
+{
+	ID = IDs::WoodenSwordID;
+	Texture* texture = new Texture;
+	texture->loadFromFile("Textures/itemsSpriteSheet.png");
+	setTexture(*texture);
+	setTextureRect(IntRect(240, 320, -16, 16));
+	origin.x = -10; origin.y = 26;
+	type = item_type::tool;
+}
+
+Stone_Sword::Stone_Sword()
+{
+	ID = IDs::StoneSwordID;
+	Texture* texture = new Texture;
+	texture->loadFromFile("Textures/itemsSpriteSheet.png");
+	setTexture(*texture);
+	setTextureRect(IntRect(16, 336, -16, 16));
+	origin.x = -10; origin.y = 26;
+	type = item_type::tool;
+}
+
+Gold_Sword::Gold_Sword()
+{
+	ID = IDs::StoneSwordID;
+	Texture* texture = new Texture;
+	texture->loadFromFile("Textures/itemsSpriteSheet.png");
+	setTexture(*texture);
+	setTextureRect(IntRect(32, 336, -16, 16));
+	origin.x = -10; origin.y = 26;
+	type = item_type::tool;
 }
 
