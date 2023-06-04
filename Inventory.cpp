@@ -50,6 +50,7 @@ void Inventory::updateInventory(RenderWindow& gameWindow)
 {
 
 	mouseOnCrafting = false;
+	mouseOnCraft = -1;
 	invSprite.setPosition(gameWindow.getView().getCenter().x - (invSprite.getScale().x * 101.f), gameWindow.getView().getCenter().y - (invSprite.getScale().x * 68.f));
 	/*invSquare[40].top = invSprite.getPosition().y + 12 + 2;
 	invSquare[40].left = invSprite.getPosition().x + 12 + 2;
@@ -264,6 +265,7 @@ void Inventory::initInventory(map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& 
 
 	
 	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::PlankID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::CraftingTableID, craftingSelectedSprite.getPosition()));
 	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::ChestID, craftingSelectedSprite.getPosition()));
 
 	for (int i = 0; i < itemsToCraft.size(); i++) {
@@ -492,4 +494,25 @@ void Inventory::checkSelectedItem()
 	{
 		selectedItem = nullptr;
 	}
+}
+
+bool Inventory::isAbleToCraft()
+{
+	if (mouseOnCraft == craftSelected) {
+		for (auto& ite : itemsToCraft[craftSelected]->getItemsRequiredToCraft()) {
+			auto i = find_if(inv_vector.begin(), inv_vector.end(), [&ite](auto& it) {if (it.first != nullptr) { return ite.first == it.first->getID() && it.second >= ite.second; } });
+			if (i == inv_vector.end()) {
+				return false;
+			}
+		}
+
+
+
+		return true;
+	}
+}
+
+
+int Inventory::getCraftSelected() {
+	return craftSelected;
 }

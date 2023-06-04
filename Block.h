@@ -15,9 +15,11 @@ enum IDs
 	CactusID,
 	SandID,
 	ChestID,
+	CraftingTableID,
 
 	WoodenSwordID,
-	StoneSwordID
+	StoneSwordID,
+	GoldenSwordID
 };
 
 class Block : public sf::Sprite

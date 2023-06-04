@@ -305,6 +305,46 @@ void Game::dispGame()
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 				}
+				for (auto& item : world.items_on_ground)
+				{
+					if (item != nullptr and (item->getPosition().x > player.getPosition().x - renderWidth * 16 and item->getPosition().x < player.getPosition().x + renderWidth * 16 and item->getPosition().y > player.getPosition().y - renderHeight * 16 and item->getPosition().y < player.getPosition().y + renderHeight * 16))
+					{
+						player.updatePickUpRange();
+						if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange()) && inventory->isInventoryFull(item->getID()) == false) {
+							item->goToPlayer(player.getPosition());
+							if (item->getGlobalBounds().intersects(player.getGlobalBounds())) {
+								auto it = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [&item](auto& el) {return el.first != nullptr && item->getID() == el.first->getID() && el.second < item->getStackingQuantity(); });
+								if (it != inventory->inv_vector.end()) {
+									it->second++;
+									auto ite = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
+									world.items_on_ground.erase(ite);
+								}
+								else {
+									auto ite1 = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [](auto& el) {return el.first == nullptr; });
+									ite1->first.swap(item);
+									ite1->second++;
+									if (item == nullptr) {
+										auto ite = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
+										world.items_on_ground.erase(ite);
+									}
+
+								}
+							}
+
+
+						}
+						else {
+							item->GravityUpdate(elapsed.asSeconds(), 5);
+							for (int i = max((int)item->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)item->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
+							{
+								for (int j = max((int)item->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)item->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
+								{
+									item->CheckCollisions(&world.world[i / 16][j / 16].rect);
+								}
+							}
+						}
+					}
+				}
 				inventory->displayInventory(gameWindow);
 				if (gameWindow.pollEvent(gameEvent)) {
 					if (gameEvent.type == sf::Event::KeyPressed) {
@@ -314,6 +354,7 @@ void Game::dispGame()
 						if (gameEvent.key.code == Keyboard::Escape) {
 							currentGameMode = gameMode::pauseMenu;
 						}
+						
 					}
 					else if (gameEvent.type == Event::MouseButtonPressed) {
 						if (gameEvent.key.code == Mouse::Left) {
@@ -343,6 +384,19 @@ void Game::dispGame()
 							}
 							if (inventory->isMouseOnCrafitng() == true) {
 								inventory->setCraftSelected(inventory->getMouseOnCraft(),Textures,Blocks,gameFont);
+										
+							}
+						}
+						else if(gameEvent.key.code == Mouse::Right && inventory->isAbleToCraft() == true)
+							 {
+							for (auto& ite : inventory->itemsToCraft[inventory->getCraftSelected()]->getItemsRequiredToCraft()) {
+								auto i = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [&ite](auto& it) {if (it.first != nullptr) { return ite.first == it.first->getID() && it.second >= ite.second; } });
+								if (i != inventory->inv_vector.end()) {
+									i->second -= ite.second;
+								}
+							}
+							for (int i = 1; i <= inventory->itemsToCraft[inventory->getCraftSelected()]->getCraftedQuantity(); i++) {
+								world.dropItem(inventory->itemsToCraft[inventory->getCraftSelected()]->getID(), Textures, Blocks, player.getPosition());
 							}
 						}
 					}

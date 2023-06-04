@@ -12,6 +12,8 @@ void prepareTextures(std::map <IDs, sf::Texture*> &arg)
 	arg[IDs::LeavesID] = tileset;
 	arg[IDs::CactusID] = tileset;
 	arg[IDs::SandID] = tileset;
+	arg[IDs::CraftingTableID] = tileset;
+
 	sf::Texture* tileset2 = new sf::Texture;
 	tileset2->loadFromFile("Textures/Destructible Objects Sprite Sheet.png");
 	arg[IDs::ChestID] = tileset2;
@@ -28,6 +30,8 @@ void prepareBlocksMap(std::map<IDs, Block*> &arg1, std::map <IDs, sf::Texture*> 
 	arg1[IDs::CactusID] = new Cactus(arg2);
 	arg1[IDs::SandID] = new Sand(arg2);
 	arg1[IDs::ChestID] = new Chest(arg2);
+	arg1[IDs::CraftingTableID] = new CraftingTable(arg2);
+
 }
 
 Grass::Grass(std::map <IDs, sf::Texture*> &arg)
@@ -101,4 +105,13 @@ Chest::Chest(std::map <IDs, sf::Texture*>& arg)
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(24, 727, 17, 16));
 	scale(0.95, 1);
+}
+
+CraftingTable::CraftingTable(std::map<IDs, sf::Texture*>& arg)
+{
+	ID = IDs::CraftingTableID;
+	dropID = IDs::CraftingTableID;
+	setTexture(*arg[ID]);
+	setTextureRect(sf::IntRect(48, 224, 16, 16));
+
 }

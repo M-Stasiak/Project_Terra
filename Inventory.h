@@ -64,5 +64,7 @@ class Inventory
 	 void setCraftSelected(int s, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Font& gameFont);
 	 bool isMouseOnCrafitng();
 	 void checkSelectedItem();
+	 bool isAbleToCraft();
+	 int getCraftSelected();
 };
 

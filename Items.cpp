@@ -20,6 +20,11 @@ Block_Item::Block_Item(map<IDs,Texture*>& arg1, map <IDs, Block*>& arg2, IDs id,
 		this->itmsRequiredToCraft.emplace_back(IDs::PlankID, 8);
 
 	}
+	if (id == IDs::CraftingTableID) {
+		craftedQuantity = 1;
+		this->itmsRequiredToCraft.emplace_back(IDs::PlankID, 4);
+
+	}
 }
 
 Sword::Sword()
@@ -104,7 +109,7 @@ Stone_Sword::Stone_Sword()
 
 Gold_Sword::Gold_Sword()
 {
-	ID = IDs::StoneSwordID;
+	ID = IDs::GoldenSwordID;
 	Texture* texture = new Texture;
 	texture->loadFromFile("Textures/itemsSpriteSheet.png");
 	setTexture(*texture);

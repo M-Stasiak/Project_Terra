@@ -71,3 +71,10 @@ public:
 	void test() {};
 };
 
+class CraftingTable : public Block
+{
+public:
+	CraftingTable(std::map <IDs, sf::Texture*>& arg);
+	void test() {};
+};
+
