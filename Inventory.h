@@ -9,12 +9,16 @@
 using namespace std;
 using namespace sf;
 class Inventory
-{private:
+{
+private:
 	Texture invTexture;
 	Texture qInvTexture;
 	Texture invSTexture;
 	Texture craftingSlotTexture;
 	Texture requiredBackground;
+	Texture y_n;
+	Sprite no_yes;
+	Sprite isAbleToCraftYN;
 	vector<unique_ptr<Sprite>> slotSprites;
 	vector<unique_ptr<Item>> itemsRequiredToCraft;
 	vector<unique_ptr<Text>> itemsRequiredToCraftQuantity;
@@ -28,12 +32,14 @@ class Inventory
 	FloatRect invSquare[44];
 	Text itemQuantity[40];
 	Text mouseItemQuantity;
+	unique_ptr<Item> craftingTableRequired;
 	
 	int qInvSelected;
 	int invSelected;
 	int craftSelected;
 	int mouseOnCraft;
 	bool mouseOnCrafting;
+	bool isCraftingTableNear;
 
 	void initFont(Font& gameFont);
 	void initTextures();
@@ -66,5 +72,6 @@ class Inventory
 	 void checkSelectedItem();
 	 bool isAbleToCraft();
 	 int getCraftSelected();
+	 void setIsCraftingTableNear(bool i);
 };
 

@@ -86,3 +86,7 @@ int Item::getStackingQuantity()
 {
     return stackingQuantity;
 }
+
+bool Item::getIsCraftingTableRequired() {
+    return isCraftingTableRequired;
+}

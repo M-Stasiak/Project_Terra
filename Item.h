@@ -25,6 +25,7 @@ protected:
     Vector2f origin;
     int stackingQuantity;
     bool isUsing = false;
+    bool isCraftingTableRequired;
     item_type type;
     vector<pair<IDs, int>> itmsRequiredToCraft;
     int craftedQuantity;
@@ -47,7 +48,7 @@ public:
     virtual unique_ptr<Item> clone() const = 0;
     vector<pair<IDs, int>> getItemsRequiredToCraft();
     int getCraftedQuantity();
-
+    bool getIsCraftingTableRequired();
 
 };
 

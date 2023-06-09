@@ -13,7 +13,7 @@ class Block_Item : public Item
 public:
 	Block_Item(map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, IDs id, Vector2f pos);
 	void nothing() {};
-	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities);
 	void Use() {};
 	unique_ptr<Item> clone() const override {
 		return std::make_unique<Block_Item>(*this);

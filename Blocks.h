@@ -75,6 +75,6 @@ class CraftingTable : public Block
 {
 public:
 	CraftingTable(std::map <IDs, sf::Texture*>& arg);
-	void test() {};
+	void test() {}
 };
 

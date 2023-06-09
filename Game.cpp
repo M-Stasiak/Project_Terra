@@ -157,7 +157,7 @@ void Game::dispGame()
 				
 				gameWindow.clear();
 				background.Render(gameWindow);
-
+				inventory->setIsCraftingTableNear(false);
 				for (int i = max((int)player.getPosition().x - renderWidth * 16, 0); i < min((int)player.getPosition().x + renderWidth * 16, 16000); i += 16)
 				{
 					for (int j = max((int)player.getPosition().y - renderHeight * 16, 0); j < min((int)player.getPosition().y + renderHeight * 16, 16000); j += 16)
@@ -166,9 +166,15 @@ void Game::dispGame()
 						{
 							Blocks[world.world[i / 16][j / 16].ID]->setPosition(world.world[i / 16][j / 16].rect.left, world.world[i / 16][j / 16].rect.top);
 							gameWindow.draw(*Blocks[world.world[i / 16][j / 16].ID]);
+							if (world.world[i / 16][j / 16].ID == CraftingTableID && player.playerReach->intersects(world.world[i / 16][j / 16].rect)){
+								
+								inventory->setIsCraftingTableNear(true);
+							}
+							
 						}
 					}
 				}
+			
 				zombie.UpdateAI(elapsed.asSeconds(), player, world.world);
 				for (auto entity : entities)
 				{
@@ -243,7 +249,7 @@ void Game::dispGame()
 				
 				
 				player.updateReach();
-				
+			
 				inventory->displayQInventory(gameWindow);
 			}
 			else if (currentGameMode == gameMode::pauseMenu) {

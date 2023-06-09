@@ -13,11 +13,12 @@ void Inventory::initFont(Font& gameFont)
 
 void Inventory::initTextures()
 {
-	if (!invTexture.loadFromFile("Textures/inventory.png")) { cout << "No texture found" << endl; }
-	if (!qInvTexture.loadFromFile("Textures/qInventory.png")) { cout << "No texture found" << endl; }
-	if (!invSTexture.loadFromFile("Textures/inventorySelect.png")) { cout << "No texture found" << endl; }
-	if (!craftingSlotTexture.loadFromFile("Textures/Inventory_Slot.png")) { cout << "No texture found" << endl; }
-	if (!requiredBackground.loadFromFile("Textures/Inventory_background.png")) { cout << "No texture found" << endl; }
+	if (!invTexture.loadFromFile("Textures/inventory.png")) { cout << "No inv found" << endl; }
+	if (!qInvTexture.loadFromFile("Textures/qInventory.png")) { cout << "No q inv found" << endl; }
+	if (!invSTexture.loadFromFile("Textures/inventorySelect.png")) { cout << "No inv selected found" << endl; }
+	if (!craftingSlotTexture.loadFromFile("Textures/Inventory_Slot.png")) { cout << "No crafting slot found" << endl; }
+	if (!requiredBackground.loadFromFile("Textures/Inventory_background.png")) { cout << "No req background found" << endl; }
+	if (!y_n.loadFromFile("Textures/no_yes.png")) { cout << "No y_n found" << endl; }
 }
 
 
@@ -33,6 +34,10 @@ void Inventory::initSprites(RenderWindow& gameWindow)
 	craftingSelectedSprite.setScale(3, 3);
 	reqBackground.setTexture(requiredBackground);
 	reqBackground.setScale(2, 2);
+	no_yes.setTexture(y_n);
+	no_yes.setScale(1.59, 1.59);
+	isAbleToCraftYN.setTexture(y_n);
+	
 }
 
 void Inventory::initTexts()
@@ -48,7 +53,6 @@ void Inventory::initTexts()
 
 void Inventory::updateInventory(RenderWindow& gameWindow)
 {
-
 	mouseOnCrafting = false;
 	mouseOnCraft = -1;
 	invSprite.setPosition(gameWindow.getView().getCenter().x - (invSprite.getScale().x * 101.f), gameWindow.getView().getCenter().y - (invSprite.getScale().x * 68.f));
@@ -195,16 +199,20 @@ void Inventory::updateInventory(RenderWindow& gameWindow)
 			itemsRequiredToCraft[i]->setPosition(reqBackground.getPosition().x + 10 + ((i - 15) * (itemsRequiredToCraft[i]->getGlobalBounds().width + 4)), reqBackground.getPosition().y + 20 + 5* (itemsRequiredToCraft[i]->getGlobalBounds().height + 3));
 			itemsRequiredToCraftQuantity[i]->setPosition(itemsRequiredToCraft[i]->getPosition().x + 1, itemsRequiredToCraft[i]->getPosition().y - 8);
 		}
-		if (i >= 18 && i < 21) {
+		/*if (i >= 18 && i < 21) {
 			itemsRequiredToCraft[i]->setPosition(reqBackground.getPosition().x + 10 + ((i - 18) * (itemsRequiredToCraft[i]->getGlobalBounds().width + 4)), reqBackground.getPosition().y + 20 + 6 * (itemsRequiredToCraft[i]->getGlobalBounds().height + 3));
 			itemsRequiredToCraftQuantity[i]->setPosition(itemsRequiredToCraft[i]->getPosition().x + 1, itemsRequiredToCraft[i]->getPosition().y - 8);
-		}
+		}*/
 		itemsRequiredToCraft[i]->setScale(2, 2);
 	}
 
 	craftedItemQuantity.setString(to_string(itemsToCraft[craftSelected]->getCraftedQuantity()));
 	craftedItemQuantity.setPosition(itemsToCraft[craftSelected]->getPosition().x+1, itemsToCraft[craftSelected]->getPosition().y-8);
 
+
+	craftingTableRequired->setPosition(reqBackground.getPosition().x + 10, reqBackground.getPosition().y + 20 + 6 * (itemsRequiredToCraft[0]->getGlobalBounds().height + 3));
+	no_yes.setPosition(craftingTableRequired->getPosition());
+	isAbleToCraftYN.setPosition(itemsToCraft[craftSelected]->getPosition().x+19, itemsToCraft[craftSelected]->getPosition().y + 19);
 }
 
 
@@ -250,7 +258,7 @@ void Inventory::updateQInventory(RenderWindow& gameWindow)
 		}
 		else { itemQuantity[i].setString(""); }
 	}
-
+	
 }
 
 
@@ -278,6 +286,9 @@ void Inventory::initInventory(map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& 
 	itemsRequiredToCraftQuantity[0]->setString(to_string(itemsToCraft[craftSelected]->getItemsRequiredToCraft()[0].second));
 	itemsRequiredToCraftQuantity[0]->setCharacterSize(50);
 	itemsRequiredToCraftQuantity[0]->setScale(0.4, 0.4);
+	craftingTableRequired = unique_ptr<Item>(new  Block_Item(arg1, arg2, IDs::CraftingTableID, craftingSelectedSprite.getPosition()));
+	craftingTableRequired->setScale(2, 2);
+	
 }
 
 void Inventory::craftSelect(RenderWindow& gameWindow)
@@ -341,6 +352,7 @@ void Inventory::displayInventory(RenderWindow& gameWindow)
 	}
 	
 
+	
 	for (int i = 0; i < itemsToCraft.size(); i++) {
 		itemsToCraft[i]->setScale(2.5, 2.5);
 		if (itemsToCraft[i]->getPosition().y <= craftingSelectedSprite.getPosition().y + 10 - (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
@@ -352,13 +364,14 @@ void Inventory::displayInventory(RenderWindow& gameWindow)
 		
 		gameWindow.draw(*itemsToCraft[i]);
 		
+		
 	}
 	
 	
-
+	gameWindow.draw(reqBackground);
 	gameWindow.draw(craftingSelectedSprite);
 	craftSelect(gameWindow);
-	gameWindow.draw(reqBackground);
+
 	gameWindow.draw(itemsRequired);
 
 	for (auto& el : itemsRequiredToCraft) {
@@ -370,7 +383,21 @@ void Inventory::displayInventory(RenderWindow& gameWindow)
 	for (auto& el : itemsRequiredToCraftQuantity) {
 		gameWindow.draw(*el);
 	}
-
+	if (itemsToCraft[craftSelected]->getIsCraftingTableRequired() == true) {
+		gameWindow.draw(*craftingTableRequired);
+		if (isCraftingTableNear) {
+			no_yes.setTextureRect(IntRect(20,0, 20, 20));
+		}
+		else { no_yes.setTextureRect(IntRect(0, 0, 20, 20)); }
+		gameWindow.draw(no_yes);
+	}
+	if (mouseOnCraft == craftSelected) {
+		if (isAbleToCraft()) {
+			isAbleToCraftYN.setTextureRect(IntRect(20, 0, 20, 20));
+		}
+		else { isAbleToCraftYN.setTextureRect(IntRect(0, 0, 20, 20)); }
+		gameWindow.draw(isAbleToCraftYN);
+	}
 }
 
 void Inventory::displayQInventory(RenderWindow& gameWindow)
@@ -501,7 +528,7 @@ bool Inventory::isAbleToCraft()
 	if (mouseOnCraft == craftSelected) {
 		for (auto& ite : itemsToCraft[craftSelected]->getItemsRequiredToCraft()) {
 			auto i = find_if(inv_vector.begin(), inv_vector.end(), [&ite](auto& it) {if (it.first != nullptr) { return ite.first == it.first->getID() && it.second >= ite.second; } });
-			if (i == inv_vector.end()) {
+			if (i == inv_vector.end() || (itemsToCraft[craftSelected]->getIsCraftingTableRequired() == true && isCraftingTableNear == false)) {
 				return false;
 			}
 		}
@@ -510,6 +537,11 @@ bool Inventory::isAbleToCraft()
 
 		return true;
 	}
+}
+
+void Inventory::setIsCraftingTableNear(bool i)
+{
+	isCraftingTableNear = i;
 }
 
 

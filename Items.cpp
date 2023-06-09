@@ -13,16 +13,23 @@ Block_Item::Block_Item(map<IDs,Texture*>& arg1, map <IDs, Block*>& arg2, IDs id,
 	if (id == IDs::PlankID) {
 		craftedQuantity = 4;
 		this->itmsRequiredToCraft.emplace_back(IDs::WoodID, 1);
-
+		isCraftingTableRequired = false;
 	}
 	if (id == IDs::ChestID) {
 		craftedQuantity = 1;
 		this->itmsRequiredToCraft.emplace_back(IDs::PlankID, 8);
-
+		isCraftingTableRequired = true;
 	}
 	if (id == IDs::CraftingTableID) {
 		craftedQuantity = 1;
 		this->itmsRequiredToCraft.emplace_back(IDs::PlankID, 4);
+		isCraftingTableRequired = false;
+	}
+}
+
+void Block_Item::Update(float elapsed, Entity& entity, vector<Entity*>& entities)
+{
+	if (ID == CraftingTableID) {
 
 	}
 }
@@ -94,6 +101,7 @@ Wooden_Sword::Wooden_Sword()
 	setTextureRect(IntRect(240, 320, -16, 16));
 	origin.x = -10; origin.y = 26;
 	type = item_type::tool;
+	isCraftingTableRequired = true;
 }
 
 Stone_Sword::Stone_Sword()
@@ -105,6 +113,7 @@ Stone_Sword::Stone_Sword()
 	setTextureRect(IntRect(16, 336, -16, 16));
 	origin.x = -10; origin.y = 26;
 	type = item_type::tool;
+	isCraftingTableRequired = true;
 }
 
 Gold_Sword::Gold_Sword()
@@ -116,5 +125,6 @@ Gold_Sword::Gold_Sword()
 	setTextureRect(IntRect(32, 336, -16, 16));
 	origin.x = -10; origin.y = 26;
 	type = item_type::tool;
+	isCraftingTableRequired = true;
 }
 

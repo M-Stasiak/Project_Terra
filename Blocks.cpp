@@ -114,4 +114,5 @@ CraftingTable::CraftingTable(std::map<IDs, sf::Texture*>& arg)
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(48, 224, 16, 16));
 
+
 }

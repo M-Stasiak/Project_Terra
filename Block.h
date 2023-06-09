@@ -19,7 +19,8 @@ enum IDs
 
 	WoodenSwordID,
 	StoneSwordID,
-	GoldenSwordID
+	GoldenSwordID,
+	StickID
 };
 
 class Block : public sf::Sprite
