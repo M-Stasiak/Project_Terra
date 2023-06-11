@@ -134,10 +134,16 @@ GameWorld::GameWorld()
 	//world = rotateMap(world);
 }
 
-void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Vector2f pos)
+void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Texture*>& arg2, map <IDs, Block*>& arg3, map <IDs, Item*>& arg4, Vector2f pos)
 {
 	if (id != 0 && id<=10){
-	items_on_ground.emplace_back(new Block_Item(arg1, arg2, id, pos));
+	items_on_ground.emplace_back(new Block_Item(arg1, arg3, id, pos));
+	}
+	else if (id != 0 && id >= 11 && id <= 15) {
+		items_on_ground.emplace_back(new Tool_Item(id, arg2, arg4, pos));
+	}
+	else if (id != 0 && id >= 16) {
+	items_on_ground.emplace_back(new Material_Item(id,arg2, arg4, pos));
 	}
 	
 }

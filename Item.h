@@ -11,7 +11,8 @@ using namespace std;
 
 enum item_type {
     block,
-    tool
+    tool,
+    material
 };
 
 class Item : public Sprite
@@ -29,7 +30,7 @@ protected:
     item_type type;
     vector<pair<IDs, int>> itmsRequiredToCraft;
     int craftedQuantity;
-
+    int blockDamage = 0;
 
 public:
   
@@ -49,6 +50,6 @@ public:
     vector<pair<IDs, int>> getItemsRequiredToCraft();
     int getCraftedQuantity();
     bool getIsCraftingTableRequired();
-
+    int getBlockDamage();
 };
 

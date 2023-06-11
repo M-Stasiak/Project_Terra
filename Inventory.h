@@ -47,7 +47,7 @@ private:
 	void initTexts();
 	void updateInventory(RenderWindow& gameWindow);
 	void updateQInventory(RenderWindow& gameWindow);
-	void initInventory(map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Font& gameFont);
+	void initInventory(map <IDs, sf::Texture*>& arg1, map <IDs, sf::Texture*>& arg4,map <IDs, Block*>& arg2, map <IDs, Item*>& arg3, Font& gameFont);
 	void craftSelect(RenderWindow& gameWindow);
 
 
@@ -56,7 +56,7 @@ private:
 	 vector<pair<unique_ptr<Item>, int>> inv_vector;
 	 pair<unique_ptr<Item>, int> mouseItem;
 	 vector<unique_ptr<Item>> itemsToCraft;
-	 Inventory(RenderWindow& gameWindow, Font& gameFont, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2);
+	 Inventory(RenderWindow& gameWindow, Font& gameFont, map <IDs, sf::Texture*>& arg1, map <IDs, sf::Texture*>& arg4, map <IDs, Block*>& arg2, map <IDs, Item*>& arg3);
 	 void displayInventory(RenderWindow& gameWindow);
 	 void displayQInventory(RenderWindow& gameWindow);
 	 void qInvSelect(int selec);
@@ -67,11 +67,12 @@ private:
 	 IDs getQInventorySelectedID();
 	 int getQInventorySelected();
 	 int getMouseOnCraft();
-	 void setCraftSelected(int s, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Font& gameFont);
+	 void setCraftSelected(int s, map <IDs, sf::Texture*>& arg1, map <IDs, sf::Texture*>& arg3, map <IDs, Block*>& arg2, map <IDs, Item*>& arg4, Font& gameFont);
 	 bool isMouseOnCrafitng();
 	 void checkSelectedItem();
 	 bool isAbleToCraft();
 	 int getCraftSelected();
 	 void setIsCraftingTableNear(bool i);
+	 int getSelectedToolBlockDamage();
 };
 

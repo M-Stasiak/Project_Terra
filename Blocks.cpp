@@ -1,6 +1,6 @@
 #include "Blocks.h"
 
-void prepareTextures(std::map <IDs, sf::Texture*> &arg)
+void prepareBlocksTextures(std::map <IDs, sf::Texture*> &arg)
 {
 	sf::Texture* tileset = new sf::Texture;
 	tileset->loadFromFile("Textures/Tileset.png");
@@ -40,6 +40,7 @@ Grass::Grass(std::map <IDs, sf::Texture*> &arg)
 	dropID = IDs::DirtID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(48, 464, 16, 16));
+	
 }
 
 Dirt::Dirt(std::map <IDs, sf::Texture*>& arg)
@@ -48,6 +49,7 @@ Dirt::Dirt(std::map <IDs, sf::Texture*>& arg)
 	dropID = IDs::DirtID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(48, 480, 16, 16));
+	
 }
 
 Rock::Rock(std::map <IDs, sf::Texture*>& arg)
@@ -56,6 +58,7 @@ Rock::Rock(std::map <IDs, sf::Texture*>& arg)
 	dropID = IDs::RockID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(48, 32, 16, 16));
+	
 }
 
 Wood::Wood(std::map <IDs, sf::Texture*>& arg)
@@ -64,6 +67,7 @@ Wood::Wood(std::map <IDs, sf::Texture*>& arg)
 	dropID = IDs::WoodID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(208, 192, 16, 16));
+	
 }
 
 Plank::Plank(std::map <IDs, sf::Texture*>& arg)
@@ -72,14 +76,16 @@ Plank::Plank(std::map <IDs, sf::Texture*>& arg)
 	dropID = IDs::PlankID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(16, 208, 16, 16));
+	
 }
 
 Leaves::Leaves(std::map <IDs, sf::Texture*>& arg)
 {
 	ID = IDs::LeavesID;
-	dropID = IDs::LeavesID;
+	dropID = IDs::StickID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(0, 256, 16, 16));
+	
 }
 
 Cactus::Cactus(std::map <IDs, sf::Texture*>& arg)
@@ -88,6 +94,7 @@ Cactus::Cactus(std::map <IDs, sf::Texture*>& arg)
 	dropID = IDs::CactusID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(304, 240, 16, 16));
+	
 }
 
 Sand::Sand(std::map <IDs, sf::Texture*>& arg)
@@ -96,6 +103,7 @@ Sand::Sand(std::map <IDs, sf::Texture*>& arg)
 	dropID = IDs::SandID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(16, 96, 16, 16));
+	
 }
 
 Chest::Chest(std::map <IDs, sf::Texture*>& arg)
@@ -105,6 +113,7 @@ Chest::Chest(std::map <IDs, sf::Texture*>& arg)
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(24, 727, 17, 16));
 	scale(0.95, 1);
+	
 }
 
 CraftingTable::CraftingTable(std::map<IDs, sf::Texture*>& arg)
@@ -113,6 +122,5 @@ CraftingTable::CraftingTable(std::map<IDs, sf::Texture*>& arg)
 	dropID = IDs::CraftingTableID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(48, 224, 16, 16));
-
 
 }

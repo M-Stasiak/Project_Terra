@@ -262,7 +262,7 @@ void Inventory::updateQInventory(RenderWindow& gameWindow)
 }
 
 
-void Inventory::initInventory(map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2,Font& gameFont)
+void Inventory::initInventory(map <IDs, sf::Texture*>& arg1, map <IDs, sf::Texture*>& arg4, map <IDs, Block*>& arg2, map <IDs, Item*>& arg3,Font& gameFont)
 {
 	for (int i = 1; i <= 44;i++) {
 		inv_vector.emplace_back(nullptr, 0);
@@ -275,6 +275,11 @@ void Inventory::initInventory(map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& 
 	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::PlankID, craftingSelectedSprite.getPosition()));
 	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::CraftingTableID, craftingSelectedSprite.getPosition()));
 	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::ChestID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Material_Item(IDs::StickID,arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::WoodenSwordID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::StoneSwordID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::WoodenPickaxeID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::StonePickaxeID, arg4, arg3, craftingSelectedSprite.getPosition()));
 
 	for (int i = 0; i < itemsToCraft.size(); i++) {
 		slotSprites.emplace_back(new Sprite);
@@ -305,14 +310,14 @@ void Inventory::craftSelect(RenderWindow& gameWindow)
 	}
 }
 
-Inventory::Inventory(RenderWindow& gameWindow, Font& gameFont, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2)
+Inventory::Inventory(RenderWindow& gameWindow, Font& gameFont, map <IDs, sf::Texture*>& arg1, map <IDs, sf::Texture*>& arg4, map <IDs, Block*>& arg2, map <IDs, Item*>& arg3)
 {
 	qInvSelected = 0;
 	craftSelected = 0;
 	initFont(gameFont);
 	initTextures();
 	initSprites(gameWindow);
-	initInventory(arg1,arg2,gameFont);
+	initInventory(arg1,arg4,arg2,arg3,gameFont);
 	initTexts();
 }
 
@@ -484,13 +489,25 @@ int Inventory::getMouseOnCraft() {
 	
 }
 
-void Inventory::setCraftSelected(int s, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Font& gameFont) {
+void Inventory::setCraftSelected(int s, map <IDs, sf::Texture*>& arg1, map <IDs, sf::Texture*>& arg3,map <IDs, Block*>& arg2, map <IDs, Item*>& arg4, Font& gameFont) {
 	craftSelected = s;
 	itemsRequiredToCraft.clear();
+	itemsRequiredToCraftQuantity.clear();
 		for (int i = 0; i < itemsToCraft[craftSelected]->getItemsRequiredToCraft().size(); i++) {
 			if (itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first <= 9) {
 
 				itemsRequiredToCraft.emplace_back(new Block_Item(arg1, arg2, itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first, craftingSelectedSprite.getPosition()));
+				itemsRequiredToCraftQuantity.emplace_back(new Text);
+				itemsRequiredToCraftQuantity[i]->setFont(gameFont);
+				itemsRequiredToCraftQuantity[i]->setString(to_string(itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].second));
+				itemsRequiredToCraftQuantity[i]->setCharacterSize(50);
+				itemsRequiredToCraftQuantity[i]->setScale(0.4, 0.4);
+
+
+			}
+			if (itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first >= 16) {
+
+				itemsRequiredToCraft.emplace_back(new Material_Item(itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first,arg3, arg4,craftingSelectedSprite.getPosition()));
 				itemsRequiredToCraftQuantity.emplace_back(new Text);
 				itemsRequiredToCraftQuantity[i]->setFont(gameFont);
 				itemsRequiredToCraftQuantity[i]->setString(to_string(itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].second));
@@ -537,6 +554,14 @@ bool Inventory::isAbleToCraft()
 
 		return true;
 	}
+}
+
+int Inventory::getSelectedToolBlockDamage()
+{
+	if (inv_vector[qInvSelected].first != nullptr) {
+		return inv_vector[qInvSelected].first->getBlockDamage();
+	}
+	else { return 0; }
 }
 
 void Inventory::setIsCraftingTableNear(bool i)

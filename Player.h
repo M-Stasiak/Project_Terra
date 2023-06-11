@@ -12,14 +12,14 @@ private:
 	int x;
 	
 	FloatRect* playerPickUpRange;
-	
 	IDs destroyedBlockID;
 	Vector2f destroyedBlockPosition;
 	bool blockDestroyed;
 	bool blockPlaced;
+	int blockDamage;
 public:
 	Player();
-	void DestroyBlock(map<int, map<int, B>> &world, RenderWindow& gameWindow);
+	void DestroyBlock(map<int, map<int, B>> &world, RenderWindow& gameWindow,int dmg);
 	void EmplaceBlock(map<int, map<int, B>>& world, RenderWindow& gameWindow, IDs id);
 	void Draw(RenderWindow& gameWindow);
 	void updateReach();

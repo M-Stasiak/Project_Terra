@@ -13,20 +13,28 @@ Player::Player()
 	setOrigin(origin);
 	playerReach = new FloatRect(0, 0, 150, 150);
 	playerPickUpRange = new FloatRect(0, 0, 100, 100);
+	blockDamage = 10;
 }
 
-void Player::DestroyBlock(map<int, map<int, B>> &world, RenderWindow& gameWindow)
+void Player::DestroyBlock(map<int, map<int, B>> &world, RenderWindow& gameWindow, int dmg)
 {
+	if (dmg != 0) {
+		blockDamage = dmg;
+	}
+	else { blockDamage = 10; }
 	Vector2f worldPos = gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView());
 	if (worldPos.x > playerReach->left && worldPos.x < (playerReach->left + playerReach->width) && worldPos.y > playerReach->top && worldPos.y < playerReach->top + playerReach->height) {
 		if (world[worldPos.x / 16][worldPos.y / 16].ID != IDs::AirID) {
-			sf::FloatRect p(int(worldPos.x / 16) * 16, int(worldPos.y / 16) * 16, 0, 0);
-			B a(IDs::AirID, p);
-			destroyedBlockID = world[worldPos.x / 16][worldPos.y / 16].ID;
-			destroyedBlockPosition.x = world[worldPos.x / 16][worldPos.y / 16].rect.left;
-			destroyedBlockPosition.y = world[worldPos.x / 16][worldPos.y / 16].rect.top;
-			world[worldPos.x / 16][worldPos.y / 16] = a;
-			blockDestroyed = true;
+			world[worldPos.x / 16][worldPos.y / 16].durability -= blockDamage;
+			if (world[worldPos.x / 16][worldPos.y / 16].durability <= 0) {
+				sf::FloatRect p(int(worldPos.x / 16) * 16, int(worldPos.y / 16) * 16, 0, 0);
+				B a(IDs::AirID, p);
+				destroyedBlockID = world[worldPos.x / 16][worldPos.y / 16].ID;
+				destroyedBlockPosition.x = world[worldPos.x / 16][worldPos.y / 16].rect.left;
+				destroyedBlockPosition.y = world[worldPos.x / 16][worldPos.y / 16].rect.top;
+				world[worldPos.x / 16][worldPos.y / 16] = a;
+				blockDestroyed = true;
+			}
 		}
 	}
 }

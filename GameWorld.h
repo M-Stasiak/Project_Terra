@@ -20,7 +20,7 @@ public:
 
 public:
 	GameWorld();
-	void dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Block*>& arg2, Vector2f pos);
+	void dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Texture*>& arg2, map <IDs, Block*>& arg3, map <IDs, Item*>& arg4, Vector2f pos);
 	void drawItemsOnGround(RenderWindow& gameWindow, Vector2f playerPosition, int renderWidth, int renderHeight);
 };
 

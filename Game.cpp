@@ -41,24 +41,28 @@ void Game::dispGame()
 	RectangleShape rectangle;
 	RectangleShape rectangle1;
 
-	map <IDs, Texture*> Textures;
+	map <IDs, Texture*> BlocksTextures;
+	map <IDs, Texture*> ItemsTextures;
 	map <IDs, Block*> Blocks;
-	prepareTextures(Textures);
-	prepareBlocksMap(Blocks, Textures);
-	inventory = new Inventory(gameWindow, gameFont,Textures,Blocks);
+	map <IDs, Item*> Items;
+	prepareBlocksTextures(BlocksTextures);
+	prepareItemsTextures(ItemsTextures);
+	prepareBlocksMap(Blocks, BlocksTextures);
+	prepareItemsMap(Items, ItemsTextures);
+	inventory = new Inventory(gameWindow, gameFont,BlocksTextures,ItemsTextures,Blocks,Items);
 	Background background;
 
-	Wooden_Sword sword1;
+	/*Wooden_Sword sword1;
 	Stone_Sword sword2;
 	Gold_Sword sword3;
 	sword1.setPosition(100, 100);
 	sword2.setPosition(200, 100);
-	sword3.setPosition(300, 100);
+	sword3.setPosition(300, 100);*/
 
 	GameWorld world;
-	world.items_on_ground.emplace_back(&sword1);
+	/*world.items_on_ground.emplace_back(&sword1);
 	world.items_on_ground.emplace_back(&sword2);
-	world.items_on_ground.emplace_back(&sword3);
+	world.items_on_ground.emplace_back(&sword3);*/
 	Clock clock;
 	while (gameWindow.isOpen()) {
 		
@@ -101,7 +105,7 @@ void Game::dispGame()
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) player.Left(0.02);
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) player.Right(0.02);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool)
+					if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool && inventory->getSelectedToolBlockDamage() == 0)
 					{
 						//inventory->inv_vector[inventory->getQInventorySelected()].first->Use();
 						inventory->selectedItem->Use();
@@ -110,11 +114,18 @@ void Game::dispGame()
 						else
 							player.setScale({ (float)(-1) * abs(player.getScale().x), player.getScale().y });
 					}
-					else
+					else if(inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool && inventory->getSelectedToolBlockDamage() != 0)
 					{
-						player.DestroyBlock(world.world, gameWindow);
+						inventory->selectedItem->Use();
+						player.DestroyBlock(world.world, gameWindow,inventory->getSelectedToolBlockDamage());
 						if (player.isBlockDestroyed() == true) {
-							world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), Textures, Blocks, player.getDestroyedBlockPosition());
+							world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), BlocksTextures,ItemsTextures, Blocks,Items,player.getDestroyedBlockPosition());
+						}
+					}
+					else {
+						player.DestroyBlock(world.world, gameWindow, inventory->getSelectedToolBlockDamage());
+						if (player.isBlockDestroyed() == true) {
+							world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), BlocksTextures, ItemsTextures, Blocks, Items, player.getDestroyedBlockPosition());
 						}
 					}
 				}
@@ -393,7 +404,7 @@ void Game::dispGame()
 								}
 							}
 							if (inventory->isMouseOnCrafitng() == true) {
-								inventory->setCraftSelected(inventory->getMouseOnCraft(),Textures,Blocks,gameFont);
+								inventory->setCraftSelected(inventory->getMouseOnCraft(),BlocksTextures,ItemsTextures,Blocks,Items,gameFont);
 										
 							}
 						}
@@ -406,7 +417,7 @@ void Game::dispGame()
 								}
 							}
 							for (int i = 1; i <= inventory->itemsToCraft[inventory->getCraftSelected()]->getCraftedQuantity(); i++) {
-								world.dropItem(inventory->itemsToCraft[inventory->getCraftSelected()]->getID(), Textures, Blocks, player.getPosition());
+								world.dropItem(inventory->itemsToCraft[inventory->getCraftSelected()]->getID(), BlocksTextures, ItemsTextures, Blocks,Items ,player.getPosition());
 							}
 						}
 					}

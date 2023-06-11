@@ -73,6 +73,11 @@ int Item::getCraftedQuantity()
     return craftedQuantity;
 }
 
+int Item::getBlockDamage()
+{
+    return blockDamage;
+}
+
 void Item::GravityUpdate(float elapsed, float gravity)
 {
     if (velocity.y < 6)
