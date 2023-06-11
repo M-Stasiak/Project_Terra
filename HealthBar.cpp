@@ -24,6 +24,24 @@ void HealthBar::setHealthBar(int _value, int _max)
 	max = _max;
 }
 
+void HealthBar::setPlayerHealthBar(int _value, int _max)
+{
+	value = _value;
+	max = _max;
+	heartTexture.loadFromFile("Textures/PixelHeart.png");
+	font.loadFromFile("Fonts/font.ttf");
+	heart.setTexture(heartTexture);
+	heartTextureRect[HeartID::Full] = { 0, 0, 16, 16 };
+	heartTextureRect[HeartID::Half] = { 16, 0, 16, 16 };
+	heartTextureRect[HeartID::Empty] = { 32, 0, 16, 16 };
+
+	text.setFont(font);
+	text.setCharacterSize(10);
+	text.setFillColor(Color::White);
+	text.setOutlineColor(Color::Black);
+	text.setOutlineThickness(1);
+}
+
 void HealthBar::Draw(RenderWindow& gameWindow, int _value, FloatRect entityGlobalBounds)
 {
 	value = _value;
@@ -36,4 +54,24 @@ void HealthBar::Draw(RenderWindow& gameWindow, int _value, FloatRect entityGloba
 	else bar.setFillColor(Color::Red);
 	gameWindow.draw(backgroundBar);
 	gameWindow.draw(bar);
+}
+
+void HealthBar::Draw(RenderWindow& gameWindow, int _value)
+{
+	value = _value;
+	float percentage = float(value) / max;
+	int n = max / 10;
+	for (int i = 1; i <= n; i++)
+	{
+		if (value >= i * 10) heart.setTextureRect(heartTextureRect[HeartID::Full]);
+		else if (value < i * 10 and value > (i-1) * 10)  heart.setTextureRect(heartTextureRect[HeartID::Half]);
+		else  heart.setTextureRect(heartTextureRect[HeartID::Empty]);
+
+		heart.setPosition(gameWindow.mapPixelToCoords(Vector2i(gameWindow.getSize().x - 30 * heart.getGlobalBounds().width, 0), gameWindow.getView()).x + i * heart.getGlobalBounds().width, gameWindow.mapPixelToCoords(Vector2i(0, 10), gameWindow.getView()).y);
+		gameWindow.draw(heart);
+	}
+	text.setString(to_string(value) + " / " + to_string(max));
+	text.setPosition(heart.getGlobalBounds().left + heart.getGlobalBounds().width + 10, heart.getPosition().y);
+	gameWindow.draw(text);
+
 }

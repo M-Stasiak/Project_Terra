@@ -105,6 +105,10 @@ void Game::dispGame()
 					{
 						//inventory->inv_vector[inventory->getQInventorySelected()].first->Use();
 						inventory->selectedItem->Use();
+						if (gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView()).x > player.getPosition().x)
+							player.setScale({ (float)abs(player.getScale().x), player.getScale().y });
+						else
+							player.setScale({ (float)(-1) * abs(player.getScale().x), player.getScale().y });
 					}
 					else
 					{

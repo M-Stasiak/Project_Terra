@@ -51,7 +51,13 @@ void Sword::Update(float elapsed, Entity& entity, vector<Entity*>& entities)
 		{
 			if (entity.getTexture() != i->getTexture())
 				if (this->getGlobalBounds().intersects(i->getGlobalBounds()))
+				{
 					entitiesToTakeDamage.insert(i);
+					if (getScale().x >= 0)
+						i->move(Vector2f(200, 0) * elapsed);
+					else
+						i->move(Vector2f(-200, 0) * elapsed);
+				}
 		}
 		if (getScale().x >= 0)
 		{
@@ -61,7 +67,7 @@ void Sword::Update(float elapsed, Entity& entity, vector<Entity*>& entities)
 				setRotation(0);
 				isUsing = false;
 				for (auto i : entitiesToTakeDamage)
-					i->TakeDamage(10);
+					i->TakeDamage(attackStrength);
 				entitiesToTakeDamage.clear();
 			}
 			else rotate(500 * elapsed);
@@ -74,7 +80,7 @@ void Sword::Update(float elapsed, Entity& entity, vector<Entity*>& entities)
 				setRotation(0);
 				isUsing = false;
 				for (auto i : entitiesToTakeDamage)
-					i->TakeDamage(10);
+					i->TakeDamage(attackStrength);
 				entitiesToTakeDamage.clear();
 			}
 			else rotate(-500 * elapsed);
@@ -101,6 +107,7 @@ Wooden_Sword::Wooden_Sword()
 	setTextureRect(IntRect(240, 320, -16, 16));
 	origin.x = -10; origin.y = 26;
 	type = item_type::tool;
+	attackStrength = 10;
 	isCraftingTableRequired = true;
 }
 
@@ -113,6 +120,7 @@ Stone_Sword::Stone_Sword()
 	setTextureRect(IntRect(16, 336, -16, 16));
 	origin.x = -10; origin.y = 26;
 	type = item_type::tool;
+	attackStrength = 20;
 	isCraftingTableRequired = true;
 }
 
@@ -125,6 +133,7 @@ Gold_Sword::Gold_Sword()
 	setTextureRect(IntRect(32, 336, -16, 16));
 	origin.x = -10; origin.y = 26;
 	type = item_type::tool;
+	attackStrength = 30;
 	isCraftingTableRequired = true;
 }
 

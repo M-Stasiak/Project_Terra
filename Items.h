@@ -24,6 +24,7 @@ public:
 class Sword : public Item
 {
 protected:
+	int attackStrength = 10;
 	set<Entity*> entitiesToTakeDamage;
 public:
 	Sword();

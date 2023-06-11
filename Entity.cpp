@@ -40,7 +40,7 @@ void Entity::Attack(float elapsed, Entity& entity)
     attackTime += elapsed;
     if (attackTime > holdAttackTime)
     {
-        entity.TakeDamage(10);
+        entity.TakeDamage(5);
         attackTime = 0;
     }
 }

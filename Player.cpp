@@ -8,6 +8,7 @@ Player::Player()
 	Texture entityTexture;
 	entityTexture.loadFromFile("Textures/Entities/CharacterSpriteSheet.png");
 	setEntity(entityTexture, { {8, 1344, 0, 64, 64}, {8, 5824, 0, 64, 64}, {16, 16, -32, -32} });
+	healthBar.setPlayerHealthBar(100, 100);
 	origin.x = 16; origin.y = 16;
 	setOrigin(origin);
 	playerReach = new FloatRect(0, 0, 150, 150);
@@ -51,7 +52,7 @@ void Player::EmplaceBlock(map<int, map<int, B>>& world, RenderWindow& gameWindow
 void Player::Draw(RenderWindow &gameWindow)
 {
 	gameWindow.draw(*this);
-	healthBar.Draw(gameWindow, health, this->getGlobalBounds());
+	healthBar.Draw(gameWindow, health);
 }
 
 void Player::updateReach()
