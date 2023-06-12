@@ -5,11 +5,16 @@
 #include <iostream>
 #include "Animation.h"
 #include "HealthBar.h"
+#include "Block.h"
 
 enum AnimationName
 {
-    Idle = 0,
-    Walk = 1
+    Basic,
+    Idle,
+    Walk,
+    Attack,
+    Damage,
+    Death
 };
 
 class Entity : public sf::Sprite
@@ -22,16 +27,19 @@ private:
     sf::FloatRect nextPosition;
     View entityView;
     sf::Texture texture;
-    std::map<AnimationName, Animation*> animations;
     void setEntityView();
 
 protected:
+    bool isAlive = true, isPlayer = false;
+    float isDeadTime = 0;
     int health = 100, maxHealth = 100;
     float speed = 200;
     float jumpSpeed = 400;
     float attackTime, holdAttackTime = 2;
+    AnimationName state = AnimationName::Basic;
     Vector2f origin;
     HealthBar healthBar;
+    std::map<AnimationName, Animation*> animations;
 
 public:
     Entity();
@@ -44,11 +52,18 @@ public:
     void TakeDamage(int damage);
     virtual void Attack(float elapsed, Entity& entity);
     virtual void Update(float elapsed);
+    virtual void UpdateAI(float elapsed, Entity& player, map<int, map<int, B>>& world) {};
     View getEntityView();
     
 
     void GravityUpdate(float elapsed, float gravity);
     void CheckCollisions(const sf::FloatRect *arg);
+    void setState(AnimationName _state) { state = _state; };
+    AnimationName getState() { return state; };
+    void Respawn();
+    bool getIsAlive() { return isAlive; };
+    bool getIsPlayer() { return isPlayer; };
+    float getIsDeadTime() { return isDeadTime; };
 
     virtual void Draw(RenderWindow&) = 0;
 };

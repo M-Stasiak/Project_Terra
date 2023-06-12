@@ -225,15 +225,19 @@ void Tool_Item::Update(float elapsed, Entity& entity, vector<Entity*>& entities)
 		if (ID == WoodenSwordID || ID == StoneSwordID) {
 			for (auto i : entities)
 			{
-				if (entity.getTexture() != i->getTexture())
-					if (this->getGlobalBounds().intersects(i->getGlobalBounds()))
-					{
-						entitiesToTakeDamage.insert(i);
-						if (getScale().x >= 0)
-							i->move(Vector2f(200, 0) * elapsed);
-						else
-							i->move(Vector2f(-200, 0) * elapsed);
-					}
+				if (i->getIsAlive())
+				{
+					if (entity.getTexture() != i->getTexture())
+						if (this->getGlobalBounds().intersects(i->getGlobalBounds()))
+						{
+							i->setState(AnimationName::Damage);
+							entitiesToTakeDamage.insert(i);
+							if (getScale().x >= 0)
+								i->move(Vector2f(200, 0) * elapsed);
+							else
+								i->move(Vector2f(-200, 0) * elapsed);
+						}
+				}
 			}
 			if (getScale().x >= 0)
 			{

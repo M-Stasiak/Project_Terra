@@ -28,6 +28,25 @@ void Animation::Update(float elapsed)
 
 void Animation::ChangeFrame()
 {
-    if (++iFrame >= nFrames) iFrame = 0;
+    if (++iFrame >= nFrames)
+    {
+        iFrame = 0;
+        isEnd = true;
+    }
 
+}
+
+void Animation::LastFrame()
+{
+    iFrame = nFrames-1;
+}
+
+bool Animation::isEnded()
+{
+    if (isEnd)
+    {
+        isEnd = false;
+        return true;
+    }
+    return false;
 }

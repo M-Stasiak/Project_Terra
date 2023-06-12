@@ -40,7 +40,9 @@ void Entity::Attack(float elapsed, Entity& entity)
     attackTime += elapsed;
     if (attackTime > holdAttackTime)
     {
-        entity.TakeDamage(5);
+        state = AnimationName::Attack;
+        entity.setState(AnimationName::Damage);
+        entity.TakeDamage(100);
         attackTime = 0;
     }
 }
@@ -48,6 +50,7 @@ void Entity::Attack(float elapsed, Entity& entity)
 void Entity::TakeDamage(int damage)
 {
     health -= damage;
+    if (health <= 0) setState(AnimationName::Death);
 }
 
 void Entity::CheckCollisions(const sf::FloatRect *arg)
@@ -111,19 +114,46 @@ void Entity::GravityUpdate(float elapsed, float gravity)
 
 void Entity::Update(float elapsed)
 {
-    //cout << "Health: " << health << " " << maxHealth << endl;
-    move(velocity);
-    if (getPosition() != lastPosition)
+    if (isPlayer) cout << state << endl;
+    if (isAlive)
     {
-        animations[AnimationName::Walk]->Update(elapsed);
-        animations[AnimationName::Walk]->ApplyToSprite(this);
+        if (state == AnimationName::Basic)
+        {
+            move(velocity);
+            if (getPosition() != lastPosition)
+            {
+                animations[AnimationName::Walk]->Update(elapsed);
+                animations[AnimationName::Walk]->ApplyToSprite(this);
+            }
+            else
+            {
+                animations[AnimationName::Idle]->Update(elapsed);
+                animations[AnimationName::Idle]->ApplyToSprite(this);
+            }
+            lastPosition = getPosition();
+        }
+        else
+        {
+            if (animations[state] != nullptr)
+            {
+                animations[state]->Update(elapsed);
+                animations[state]->ApplyToSprite(this);
+
+                if (animations[state]->isEnded())
+                {
+                    if (state == AnimationName::Death)
+                    {
+                        isAlive = false;
+                        animations[state]->LastFrame();
+                        animations[state]->ApplyToSprite(this);
+                    }
+                    else state = AnimationName::Basic;
+                }
+            }
+            else state = AnimationName::Basic;
+        }
     }
-    else
-    {
-        animations[AnimationName::Idle]->Update(elapsed);
-        animations[AnimationName::Idle]->ApplyToSprite(this);
-    }
-    lastPosition = getPosition();
+    else isDeadTime += elapsed;
 
     velocity = sf::Vector2f(0, 0);
     setEntityView();
@@ -132,6 +162,14 @@ void Entity::Update(float elapsed)
 View Entity::getEntityView()
 {
     return entityView;
+}
+
+void Entity::Respawn()
+{
+    isAlive = true;
+    health = maxHealth;
+    state = AnimationName::Basic;
+    isDeadTime = 0;
 }
 
 

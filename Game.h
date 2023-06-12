@@ -6,6 +6,7 @@
 #include <iostream>
 #include "MainMenu.h"
 #include "PauseMenu.h"
+#include "DeathScreen.h"
 #include "Background.h"
 #include "Entity.h"
 #include "Player.h"
@@ -20,6 +21,7 @@ using namespace std;
 class Game
 {
 private:
+	float deathScreenTime = 10;
 	int renderWidth = 32, renderHeight = 19;
 	//int renderWidth = 3, renderHeight = 3;
 	int collisionsCheckWidth = 3, collisionsCheckHeight = 3;
@@ -30,6 +32,7 @@ private:
 	Font gameFont;
 	MainMenu *mainMenu;
 	PauseMenu* pauseMenu;
+	DeathScreen* deathScreen;
 	Inventory* inventory;
 	Player player;
 	

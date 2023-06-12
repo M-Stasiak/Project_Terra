@@ -5,9 +5,12 @@
 Player::Player()
 {
 	blockDestroyed = false;
+	isPlayer = true;
 	Texture entityTexture;
 	entityTexture.loadFromFile("Textures/Entities/CharacterSpriteSheet.png");
 	setEntity(entityTexture, { {8, 1344, 0, 64, 64}, {8, 5824, 0, 64, 64}, {16, 16, -32, -32} });
+	animations[AnimationName::Damage] = new Animation(entityTexture, vector<int>{ 2, 640, 0, 64, 64 }, vector<int>{ 16, 16, -32, -32 });
+	animations[AnimationName::Death] = new Animation(entityTexture, vector<int>{ 7, 768, 0, 64, 64 }, vector<int>{ 16, 16, -24, -32 });
 	healthBar.setPlayerHealthBar(100, 100);
 	origin.x = 16; origin.y = 16;
 	setOrigin(origin);

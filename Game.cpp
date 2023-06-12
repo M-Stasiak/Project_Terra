@@ -28,16 +28,16 @@ Game::Game()
 	initFont();
 	mainMenu = new MainMenu(gameFont, gameWindow);
 	pauseMenu = new PauseMenu(gameFont, gameWindow);
+	deathScreen = new DeathScreen(gameFont, gameWindow);
 	currentGameMode = gameMode::mainMenu;
 	
 }
 
 void Game::dispGame()
 {
-	Zombie zombie;
 	vector<Entity*> entities;
 	entities.push_back(&player);
-	entities.push_back(&zombie);
+	entities.push_back(new Zombie);
 	RectangleShape rectangle;
 	RectangleShape rectangle1;
 
@@ -100,11 +100,11 @@ void Game::dispGame()
 			{
 				setGameView();
 				inventory->checkSelectedItem();
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) player.Up(0.02);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) and player.getIsAlive()) player.Up(0.02);
 				//if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) player.Down(0.02);
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) player.Left(0.02);
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) player.Right(0.02);
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) and player.getIsAlive()) player.Left(0.02);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) and player.getIsAlive()) player.Right(0.02);
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) and player.getIsAlive()) {
 					if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool && inventory->getSelectedToolBlockDamage() == 0)
 					{
 						//inventory->inv_vector[inventory->getQInventorySelected()].first->Use();
@@ -142,11 +142,11 @@ void Game::dispGame()
 						}
 						switch (gameEvent.key.code) {
 						case(Keyboard::Num1): {inventory->qInvSelect(0); break; }
-						case(Keyboard::Num2): {inventory->qInvSelect(1);  break; }
-						case(Keyboard::Num3): { inventory->qInvSelect(2); break; }
+						case(Keyboard::Num2): {inventory->qInvSelect(1); break; }
+						case(Keyboard::Num3): {inventory->qInvSelect(2); break; }
 						case(Keyboard::Num4): {inventory->qInvSelect(3); break; }
 						case(Keyboard::Num5): {inventory->qInvSelect(4); break; }
-						case(Keyboard::Num6): { inventory->qInvSelect(5); break; }
+						case(Keyboard::Num6): {inventory->qInvSelect(5); break; }
 						case(Keyboard::Num7): {inventory->qInvSelect(6); break; }
 						case(Keyboard::Num8): {inventory->qInvSelect(7); break; }
 						case(Keyboard::Num9): {inventory->qInvSelect(8); break; }
@@ -154,7 +154,7 @@ void Game::dispGame()
 
 						}
 					}
-					if (gameEvent.type == sf::Event::MouseButtonPressed) {
+					if (gameEvent.type == sf::Event::MouseButtonPressed and player.getIsAlive()) {
 						if (gameEvent.key.code == Mouse::Right) {
 							if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr)
 							{
@@ -190,7 +190,6 @@ void Game::dispGame()
 					}
 				}
 			
-				zombie.UpdateAI(elapsed.asSeconds(), player, world.world);
 				for (auto entity : entities)
 				{
 					entity->GravityUpdate(0.02, 20);
@@ -201,8 +200,14 @@ void Game::dispGame()
 							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
 						}
 					}
+					if (!entity->getIsPlayer()) entity->UpdateAI(elapsed.asSeconds(), player, world.world);
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
+					if (!entity->getIsPlayer() and entity->getIsDeadTime() > 5)
+					{
+						delete entity;
+						entities.erase(remove(entities.begin(), entities.end(), entity), entities.end());
+					}
 				}
 				if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool)
 				{
@@ -266,6 +271,20 @@ void Game::dispGame()
 				player.updateReach();
 			
 				inventory->displayQInventory(gameWindow);
+
+				if (!player.getIsAlive())
+				{
+					deathScreenTime -= elapsed.asSeconds();
+					deathScreen->update(deathScreenTime, gameWindow);
+					deathScreen->display(gameWindow);
+
+					if (deathScreenTime <= 0)
+					{
+						player.Respawn();
+						//player.setPosition(0, 0);
+						deathScreenTime = 10;
+					}
+				}
 			}
 			else if (currentGameMode == gameMode::pauseMenu) {
 				gameWindow.clear();
