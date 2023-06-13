@@ -19,6 +19,7 @@ class GameWorld
 public:
 	map<int, map<int, B>> world;
 	vector<unique_ptr<Item>> items_on_ground;
+	vector<pair<Vector2f, vector<pair<unique_ptr<Item>, int>>> > chests;
 
 public:
 	GameWorld();

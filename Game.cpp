@@ -64,6 +64,7 @@ void Game::dispGame()
 	world.items_on_ground.emplace_back(&sword2);
 	world.items_on_ground.emplace_back(&sword3);*/
 	Clock clock;
+	world.dropItem(IDs::ChestID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	while (gameWindow.isOpen()) {
 		//test.clear();
 		//world.test(test);
@@ -158,6 +159,10 @@ void Game::dispGame()
 					}
 					if (gameEvent.type == sf::Event::MouseButtonPressed and player.getIsAlive()) {
 						if (gameEvent.key.code == Mouse::Right) {
+							player.UseBlock(gameWindow, world.world);
+							if (player.isChestOpened() == true) {
+								currentGameMode = gameMode::inventory;
+							}
 							if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr)
 							{
 								if (inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::block)
@@ -165,9 +170,16 @@ void Game::dispGame()
 									player.EmplaceBlock(world.world, gameWindow, inventory->getQInventorySelectedID());
 									if (player.isBlockPlaced() == true) {
 										inventory->inv_vector[inventory->getQInventorySelected()].second--;
+										if (inventory->getQInventorySelectedID() == IDs::ChestID) {
+											world.chests.emplace_back( player.getPlacedBlockPosition(), vector<pair<unique_ptr<Item>, int>>() );
+											for (int i = 1; i <= 24; i++) {
+												world.chests.back().second.emplace_back(nullptr, 0);
+											}
+										}
 									}
 								}
 							}
+							
 						}
 					}
 				}
@@ -387,49 +399,110 @@ void Game::dispGame()
 						}
 					}
 				}
-				inventory->displayInventory(gameWindow);
+				inventory->displayInventory(gameWindow,player.isChestOpened());
+				if (player.isChestOpened() == true) {
+					for(auto &el : world.chests){
+						if (el.first == player.getOpenedChestPosition()) {
+							for (int i = 0; i < el.second.size();i++) {
+								if (el.second[i].first != nullptr) {
+									el.second[i].first->setPosition(Vector2f(inventory->getChestItemsPosition(i).x+4, inventory->getChestItemsPosition(i).y + 4));
+									inventory->getChestItemQuantityText(i).setScale(0.5, 0.5);
+									inventory->getChestItemQuantityText(i).setPosition(el.second[i].first->getPosition());
+									inventory->getChestItemQuantityText(i).setString(to_string(el.second[i].second));
+									gameWindow.draw(*el.second[i].first);
+									gameWindow.draw(inventory->getChestItemQuantityText(i));
+								}
+								else{ inventory->getChestItemQuantityText(i).setString(""); }
+							}
+						}
+				}
+
+				}
+				
 				if (gameWindow.pollEvent(gameEvent)) {
 					if (gameEvent.type == sf::Event::KeyPressed) {
 						if (gameEvent.key.code == Keyboard::E) {
 							currentGameMode = gameMode::playing;
+							player.setChestOpened(false);
 						}
 						if (gameEvent.key.code == Keyboard::Escape) {
 							currentGameMode = gameMode::pauseMenu;
+							player.setChestOpened(false);
 						}
 						
 					}
+
 					else if (gameEvent.type == Event::MouseButtonPressed) {
 						if (gameEvent.key.code == Mouse::Left) {
-							if (inventory->mouseItem.first == nullptr || inventory->inv_vector[inventory->getInventorySelected()].first == nullptr) {
-								inventory->mouseItem.swap(inventory->inv_vector[inventory->getInventorySelected()]);
-							}
-							else if (inventory->mouseItem.first != nullptr && inventory->inv_vector[inventory->getInventorySelected()].first != nullptr) {
+							if (player.isChestOpened() == true) {
+								
+								for (auto & el : world.chests) {
+									if (el.first == player.getOpenedChestPosition() && inventory->isMouseOnChest(gameWindow) == true) {
+										
+										if (inventory->mouseItem.first == nullptr || el.second[inventory->getChestSelected()].first == nullptr) {
+											inventory->mouseItem.swap(el.second[inventory->getChestSelected()]);
+											
+										}
 
-								if (inventory->mouseItem.first->getID() != inventory->inv_vector[inventory->getInventorySelected()].first->getID()) {
+										else if (inventory->mouseItem.first != nullptr && el.second[inventory->getChestSelected()].first != nullptr) {
+
+											if (inventory->mouseItem.first->getID() != el.second[inventory->getChestSelected()].first->getID() && el.first == player.getOpenedChestPosition()) {
+												inventory->mouseItem.swap(el.second[inventory->getChestSelected()]);
+											}
+											//	/*else if (inventory->mouseItem.first->getID() == world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()].first->getID()) {
+											//		if (inventory->mouseItem.second + world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()].second < inventory->mouseItem.first->getStackingQuantity()) {
+											//			world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()].second += inventory->mouseItem.second;
+											//			inventory->mouseItem.second -= inventory->mouseItem.second;
+											//		}
+											//		else {
+											//			int difference = inventory->mouseItem.first->getStackingQuantity() - world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()].second;
+											//			if (difference > 0) {
+											//				world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()].second += difference;
+											//				inventory->mouseItem.second -= difference;
+											//			}
+											//			else { inventory->mouseItem.swap(world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()]); }
+
+											//		}
+											//	}*/
+										}
+									}
+
+								}
+
+							}
+							else if (inventory->isMouseOnInventory(gameWindow) == true) {
+								if (inventory->mouseItem.first == nullptr || inventory->inv_vector[inventory->getInventorySelected()].first == nullptr) {
 									inventory->mouseItem.swap(inventory->inv_vector[inventory->getInventorySelected()]);
 								}
-								else if (inventory->mouseItem.first->getID() == inventory->inv_vector[inventory->getInventorySelected()].first->getID()) {
-									if (inventory->mouseItem.second + inventory->inv_vector[inventory->getInventorySelected()].second < inventory->mouseItem.first->getStackingQuantity()) {
-										inventory->inv_vector[inventory->getInventorySelected()].second += inventory->mouseItem.second;
-										inventory->mouseItem.second -= inventory->mouseItem.second;
-									}
-									else {
-										int difference = inventory->mouseItem.first->getStackingQuantity() - inventory->inv_vector[inventory->getInventorySelected()].second;
-										if (difference > 0) {
-											inventory->inv_vector[inventory->getInventorySelected()].second += difference;
-											inventory->mouseItem.second -= difference;
-										}
-										else { inventory->mouseItem.swap(inventory->inv_vector[inventory->getInventorySelected()]); }
+								else if (inventory->mouseItem.first != nullptr && inventory->inv_vector[inventory->getInventorySelected()].first != nullptr) {
 
+									if (inventory->mouseItem.first->getID() != inventory->inv_vector[inventory->getInventorySelected()].first->getID()) {
+										inventory->mouseItem.swap(inventory->inv_vector[inventory->getInventorySelected()]);
+									}
+									else if (inventory->mouseItem.first->getID() == inventory->inv_vector[inventory->getInventorySelected()].first->getID()) {
+										if (inventory->mouseItem.second + inventory->inv_vector[inventory->getInventorySelected()].second < inventory->mouseItem.first->getStackingQuantity()) {
+											inventory->inv_vector[inventory->getInventorySelected()].second += inventory->mouseItem.second;
+											inventory->mouseItem.second -= inventory->mouseItem.second;
+										}
+										else {
+											int difference = inventory->mouseItem.first->getStackingQuantity() - inventory->inv_vector[inventory->getInventorySelected()].second;
+											if (difference > 0) {
+												inventory->inv_vector[inventory->getInventorySelected()].second += difference;
+												inventory->mouseItem.second -= difference;
+											}
+											else { inventory->mouseItem.swap(inventory->inv_vector[inventory->getInventorySelected()]); }
+
+										}
 									}
 								}
+
 							}
-							if (inventory->isMouseOnCrafitng() == true) {
+							if (inventory->isMouseOnCrafitng() == true && player.isChestOpened() == false) {
 								inventory->setCraftSelected(inventory->getMouseOnCraft(),BlocksTextures,ItemsTextures,Blocks,Items,gameFont);
 										
 							}
 						}
-						else if(gameEvent.key.code == Mouse::Right && inventory->isAbleToCraft() == true)
+						else if(gameEvent.key.code == Mouse::Right && inventory->isAbleToCraft() == true && player.isChestOpened() == false)
 							 {
 							for (auto& ite : inventory->itemsToCraft[inventory->getCraftSelected()]->getItemsRequiredToCraft()) {
 								auto i = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [&ite](auto& it) {if (it.first != nullptr) { return ite.first == it.first->getID() && it.second >= ite.second; } });
@@ -448,7 +521,7 @@ void Game::dispGame()
 			}
 			
 			gameWindow.display();
-		}
+	}
 	
 }
 

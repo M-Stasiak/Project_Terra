@@ -17,6 +17,7 @@ private:
 	Texture craftingSlotTexture;
 	Texture requiredBackground;
 	Texture y_n;
+	Texture chestTexture;
 	Sprite no_yes;
 	Sprite isAbleToCraftYN;
 	vector<unique_ptr<Sprite>> slotSprites;
@@ -27,10 +28,14 @@ private:
 	Sprite invSSprite;
 	Sprite craftingSelectedSprite;
 	Sprite reqBackground;
+	Sprite chestSprite;
 	Text craftedItemQuantity;
 	Text itemsRequired;
+	Text chest;
 	FloatRect invSquare[44];
+	FloatRect chestSquare[24];
 	Text itemQuantity[40];
+	Text chestItemQuantity[24];
 	Text mouseItemQuantity;
 	unique_ptr<Item> craftingTableRequired;
 	
@@ -40,12 +45,13 @@ private:
 	int mouseOnCraft;
 	bool mouseOnCrafting;
 	bool isCraftingTableNear;
+	int chestSelected;
 
 	void initFont(Font& gameFont);
 	void initTextures();
 	void initSprites(RenderWindow& gameWindow);
 	void initTexts();
-	void updateInventory(RenderWindow& gameWindow);
+	void updateInventory(RenderWindow& gameWindow, bool chestOpened);
 	void updateQInventory(RenderWindow& gameWindow);
 	void initInventory(map <IDs, sf::Texture*>& arg1, map <IDs, sf::Texture*>& arg4,map <IDs, Block*>& arg2, map <IDs, Item*>& arg3, Font& gameFont);
 	void craftSelect(RenderWindow& gameWindow);
@@ -57,11 +63,11 @@ private:
 	 pair<unique_ptr<Item>, int> mouseItem;
 	 vector<unique_ptr<Item>> itemsToCraft;
 	 Inventory(RenderWindow& gameWindow, Font& gameFont, map <IDs, sf::Texture*>& arg1, map <IDs, sf::Texture*>& arg4, map <IDs, Block*>& arg2, map <IDs, Item*>& arg3);
-	 void displayInventory(RenderWindow& gameWindow);
+	 void displayInventory(RenderWindow& gameWindow, bool chestOpened);
 	 void displayQInventory(RenderWindow& gameWindow);
 	 void qInvSelect(int selec);
 	 void displayQInventorySelected(RenderWindow& gameWindow);
-	 void displayInventorySelected(RenderWindow& gameWindow);
+	 void displayInventorySelected(RenderWindow& gameWindow,bool chestOpened);
 	 bool isInventoryFull(int id);
 	 int getInventorySelected();
 	 IDs getQInventorySelectedID();
@@ -74,5 +80,10 @@ private:
 	 int getCraftSelected();
 	 void setIsCraftingTableNear(bool i);
 	 int getSelectedToolBlockDamage();
+	 int getChestSelected();
+	 bool isMouseOnInventory(RenderWindow& gameWindow);
+	 bool isMouseOnChest(RenderWindow& gameWindow);
+	 Vector2f getChestItemsPosition(int i);
+	 Text getChestItemQuantityText(int i);
 };
 

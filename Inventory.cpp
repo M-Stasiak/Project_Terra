@@ -9,6 +9,10 @@ void Inventory::initFont(Font& gameFont)
 	mouseItemQuantity.setFont(gameFont);
 	craftedItemQuantity.setFont(gameFont);
 	itemsRequired.setFont(gameFont);
+	chest.setFont(gameFont);
+	for (int i = 0; i < 24; i++) {
+		chestItemQuantity[i].setFont(gameFont);
+	}
 }
 
 void Inventory::initTextures()
@@ -19,6 +23,7 @@ void Inventory::initTextures()
 	if (!craftingSlotTexture.loadFromFile("Textures/Inventory_Slot.png")) { cout << "No crafting slot found" << endl; }
 	if (!requiredBackground.loadFromFile("Textures/Inventory_background.png")) { cout << "No req background found" << endl; }
 	if (!y_n.loadFromFile("Textures/no_yes.png")) { cout << "No y_n found" << endl; }
+	if (!chestTexture.loadFromFile("Textures/chestInventory.png")) { cout << "No req background found" << endl; }
 }
 
 
@@ -37,6 +42,8 @@ void Inventory::initSprites(RenderWindow& gameWindow)
 	no_yes.setTexture(y_n);
 	no_yes.setScale(1.59, 1.59);
 	isAbleToCraftYN.setTexture(y_n);
+	chestSprite.setTexture(chestTexture);
+	chestSprite.setScale(2, 2);
 	
 }
 
@@ -45,13 +52,16 @@ void Inventory::initTexts()
 	itemsRequired.setString("Items Required");
 	itemsRequired.setCharacterSize(50);
 	itemsRequired.setScale(0.28, 0.28);
+	chest.setString("Chest");
+	chest.setCharacterSize(50);
+	chest.setScale(0.28, 0.28);
 	craftedItemQuantity.setCharacterSize(50);
 	craftedItemQuantity.setScale(0.4, 0.4);
 }
 
 
 
-void Inventory::updateInventory(RenderWindow& gameWindow)
+void Inventory::updateInventory(RenderWindow& gameWindow,bool chestOpened)
 {
 	mouseOnCrafting = false;
 	mouseOnCraft = -1;
@@ -107,6 +117,55 @@ void Inventory::updateInventory(RenderWindow& gameWindow)
 		invSquare[i].top = invSprite.getPosition().y + 12 + 2 + 4 * (invSquare[0].height + 2);
 		invSquare[i].left = (invSquare[i - 1].left + invSquare[i].width + 2);
 	}
+
+	if (chestOpened == true) {
+		for (int i = 0; i < 24; i++) {
+			chestSquare[i].width = invSSprite.getGlobalBounds().width - 4;
+			chestSquare[i].height = invSSprite.getGlobalBounds().height - 4;
+		}
+
+		chestSquare[0].top = chestSprite.getPosition().y + 24;
+		chestSquare[0].left = chestSprite.getPosition().x + 12 + 2;
+		for (int i = 1; i <=3; i++) {
+			chestSquare[i].top = invSprite.getPosition().y + 24;
+			chestSquare[i].left = (chestSquare[i - 1].left + chestSquare[i].width + 2);
+		}
+		chestSquare[4].top = chestSprite.getPosition().y + 24 + chestSquare[0].height + 2;
+		chestSquare[4].left = chestSprite.getPosition().x + 12 + 2;
+		for (int i = 5; i <= 7; i++) {
+			chestSquare[i].top = invSprite.getPosition().y + 24 + chestSquare[0].height + 2;
+			chestSquare[i].left = (chestSquare[i - 1].left + chestSquare[i].width + 2);
+		}
+		chestSquare[8].top = chestSprite.getPosition().y + 24 + 2*(chestSquare[0].height + 2);
+		chestSquare[8].left = chestSprite.getPosition().x + 12 + 2;
+		for (int i = 9; i <= 11; i++) {
+			chestSquare[i].top = invSprite.getPosition().y + 24 + 2*(chestSquare[0].height + 2);
+			chestSquare[i].left = (chestSquare[i - 1].left + chestSquare[i].width + 2);
+		}
+		chestSquare[12].top = chestSprite.getPosition().y + 24 + 3 * (chestSquare[0].height + 2);
+		chestSquare[12].left = chestSprite.getPosition().x + 12 + 2;
+		for (int i = 13; i <= 15; i++) {
+			chestSquare[i].top = invSprite.getPosition().y + 24 + 3 * (chestSquare[0].height + 2);
+			chestSquare[i].left = (chestSquare[i - 1].left + chestSquare[i].width + 2);
+		}
+		chestSquare[16].top = chestSprite.getPosition().y + 24 + 4 * (chestSquare[0].height + 2);
+		chestSquare[16].left = chestSprite.getPosition().x + 12 + 2;
+		for (int i = 17; i <= 19; i++) {
+			chestSquare[i].top = invSprite.getPosition().y + 24 + 4 * (chestSquare[0].height + 2);
+			chestSquare[i].left = (chestSquare[i - 1].left + chestSquare[i].width + 2);
+		}
+		chestSquare[20].top = chestSprite.getPosition().y + 24 + 5 * (chestSquare[0].height + 2);
+		chestSquare[20].left = chestSprite.getPosition().x + 12 + 2;
+		for (int i = 21; i <= 23; i++) {
+			chestSquare[i].top = invSprite.getPosition().y + 24 + 5 * (chestSquare[0].height + 2);
+			chestSquare[i].left = (chestSquare[i - 1].left + chestSquare[i].width + 2);
+		}
+		
+
+
+	}
+
+
 
 
 	for (int i = 0; i < inv_vector.size(); i++) {
@@ -213,6 +272,10 @@ void Inventory::updateInventory(RenderWindow& gameWindow)
 	craftingTableRequired->setPosition(reqBackground.getPosition().x + 10, reqBackground.getPosition().y + 20 + 6 * (itemsRequiredToCraft[0]->getGlobalBounds().height + 3));
 	no_yes.setPosition(craftingTableRequired->getPosition());
 	isAbleToCraftYN.setPosition(itemsToCraft[craftSelected]->getPosition().x+19, itemsToCraft[craftSelected]->getPosition().y + 19);
+
+
+	chestSprite.setPosition(invSprite.getPosition().x - 178, invSprite.getPosition().y);
+	chest.setPosition(chestSprite.getPosition().x + 70, chestSprite.getPosition().y - 1);
 }
 
 
@@ -321,18 +384,22 @@ Inventory::Inventory(RenderWindow& gameWindow, Font& gameFont, map <IDs, sf::Tex
 	initTexts();
 }
 
-void Inventory::displayInventory(RenderWindow& gameWindow)
+void Inventory::displayInventory(RenderWindow& gameWindow, bool chestOpened)
 {
-	updateInventory(gameWindow);
+	updateInventory(gameWindow,chestOpened);
 	gameWindow.draw(invSprite);
-	displayInventorySelected(gameWindow);
+	if (chestOpened == true) {
+		gameWindow.draw(chestSprite);
+		gameWindow.draw(chest);
+	}
+	displayInventorySelected(gameWindow,chestOpened);
 
 	for (auto& it : inv_vector) {
 		if (it.first != nullptr) {
 			gameWindow.draw(*it.first);
 		}
 	}
-	
+
 
 	for (int i = 0; i < 40; i++) {
 		gameWindow.draw(itemQuantity[i]);
@@ -341,68 +408,77 @@ void Inventory::displayInventory(RenderWindow& gameWindow)
 		gameWindow.draw(*mouseItem.first);
 		gameWindow.draw(mouseItemQuantity);
 
-		
-	}
-	for (int i = 0; i < slotSprites.size(); i++) {
-		slotSprites[i]->setScale(3, 3);
-		if (itemsToCraft[i]->getPosition().y <= craftingSelectedSprite.getPosition().y + 10 - (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
-			slotSprites[i]->setColor(Color(0, 0, 0, 0));
-		}
-		if (itemsToCraft[i]->getPosition().y >= craftingSelectedSprite.getPosition().y + 10 + (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
-			slotSprites[i]->setColor(Color(0, 0, 0, 0));
-		}
-		
-		gameWindow.draw(*slotSprites[i]);
 
 	}
+
+
+
+	if (chestOpened == false)
+	{
+		for (int i = 0; i < slotSprites.size(); i++) {
+			slotSprites[i]->setScale(3, 3);
+			if (itemsToCraft[i]->getPosition().y <= craftingSelectedSprite.getPosition().y + 10 - (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
+				slotSprites[i]->setColor(Color(0, 0, 0, 0));
+			}
+			if (itemsToCraft[i]->getPosition().y >= craftingSelectedSprite.getPosition().y + 10 + (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
+				slotSprites[i]->setColor(Color(0, 0, 0, 0));
+			}
+
+			gameWindow.draw(*slotSprites[i]);
+
+		}
+
+
+
+		for (int i = 0; i < itemsToCraft.size(); i++) {
+			itemsToCraft[i]->setScale(2.5, 2.5);
+			if (itemsToCraft[i]->getPosition().y <= craftingSelectedSprite.getPosition().y + 10 - (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
+				itemsToCraft[i]->setColor(Color(0, 0, 0, 0));
+			}
+			if (itemsToCraft[i]->getPosition().y >= craftingSelectedSprite.getPosition().y + 10 + (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
+				itemsToCraft[i]->setColor(Color(0, 0, 0, 0));
+			}
+
+			gameWindow.draw(*itemsToCraft[i]);
+
+
+		}
+
+
+		gameWindow.draw(reqBackground);
+		gameWindow.draw(craftingSelectedSprite);
+		craftSelect(gameWindow);
+
+		gameWindow.draw(itemsRequired);
+
+		for (auto& el : itemsRequiredToCraft) {
+			gameWindow.draw(*el);
+		}
+
+		gameWindow.draw(craftedItemQuantity);
+
+		for (auto& el : itemsRequiredToCraftQuantity) {
+			gameWindow.draw(*el);
+		}
+		if (itemsToCraft[craftSelected]->getIsCraftingTableRequired() == true) {
+			gameWindow.draw(*craftingTableRequired);
+			if (isCraftingTableNear) {
+				no_yes.setTextureRect(IntRect(20, 0, 20, 20));
+			}
+			else { no_yes.setTextureRect(IntRect(0, 0, 20, 20)); }
+			gameWindow.draw(no_yes);
+		}
+		if (mouseOnCraft == craftSelected) {
+			if (isAbleToCraft()) {
+				isAbleToCraftYN.setTextureRect(IntRect(20, 0, 20, 20));
+			}
+			else { isAbleToCraftYN.setTextureRect(IntRect(0, 0, 20, 20)); }
+			gameWindow.draw(isAbleToCraftYN);
+		}
+
+	}
+
 	
-
-	
-	for (int i = 0; i < itemsToCraft.size(); i++) {
-		itemsToCraft[i]->setScale(2.5, 2.5);
-		if (itemsToCraft[i]->getPosition().y <= craftingSelectedSprite.getPosition().y + 10 - (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
-			itemsToCraft[i]->setColor(Color(0, 0, 0, 0));
-		}
-		if (itemsToCraft[i]->getPosition().y >= craftingSelectedSprite.getPosition().y + 10 + (4 * (craftingSelectedSprite.getGlobalBounds().height - 3))) {
-			itemsToCraft[i]->setColor(Color(0, 0, 0, 0));
-		}
-		
-		gameWindow.draw(*itemsToCraft[i]);
-		
-		
-	}
-	
-	
-	gameWindow.draw(reqBackground);
-	gameWindow.draw(craftingSelectedSprite);
-	craftSelect(gameWindow);
-
-	gameWindow.draw(itemsRequired);
-
-	for (auto& el : itemsRequiredToCraft) {
-		gameWindow.draw(*el);
-	}
-
-	gameWindow.draw(craftedItemQuantity);
-
-	for (auto& el : itemsRequiredToCraftQuantity) {
-		gameWindow.draw(*el);
-	}
-	if (itemsToCraft[craftSelected]->getIsCraftingTableRequired() == true) {
-		gameWindow.draw(*craftingTableRequired);
-		if (isCraftingTableNear) {
-			no_yes.setTextureRect(IntRect(20,0, 20, 20));
-		}
-		else { no_yes.setTextureRect(IntRect(0, 0, 20, 20)); }
-		gameWindow.draw(no_yes);
-	}
-	if (mouseOnCraft == craftSelected) {
-		if (isAbleToCraft()) {
-			isAbleToCraftYN.setTextureRect(IntRect(20, 0, 20, 20));
-		}
-		else { isAbleToCraftYN.setTextureRect(IntRect(0, 0, 20, 20)); }
-		gameWindow.draw(isAbleToCraftYN);
-	}
 }
 
 void Inventory::displayQInventory(RenderWindow& gameWindow)
@@ -442,7 +518,7 @@ void Inventory::displayQInventorySelected(RenderWindow& gameWindow)
 	gameWindow.draw(invSSprite);
 }
 
-void Inventory::displayInventorySelected(RenderWindow& gameWindow)
+void Inventory::displayInventorySelected(RenderWindow& gameWindow,bool chestOpened)
 {
 	Vector2f worldPos = gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow),gameWindow.getView());
 	for (int i = 0; i < 44; i++) {
@@ -453,6 +529,17 @@ void Inventory::displayInventorySelected(RenderWindow& gameWindow)
 			invSelected = i;
 		}
 
+	}
+	if (chestOpened == true) {
+		for (int i = 0; i <24; i++) {
+			if (worldPos.x > chestSquare[i].left && worldPos.x < (chestSquare[i].left + chestSquare[i].width) && worldPos.y > chestSquare[i].top && worldPos.y < chestSquare[i].top + chestSquare[i].height) {
+				invSSprite.setScale(invSprite.getScale());
+				invSSprite.setPosition(chestSquare[i].left - 2, chestSquare[i].top - 2);
+				gameWindow.draw(invSSprite);
+				chestSelected = i;
+			}
+
+		}
 	}
 }
 
@@ -562,6 +649,41 @@ int Inventory::getSelectedToolBlockDamage()
 		return inv_vector[qInvSelected].first->getBlockDamage();
 	}
 	else { return 0; }
+}
+
+int Inventory::getChestSelected()
+{
+	return chestSelected;
+}
+
+bool Inventory::isMouseOnInventory(RenderWindow& gameWindow)
+{
+	Vector2f worldPos = gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView());
+		if (worldPos.x > invSprite.getGlobalBounds().left && worldPos.x < (invSprite.getGlobalBounds().left + invSprite.getGlobalBounds().width) && worldPos.y > invSprite.getGlobalBounds().top && worldPos.y < invSprite.getGlobalBounds().top + invSprite.getGlobalBounds().height) {
+			return true;
+		}
+
+		return false;
+}
+
+bool Inventory::isMouseOnChest(RenderWindow& gameWindow)
+{
+	Vector2f worldPos = gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView());
+		if (worldPos.x > chestSprite.getGlobalBounds().left && worldPos.x < (chestSprite.getGlobalBounds().left + chestSprite.getGlobalBounds().width) && worldPos.y > chestSprite.getGlobalBounds().top && worldPos.y < chestSprite.getGlobalBounds().top + chestSprite.getGlobalBounds().height) {
+			return true;
+			
+		}
+	return false;
+}
+
+Vector2f Inventory::getChestItemsPosition(int i)
+{
+	return Vector2f(chestSquare[i].left, chestSquare[i].top);
+}
+
+Text Inventory::getChestItemQuantityText(int i)
+{
+	return chestItemQuantity[i];
 }
 
 void Inventory::setIsCraftingTableNear(bool i)

@@ -114,7 +114,7 @@ void Entity::GravityUpdate(float elapsed, float gravity)
 
 void Entity::Update(float elapsed)
 {
-    if (isPlayer) cout << state << endl;
+   // if (isPlayer) cout << state << endl;
     if (isAlive)
     {
         if (state == AnimationName::Basic)
