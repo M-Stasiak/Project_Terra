@@ -24,6 +24,7 @@ public:
 public:
 	GameWorld();
 	void test(RenderWindow& gameWindow);
+	void GenerateTree(int i, int j);
 	void dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Texture*>& arg2, map <IDs, Block*>& arg3, map <IDs, Item*>& arg4, Vector2f pos);
 	void drawItemsOnGround(RenderWindow& gameWindow, Vector2f playerPosition, int renderWidth, int renderHeight);
 };

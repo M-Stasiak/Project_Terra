@@ -98,3 +98,31 @@ public:
 	Hay(std::map <IDs, sf::Texture*>& arg);
 	void test() {}
 };
+
+class Diamond : public Block
+{
+public:
+	Diamond(std::map <IDs, sf::Texture*>& arg);
+	void test() {}
+};
+
+class Iron : public Block
+{
+public:
+	Iron(std::map <IDs, sf::Texture*>& arg);
+	void test() {}
+};
+
+class Emerald : public Block
+{
+public:
+	Emerald(std::map <IDs, sf::Texture*>& arg);
+	void test() {}
+};
+
+class Gold : public Block
+{
+public:
+	Gold(std::map <IDs, sf::Texture*>& arg);
+	void test() {}
+};

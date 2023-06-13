@@ -470,7 +470,7 @@ void Game::dispGame()
 								}
 
 							}
-							else if (inventory->isMouseOnInventory(gameWindow) == true) {
+							if (inventory->isMouseOnInventory(gameWindow) == true) {
 								if (inventory->mouseItem.first == nullptr || inventory->inv_vector[inventory->getInventorySelected()].first == nullptr) {
 									inventory->mouseItem.swap(inventory->inv_vector[inventory->getInventorySelected()]);
 								}

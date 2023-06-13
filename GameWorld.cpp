@@ -41,6 +41,30 @@ template <typename T> vector<T> Interpolation(vector<T> xw, vector<T> yw, vector
 	return result;
 }
 
+void GameWorld::GenerateTree(int i, int j)
+{
+	int height = rand() % 7 + 4;
+	int radius = rand() % 7 + 5;
+	for (int k = 0; k < height; k++)
+	{
+		sf::FloatRect p(i * 16, (j-k) * 16, 0, 0);
+		B a(IDs::WoodID, p);
+		world[i][j - k] = a;
+	}
+	for (int k = i - radius; k < i + radius; k++)
+	{
+		for (int l = j - radius; l < j + radius; l++)
+		{
+			if ((k - i) * (k - i) + (l - j) * (l - j) <= radius)
+			{
+				sf::FloatRect p(k * 16, (l-height) * 16, 0, 0);
+				B a(IDs::LeavesID, p);
+				world[k][l-height] = a;
+			}
+		}
+	}
+}
+
 GameWorld::GameWorld()
 {
 	unsigned int width = 1000, height = 1000;
@@ -60,7 +84,10 @@ GameWorld::GameWorld()
 	}
 	y = Interpolation(xw, yw, x);
 
-	PerlinNoise pn(rand());
+	PerlinNoise pn1(rand());
+	PerlinNoise ironPn(rand());
+	PerlinNoise goldPn(rand());
+	PerlinNoise diamondPn(rand());
 
 	for (int i = 0; i < y.size(); i++)
 	{
@@ -82,13 +109,46 @@ GameWorld::GameWorld()
 				double xPom = (double)j / ((double)width);
 				double yPom = (double)i / ((double)height);
 
-				double n = pn.noise(100 * xPom, 100 * yPom, 0.8);
+				double n1 = pn1.noise(100 * xPom, 100 * yPom, 0.8);
+				double n2 = ironPn.noise(100 * xPom, 100 * yPom, 0.8);
+				double n3 = goldPn.noise(100 * xPom, 100 * yPom, 0.2);
+				double n4 = diamondPn.noise(100 * xPom, 100 * yPom, 0.001);
 
-				if (n > 0.4)
+				if (n1 > 0.4)
 				{
-					sf::FloatRect p(i * 16, j * 16, 16, 16);
-					B a(IDs::RockID, p);
-					pom[j] = a;
+					if (n4 < 0.2 and j >(int)y[i] + 300)
+					{
+						sf::FloatRect p(i * 16, j * 16, 16, 16);
+						B a(IDs::DiamondID, p);
+						pom[j] = a;
+					}
+					else if (n3 < 0.3 and j >(int)y[i] + 100)
+					{
+						sf::FloatRect p(i * 16, j * 16, 16, 16);
+						B a(IDs::GoldID, p);
+						pom[j] = a;
+					}
+					else if (n2 < 0.3)
+					{
+						sf::FloatRect p(i * 16, j * 16, 16, 16);
+						B a(IDs::IronID, p);
+						pom[j] = a;
+					}
+					else
+					{
+						if (j > (int)y[i] + 20)
+						{
+							sf::FloatRect p(i * 16, j * 16, 16, 16);
+							B a(IDs::RockID, p);
+							pom[j] = a;
+						}
+						else
+						{
+							sf::FloatRect p(i * 16, j * 16, 16, 16);
+							B a(IDs::DirtID, p);
+							pom[j] = a;
+						}
+					}
 				}
 				else
 				{
@@ -109,7 +169,13 @@ GameWorld::GameWorld()
 		}
 		world[i] = pom;
 	}
+
+	for (int i = 10; i < 990; i+=10)
+	{
+		if (rand()%10 > 4) GenerateTree(i, (int)y[i]-1);
+	}
 }
+
 void GameWorld::test(RenderWindow& gameWindow)
 {
 	unsigned int width = 192, height = 108;
@@ -143,13 +209,13 @@ void GameWorld::test(RenderWindow& gameWindow)
 
 void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Texture*>& arg2, map <IDs, Block*>& arg3, map <IDs, Item*>& arg4, Vector2f pos)
 {
-	if (id != 0 && id<=10){
+	if (id != 0 && id<= GoldID){
 	items_on_ground.emplace_back(new Block_Item(arg1, arg3, id, pos));
 	}
-	else if (id != 0 && id >= 11 && id <= 15) {
+	else if (id != 0 && id >= WoodenSwordID && id <= StonePickaxeID) {
 		items_on_ground.emplace_back(new Tool_Item(id, arg2, arg4, pos));
 	}
-	else if (id != 0 && id >= 16) {
+	else if (id != 0 && id >= StickID) {
 	items_on_ground.emplace_back(new Material_Item(id,arg2, arg4, pos));
 	}
 	

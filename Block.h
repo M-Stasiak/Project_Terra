@@ -19,12 +19,17 @@ enum IDs
 	ClayID,
 	BricksID,
 	HayID,
+	DiamondID,
+	IronID,
+	EmeraldID,
+	GoldID,
 
 	WoodenSwordID,
 	StoneSwordID,
 	GoldenSwordID,
 	WoodenPickaxeID,
 	StonePickaxeID,
+
 	StickID,
 };
 
@@ -54,16 +59,23 @@ public:
 		rect = r;
 		switch (ID) {
 		
-		case(1): {durability = 100; break; }
-		case(2): {durability = 100; break; }
-		case(3): {durability = 1000; break; }
-		case(4): {durability = 500; break; }
-		case(5): {durability = 400; break; }
-		case(6): {durability = 10; break; }
-		case(7): {durability = 50; break; }
-		case(8): {durability = 100; break; }
-		case(9): { durability = 400; break; }
-		case(10): { durability = 400; break; }
+		case(IDs::GrassID): {durability = 100; break; }
+		case(IDs::DirtID): {durability = 100; break; }
+		case(IDs::RockID): {durability = 1000; break; }
+		case(IDs::WoodID): {durability = 500; break; }
+		case(IDs::PlankID): {durability = 400; break; }
+		case(IDs::LeavesID): {durability = 10; break; }
+		case(IDs::CactusID): {durability = 50; break; }
+		case(IDs::SandID): {durability = 100; break; }
+		case(IDs::ChestID): { durability = 400; break; }
+		case(IDs::CraftingTableID): { durability = 400; break; }
+		case(IDs::ClayID): { durability = 100; break; }
+		case(IDs::BricksID): { durability = 1000; break; }
+		case(IDs::HayID): { durability = 100; break; }
+		case(IDs::DiamondID): { durability = 4000; break; }
+		case(IDs::IronID): { durability = 2000; break; }
+		case(IDs::EmeraldID): { durability = 3000; break; }
+		case(IDs::GoldID): { durability = 3000; break; }
 		}
 	}
 };
