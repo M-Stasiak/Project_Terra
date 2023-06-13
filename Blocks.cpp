@@ -13,6 +13,9 @@ void prepareBlocksTextures(std::map <IDs, sf::Texture*> &arg)
 	arg[IDs::CactusID] = tileset;
 	arg[IDs::SandID] = tileset;
 	arg[IDs::CraftingTableID] = tileset;
+	arg[IDs::ClayID] = tileset;
+	arg[IDs::BricksID] = tileset;
+	arg[IDs::HayID] = tileset;
 
 	sf::Texture* tileset2 = new sf::Texture;
 	tileset2->loadFromFile("Textures/Destructible Objects Sprite Sheet.png");
@@ -31,6 +34,9 @@ void prepareBlocksMap(std::map<IDs, Block*> &arg1, std::map <IDs, sf::Texture*> 
 	arg1[IDs::SandID] = new Sand(arg2);
 	arg1[IDs::ChestID] = new Chest(arg2);
 	arg1[IDs::CraftingTableID] = new CraftingTable(arg2);
+	arg1[IDs::ClayID] = new Clay(arg2);
+	arg1[IDs::BricksID] = new Bricks(arg2);
+	arg1[IDs::HayID] = new Hay(arg2);
 
 }
 
@@ -122,5 +128,32 @@ CraftingTable::CraftingTable(std::map<IDs, sf::Texture*>& arg)
 	dropID = IDs::CraftingTableID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(48, 224, 16, 16));
+
+}
+
+Clay::Clay(std::map<IDs, sf::Texture*>& arg)
+{
+	ID = IDs::ClayID;
+	dropID = IDs::ClayID;
+	setTexture(*arg[ID]);
+	setTextureRect(sf::IntRect(96, 96, 16, 16));
+
+}
+
+Bricks::Bricks(std::map<IDs, sf::Texture*>& arg)
+{
+	ID = IDs::BricksID;
+	dropID = IDs::BricksID;
+	setTexture(*arg[ID]);
+	setTextureRect(sf::IntRect(160, 48, 16, 16));
+
+}
+
+Hay::Hay(std::map<IDs, sf::Texture*>& arg)
+{
+	ID = IDs::HayID;
+	dropID = IDs::HayID;
+	setTexture(*arg[ID]);
+	setTextureRect(sf::IntRect(256, 240, 16, 16));
 
 }

@@ -42,7 +42,7 @@ void Entity::Attack(float elapsed, Entity& entity)
     {
         state = AnimationName::Attack;
         entity.setState(AnimationName::Damage);
-        entity.TakeDamage(100);
+        entity.TakeDamage(10);
         attackTime = 0;
     }
 }

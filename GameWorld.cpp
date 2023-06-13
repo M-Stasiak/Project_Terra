@@ -1,6 +1,5 @@
 #include "GameWorld.h"
 
-
 template <typename T> vector<vector<T>> DividedDifferences(vector<T> x, vector<T> y)
 {
 	vector<vector<T>> result(x.size());
@@ -44,26 +43,7 @@ template <typename T> vector<T> Interpolation(vector<T> xw, vector<T> yw, vector
 
 GameWorld::GameWorld()
 {
-	/*for (int i = 0; i < 1000; i++)
-	{
-		map<int, B> pom;
-		for (int j = 0; j < 10; j++)
-		{
-			sf::FloatRect p(i * 16, j * 16, 0, 0);
-			B a(IDs::AirID, p);
-			pom[j] = a;
-		}
-		sf::FloatRect p(i * 16, 10 * 16, 16, 16);
-		B a(IDs::DirtID, p);
-		pom[10] = a;
-		for (int j = 11; j < 1000; j++)
-		{
-			sf::FloatRect p(i * 16, j * 16, 16, 16);
-			B a(IDs::GrassID, p);
-			pom[j] = a;
-		}
-		world[i] = pom;
-	}*/
+	unsigned int width = 1000, height = 1000;
 
 	int idInt = AirID;
 	srand(time(NULL));
@@ -79,6 +59,8 @@ GameWorld::GameWorld()
 		x.push_back(i);
 	}
 	y = Interpolation(xw, yw, x);
+
+	PerlinNoise pn(rand());
 
 	for (int i = 0; i < y.size(); i++)
 	{
@@ -96,42 +78,67 @@ GameWorld::GameWorld()
 			}
 			else if (j > (int)y[i])
 			{
-				if (idInt == 0) idInt++;
+				// New Procedural Generator
+				double xPom = (double)j / ((double)width);
+				double yPom = (double)i / ((double)height);
+
+				double n = pn.noise(100 * xPom, 100 * yPom, 0.8);
+
+				if (n > 0.4)
+				{
+					sf::FloatRect p(i * 16, j * 16, 16, 16);
+					B a(IDs::RockID, p);
+					pom[j] = a;
+				}
+				else
+				{
+					sf::FloatRect p(i * 16, j * 16, 0, 0);
+					B a(IDs::AirID, p);
+					pom[j] = a;
+				}
+				// End Procedural Generator
+
+				/*if (idInt == 0) idInt++;
 				IDs xd = static_cast<IDs>(idInt);
 				sf::FloatRect p(i * 16, j * 16, 16, 16);
 				B a(xd, p);
 				pom[j] = a;
 				idInt++;
-				if (idInt > ChestID) idInt = AirID;
+				if (idInt > HayID) idInt = AirID;*/
 			}
 		}
-		/*for (int j = 0; j < 1000; j++)
-		{
-			if (j < (int)y[i])
-			{
-				sf::FloatRect p(i * 16, j * 16, 16, 16);
-				B a(IDs::AirID, p);
-				pom[j] = a;
-			}
-			else if (j > (int)y[i])
-			{
-				sf::FloatRect p(i * 16, j * 16, 16, 16);
-				B a(IDs::DirtID, p);
-				pom[j] = a;
-			}
-		}*/
 		world[i] = pom;
 	}
+}
+void GameWorld::test(RenderWindow& gameWindow)
+{
+	unsigned int width = 192, height = 108;
 
-	//vector<float> xw = {1101.0, 911.3, 636.0, 451.1 };
-	//vector<float> yw = {25.113, 30.131, 40.120, 50.128 };
+	static unsigned int seed = 0;
+	seed++;
+	PerlinNoise pn(seed);
+	RectangleShape kw(Vector2f(10, 10));
 
-	//vector<float> x = { 400, 480, 560, 640, 720, 800, 880, 960, 1040, 1120, 1200 };
-	//vector<float> y = Interpolation(xw, yw, x);
-	//for (int i = 0; i < x.size(); i++)
-	//	cout << x[i] << " " << y[i] << endl;
+	for (unsigned int i = 0; i < height; ++i) 
+	{     // y
+		for (unsigned int j = 0; j < width; ++j) 
+		{  // x
+			double x = (double)j / ((double)width);
+			double y = (double)i / ((double)height);
 
-	//world = rotateMap(world);
+			double n = pn.noise(10 * x, 10 * y, 0.8);
+
+			// Wood like structure
+			//n = 20 * pn.noise(x, y, 0.8);
+			//n = n - floor(n);
+
+			kw.setPosition(j * 10, i * 10);
+			//kw.setFillColor(Color(255, 255, 255, floor(255 * n)));
+			if (n > 0.4) kw.setFillColor(Color::Black);
+			else kw.setFillColor(Color::White);
+			gameWindow.draw(kw);
+		}
+	}
 }
 
 void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Texture*>& arg2, map <IDs, Block*>& arg3, map <IDs, Item*>& arg4, Vector2f pos)

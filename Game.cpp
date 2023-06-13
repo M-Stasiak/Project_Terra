@@ -58,14 +58,16 @@ void Game::dispGame()
 	sword1.setPosition(100, 100);
 	sword2.setPosition(200, 100);
 	sword3.setPosition(300, 100);*/
-
+	//RenderWindow test(VideoMode::getDesktopMode(), "X", Style::Default);
 	GameWorld world;
 	/*world.items_on_ground.emplace_back(&sword1);
 	world.items_on_ground.emplace_back(&sword2);
 	world.items_on_ground.emplace_back(&sword3);*/
 	Clock clock;
 	while (gameWindow.isOpen()) {
-		
+		//test.clear();
+		//world.test(test);
+		//test.display();
 
 			Time elapsed = clock.restart();
 			

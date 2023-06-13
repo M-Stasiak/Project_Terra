@@ -16,6 +16,9 @@ enum IDs
 	SandID,
 	ChestID,
 	CraftingTableID,
+	ClayID,
+	BricksID,
+	HayID,
 
 	WoodenSwordID,
 	StoneSwordID,

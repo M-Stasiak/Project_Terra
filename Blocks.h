@@ -78,3 +78,23 @@ public:
 	void test() {}
 };
 
+class Clay : public Block
+{
+public:
+	Clay(std::map <IDs, sf::Texture*>& arg);
+	void test() {}
+};
+
+class Bricks : public Block
+{
+public:
+	Bricks(std::map <IDs, sf::Texture*>& arg);
+	void test() {}
+};
+
+class Hay : public Block
+{
+public:
+	Hay(std::map <IDs, sf::Texture*>& arg);
+	void test() {}
+};
