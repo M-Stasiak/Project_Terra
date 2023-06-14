@@ -172,6 +172,10 @@ void Inventory::updateInventory(RenderWindow& gameWindow,bool chestOpened)
 		if (inv_vector[i].first != nullptr) {
 			inv_vector[i].first->setPosition(invSquare[i].left + 4, invSquare[i].top + 4);
 			inv_vector[i].first->setScale(1.75, 1.75);
+			if (inv_vector[i].first->getID() >= DiamondID && inv_vector[i].first->getID() <= GoldID) {
+				inv_vector[i].first->setScale(0.175, 0.175);
+			}
+
 		}
 	}
 
@@ -301,6 +305,9 @@ void Inventory::updateQInventory(RenderWindow& gameWindow)
 		if (inv_vector[i].first != nullptr) {
 			inv_vector[i].first->setPosition(invSquare[i].left + 1, invSquare[i].top + 1);
 			inv_vector[i].first->setScale(0.88, 0.86);
+			if (inv_vector[i].first->getID() >= DiamondID && inv_vector[i].first->getID() <= GoldID) {
+				inv_vector[i].first->setScale(0.09, 0.089);
+			}
 		}
 	}
 
@@ -316,6 +323,7 @@ void Inventory::updateQInventory(RenderWindow& gameWindow)
 			itemQuantity[i].setScale(0.25, 0.25);
 			itemQuantity[i].setPosition(inv_vector[i].first->getPosition().x + 1, inv_vector[i].first->getPosition().y - 3);
 			itemQuantity[i].setString(to_string(inv_vector[i].second));
+			
 
 
 		}
@@ -404,12 +412,7 @@ void Inventory::displayInventory(RenderWindow& gameWindow, bool chestOpened)
 	for (int i = 0; i < 40; i++) {
 		gameWindow.draw(itemQuantity[i]);
 	}
-	if (mouseItem.first != nullptr) {
-		gameWindow.draw(*mouseItem.first);
-		gameWindow.draw(mouseItemQuantity);
-
-
-	}
+	
 
 
 
@@ -662,7 +665,7 @@ bool Inventory::isMouseOnInventory(RenderWindow& gameWindow)
 		if (worldPos.x > invSprite.getGlobalBounds().left && worldPos.x < (invSprite.getGlobalBounds().left + invSprite.getGlobalBounds().width) && worldPos.y > invSprite.getGlobalBounds().top && worldPos.y < invSprite.getGlobalBounds().top + invSprite.getGlobalBounds().height) {
 			return true;
 		}
-
+		
 		return false;
 }
 
@@ -681,10 +684,31 @@ Vector2f Inventory::getChestItemsPosition(int i)
 	return Vector2f(chestSquare[i].left, chestSquare[i].top);
 }
 
+
 Text Inventory::getChestItemQuantityText(int i)
 {
 	return chestItemQuantity[i];
 }
+
+void Inventory::setChestItemQuantityTextPosition(Vector2f vec, int i)
+{
+	chestItemQuantity[i].setPosition(vec);
+}
+
+void Inventory::setChestItemQuantityTextScale(float x, float y, int i)
+{
+	chestItemQuantity[i].setScale(x,y);
+}
+
+bool Inventory::isMouseOnCraftingRequired(RenderWindow& gameWindow)
+{
+	Vector2f worldPos = gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView());
+	if (worldPos.x > reqBackground.getGlobalBounds().left && worldPos.x < (reqBackground.getGlobalBounds().left + reqBackground.getGlobalBounds().width) && worldPos.y > reqBackground.getGlobalBounds().top && worldPos.y < reqBackground.getGlobalBounds().top + reqBackground.getGlobalBounds().height) {
+		return true;
+	}
+	return false;
+}
+
 
 void Inventory::setIsCraftingTableNear(bool i)
 {
@@ -694,4 +718,8 @@ void Inventory::setIsCraftingTableNear(bool i)
 
 int Inventory::getCraftSelected() {
 	return craftSelected;
+}
+
+void Inventory::setChestItemQuantityTextString(string a, int i) {
+	chestItemQuantity[i].setString(a);
 }

@@ -62,6 +62,7 @@ void Game::dispGame()
 	world.items_on_ground.emplace_back(&sword2);
 	world.items_on_ground.emplace_back(&sword3);*/
 	Clock clock;
+	world.dropItem(IDs::GoldID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	world.dropItem(IDs::ChestID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	while (gameWindow.isOpen()) {
 		//test.clear();
@@ -123,12 +124,21 @@ void Game::dispGame()
 						player.DestroyBlock(world.world, gameWindow,inventory->getSelectedToolBlockDamage());
 						if (player.isBlockDestroyed() == true) {
 							world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), BlocksTextures,ItemsTextures, Blocks,Items,player.getDestroyedBlockPosition());
+							if (player.getDestroyedBlockID() == ChestID) {
+								auto a = find_if(world.chests.begin(), world.chests.end(), [this](const pair<Vector2f, vector<pair<unique_ptr<Item>, int>>>& chest) {return chest.first == player.getDestroyedBlockPosition(); });
+								world.chests.erase(a);
+							}
 						}
+						
 					}
 					else {
 						player.DestroyBlock(world.world, gameWindow, inventory->getSelectedToolBlockDamage());
 						if (player.isBlockDestroyed() == true) {
 							world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), BlocksTextures, ItemsTextures, Blocks, Items, player.getDestroyedBlockPosition());
+							if (player.getDestroyedBlockID() == ChestID) {
+								auto a = find_if(world.chests.begin(), world.chests.end(), [this](const pair<Vector2f, vector<pair<unique_ptr<Item>, int>>>& chest) {return chest.first == player.getDestroyedBlockPosition(); });
+								world.chests.erase(a);
+							}
 						}
 					}
 				}
@@ -421,16 +431,22 @@ void Game::dispGame()
 							for (int i = 0; i < el.second.size();i++) {
 								if (el.second[i].first != nullptr) {
 									el.second[i].first->setPosition(Vector2f(inventory->getChestItemsPosition(i).x+4, inventory->getChestItemsPosition(i).y + 4));
-									inventory->getChestItemQuantityText(i).setScale(0.5, 0.5);
-									inventory->getChestItemQuantityText(i).setPosition(el.second[i].first->getPosition());
-									inventory->getChestItemQuantityText(i).setString(to_string(el.second[i].second));
+									inventory->setChestItemQuantityTextString(to_string(el.second[i].second), i);
+									inventory->setChestItemQuantityTextPosition(Vector2f(el.second[i].first->getPosition().x+1, el.second[i].first->getPosition().y-6),i);
+									inventory->setChestItemQuantityTextScale(0.5,0.5, i);
 									gameWindow.draw(*el.second[i].first);
 									gameWindow.draw(inventory->getChestItemQuantityText(i));
 								}
 								else{ inventory->getChestItemQuantityText(i).setString(""); }
 							}
 						}
+				    }
+
 				}
+				if (inventory->mouseItem.first != nullptr) {
+					gameWindow.draw(*inventory->mouseItem.first);
+					gameWindow.draw(inventory->mouseItemQuantity);
+
 
 				}
 				
@@ -464,25 +480,26 @@ void Game::dispGame()
 											if (inventory->mouseItem.first->getID() != el.second[inventory->getChestSelected()].first->getID() && el.first == player.getOpenedChestPosition()) {
 												inventory->mouseItem.swap(el.second[inventory->getChestSelected()]);
 											}
-											//	/*else if (inventory->mouseItem.first->getID() == world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()].first->getID()) {
-											//		if (inventory->mouseItem.second + world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()].second < inventory->mouseItem.first->getStackingQuantity()) {
-											//			world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()].second += inventory->mouseItem.second;
-											//			inventory->mouseItem.second -= inventory->mouseItem.second;
-											//		}
-											//		else {
-											//			int difference = inventory->mouseItem.first->getStackingQuantity() - world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()].second;
-											//			if (difference > 0) {
-											//				world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()].second += difference;
-											//				inventory->mouseItem.second -= difference;
-											//			}
-											//			else { inventory->mouseItem.swap(world.chests[player.getOpenedChestPosition()][inventory->getChestSelected()]); }
+												else if (inventory->mouseItem.first->getID() == el.second[inventory->getChestSelected()].first->getID()) {
+													if (inventory->mouseItem.second + el.second[inventory->getChestSelected()].second < inventory->mouseItem.first->getStackingQuantity()) {
+														el.second[inventory->getChestSelected()].second += inventory->mouseItem.second;
+														inventory->mouseItem.second -= inventory->mouseItem.second;
+													}
+													else {
+														int difference = inventory->mouseItem.first->getStackingQuantity() - el.second[inventory->getChestSelected()].second;
+														if (difference > 0) {
+															el.second[inventory->getChestSelected()].second += difference;
+															inventory->mouseItem.second -= difference;
+														}
+														else { inventory->mouseItem.swap(el.second[inventory->getChestSelected()]); }
 
-											//		}
-											//	}*/
+													}
+												}
 										}
 									}
 
 								}
+								
 
 							}
 							if (inventory->isMouseOnInventory(gameWindow) == true) {
@@ -516,6 +533,33 @@ void Game::dispGame()
 								inventory->setCraftSelected(inventory->getMouseOnCraft(),BlocksTextures,ItemsTextures,Blocks,Items,gameFont);
 										
 							}
+							if ((inventory->isMouseOnInventory(gameWindow) == false  && inventory->getMouseOnCraft() == -1 ) && player.isChestOpened() == false && inventory->isMouseOnCraftingRequired(gameWindow) == false) {
+								if (Mouse::getPosition().x > gameWindow.getSize().x / 2) {
+									for (int i = 1; i <= inventory->mouseItem.second; i++) {
+										world.dropItem(inventory->mouseItem.first->getID(), BlocksTextures, ItemsTextures, Blocks, Items, Vector2f(player.getPosition().x + 50, player.getPosition().y));
+									}
+								}
+								else if (Mouse::getPosition().x < gameWindow.getSize().x / 2){
+									for (int i = 1; i <= inventory->mouseItem.second; i++) {
+										world.dropItem(inventory->mouseItem.first->getID(), BlocksTextures, ItemsTextures, Blocks, Items, Vector2f(player.getPosition().x - 75, player.getPosition().y));
+									}
+								}
+								inventory->mouseItem.second = 0;
+							}
+							else if ((inventory->isMouseOnInventory(gameWindow) == false && inventory->isMouseOnChest(gameWindow) == false) && player.isChestOpened() == true) {
+								if (Mouse::getPosition().x > gameWindow.getSize().x / 2) {
+									for (int i = 1; i <= inventory->mouseItem.second; i++) {
+										world.dropItem(inventory->mouseItem.first->getID(), BlocksTextures, ItemsTextures, Blocks, Items, Vector2f(player.getPosition().x + 50, player.getPosition().y));
+									}
+								}
+								else if (Mouse::getPosition().x < gameWindow.getSize().x / 2) {
+									for (int i = 1; i <= inventory->mouseItem.second; i++) {
+										world.dropItem(inventory->mouseItem.first->getID(), BlocksTextures, ItemsTextures, Blocks, Items, Vector2f(player.getPosition().x - 75, player.getPosition().y));
+									}
+								}
+								inventory->mouseItem.second = 0;
+							}
+
 						}
 						else if(gameEvent.key.code == Mouse::Right && inventory->isAbleToCraft() == true && player.isChestOpened() == false)
 							 {
@@ -529,6 +573,7 @@ void Game::dispGame()
 								world.dropItem(inventory->itemsToCraft[inventory->getCraftSelected()]->getID(), BlocksTextures, ItemsTextures, Blocks,Items ,player.getPosition());
 							}
 						}
+						
 					}
 				}
 				

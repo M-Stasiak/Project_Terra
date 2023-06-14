@@ -36,7 +36,7 @@ private:
 	FloatRect chestSquare[24];
 	Text itemQuantity[40];
 	Text chestItemQuantity[24];
-	Text mouseItemQuantity;
+	
 	unique_ptr<Item> craftingTableRequired;
 	
 	int qInvSelected;
@@ -62,6 +62,7 @@ private:
 	 vector<pair<unique_ptr<Item>, int>> inv_vector;
 	 pair<unique_ptr<Item>, int> mouseItem;
 	 vector<unique_ptr<Item>> itemsToCraft;
+	 Text mouseItemQuantity;
 	 Inventory(RenderWindow& gameWindow, Font& gameFont, map <IDs, sf::Texture*>& arg1, map <IDs, sf::Texture*>& arg4, map <IDs, Block*>& arg2, map <IDs, Item*>& arg3);
 	 void displayInventory(RenderWindow& gameWindow, bool chestOpened);
 	 void displayQInventory(RenderWindow& gameWindow);
@@ -85,5 +86,10 @@ private:
 	 bool isMouseOnChest(RenderWindow& gameWindow);
 	 Vector2f getChestItemsPosition(int i);
 	 Text getChestItemQuantityText(int i);
+	 void setChestItemQuantityTextPosition(Vector2f vec, int i);
+	 void setChestItemQuantityTextString(string a, int i);
+	 void setChestItemQuantityTextScale(float x, float y, int i);
+	 bool isMouseOnCraftingRequired(RenderWindow& gameWindow);
+	 
 };
 

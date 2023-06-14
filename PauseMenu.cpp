@@ -15,7 +15,7 @@ void PauseMenu::initTexts(Font& gameFont, RenderWindow& gameWindow)
 {
 	texts[0].setFont(gameFont);
 	texts[0].setString("PAUSE MENU");
-	texts[0].setPosition(gameWindow.getDefaultView().getCenter().x-80, gameWindow.getDefaultView().getCenter().y - 470);
+	texts[0].setPosition(gameWindow.getSize().x / 3.5, gameWindow.getSize().y / 14);
 	texts[0].setCharacterSize(130);
 	texts[0].setFillColor(Color::White);
 	texts[0].setOutlineColor(Color::Black);
@@ -23,7 +23,7 @@ void PauseMenu::initTexts(Font& gameFont, RenderWindow& gameWindow)
 
 	texts[1].setFont(gameFont);
 	texts[1].setString("Continue");
-	texts[1].setPosition(gameWindow.getDefaultView().getCenter().x+105, gameWindow.getDefaultView().getCenter().y - 200);
+	texts[1].setPosition(gameWindow.getSize().x / 2.5, gameWindow.getSize().y / 3);
 	texts[1].setFillColor(Color::White);
 	texts[1].setCharacterSize(80);
 	texts[1].setOutlineColor(Color::Black);
@@ -31,7 +31,7 @@ void PauseMenu::initTexts(Font& gameFont, RenderWindow& gameWindow)
 
 	texts[2].setFont(gameFont);
 	texts[2].setString("Exit Game");
-	texts[2].setPosition(gameWindow.getDefaultView().getCenter().x+90, gameWindow.getDefaultView().getCenter().y - 100);
+	texts[2].setPosition(gameWindow.getSize().x / 2.55, gameWindow.getSize().y / 2.2);
 	texts[2].setCharacterSize(80);
 	texts[2].setFillColor(Color::White);
 	texts[2].setOutlineColor(Color::Black);
