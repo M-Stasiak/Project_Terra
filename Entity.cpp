@@ -117,6 +117,12 @@ void Entity::Update(float elapsed)
    // if (isPlayer) cout << state << endl;
     if (isAlive)
     {
+        healingTime += elapsed;
+        if (getIsPlayer() and healingTime >= 2)
+        {
+            healingTime = 0;
+            Heal(1);
+        }
         if (state == AnimationName::Basic)
         {
             move(velocity);

@@ -6,7 +6,7 @@ void MainMenu::initTextures()
 	if (!texture.loadFromFile("Textures/mainMenu.png")) { cout << "No texture found" << endl; }
 	if (!background_texture.loadFromFile("Textures/mainMenu_background.png")) { cout << "No texture found" << endl; }
 	background_texture.setRepeated(true);
-
+	if (!music.openFromFile("Textures/wino.wav")) { cout << "No music found" << endl; }
 }
 
 void MainMenu::initSprites(RenderWindow& gameWindow)
@@ -79,7 +79,6 @@ MainMenu::MainMenu(Font& gameFont, RenderWindow& gameWindow)
 	initSprites(gameWindow);
 	initTexts(gameFont,gameWindow);
 	selectedButton = Play;
-
 }
 
 

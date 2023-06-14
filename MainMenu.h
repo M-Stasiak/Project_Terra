@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include "Animation.h"
 using namespace std;
@@ -13,6 +14,7 @@ private:
 	Texture background_texture;
 	Sprite sprite;
 	Sprite background;
+	Music music;
 	Animation *animation;
 	Text texts[3];
 	enum select { Play = 1, Exit = 0 };
@@ -29,6 +31,8 @@ public:
 	void display(RenderWindow & gameWindow, Time *elapsed);
 	void selectUp();
 	void selectDown();
+	void musicOn() { if (music.getStatus() != Music::Playing) music.play(); };
+	void musicOff() { if (music.getStatus() == Music::Playing) music.stop(); };
 	int returnSelectedButton();
 	int returnMouseOnButton();
 	

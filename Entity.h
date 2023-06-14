@@ -31,7 +31,7 @@ private:
 
 protected:
     bool isAlive = true, isPlayer = false;
-    float isDeadTime = 0;
+    float isDeadTime = 0, healingTime = 0;
     int health = 100, maxHealth = 100;
     float speed = 200;
     float jumpSpeed = 400;
@@ -61,6 +61,7 @@ public:
     void setState(AnimationName _state) { state = _state; };
     AnimationName getState() { return state; };
     void Respawn();
+    void Heal(int arg) { if (health + arg < maxHealth) health += arg; else health = maxHealth; };
     bool getIsAlive() { return isAlive; };
     bool getIsPlayer() { return isPlayer; };
     float getIsDeadTime() { return isDeadTime; };

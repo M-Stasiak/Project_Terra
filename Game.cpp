@@ -4,8 +4,6 @@
 void Game::initFont()
 {
 	if (!gameFont.loadFromFile("Fonts/font.ttf")) { cout << "No font file found"; }
-
-
 }
 
 void Game::initWindow()
@@ -75,6 +73,7 @@ void Game::dispGame()
 
 
 			if (currentGameMode == gameMode::mainMenu) {
+				mainMenu->musicOn();
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 					mainMenu->selectUp();
@@ -101,6 +100,7 @@ void Game::dispGame()
 
 			else if (currentGameMode == gameMode::playing)
 			{
+				mainMenu->musicOff();
 				setGameView();
 				inventory->checkSelectedItem();
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) and player.getIsAlive()) player.Up(0.02);
@@ -133,7 +133,21 @@ void Game::dispGame()
 					}
 				}
 				if (gameWindow.pollEvent(gameEvent)) {
-
+					if (gameEvent.type == sf::Event::MouseWheelMoved)
+					{
+						int select;
+						if (gameEvent.mouseWheel.delta > 0)
+						{
+							if (inventory->getQInventorySelected() + 1 > 9) select = 0;
+							else select = inventory->getQInventorySelected() + 1;
+						}
+						else if (gameEvent.mouseWheel.delta < 0)
+						{
+							if (inventory->getQInventorySelected() - 1 < 0) select = 9;
+							else select = inventory->getQInventorySelected() - 1;
+						}
+						inventory->qInvSelect(select);
+					}
 					if (gameEvent.type == sf::Event::KeyPressed) {
 						if (gameEvent.key.code == Keyboard::Escape) {
 					
@@ -301,6 +315,7 @@ void Game::dispGame()
 				}
 			}
 			else if (currentGameMode == gameMode::pauseMenu) {
+				mainMenu->musicOff();
 				gameWindow.clear();
 				gameWindow.setView(gameWindow.getDefaultView());
 
@@ -330,7 +345,7 @@ void Game::dispGame()
 				pauseMenu->display(gameWindow, &elapsed);
 			}
 			else if (currentGameMode == gameMode::inventory) {
-		
+				mainMenu->musicOff();
 				setGameView();
 				gameWindow.clear();
 				background.Render(gameWindow);
