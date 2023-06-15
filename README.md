@@ -21,7 +21,7 @@ Do projektu zostały wykorzystane darmowe assety z strony [itch.io](https://itch
 - Tekstury postaci: [Luizmelo](https://luizmelo.itch.io), [Ironnbutterfly](https://ironnbutterfly.itch.io), [Muchopixels](https://muchopixels.itch.io), [Rvros](https://rvros.itch.io)
 - Tekstury przedmiotów i bloków: [Kyrise](https://kyrise.itch.io), [Piiixl](https://piiixl.itch.io), [Kyrise](https://kyrise.itch.io), [Nicolemariet](https://nicolemariet.itch.io), [Butterymilk](https://butterymilk.itch.io)
 - Efekty dźwiękowe: [Ben_burnes](https://tallbeard.itch.io), [Kronbits](https://kronbits.itch.io)
-- Muzyka: [Ben_burnes](https://tallbeard.itch.io), Volare
+- Muzyka: [Ben_burnes](https://tallbeard.itch.io), Volare, Osoch
 ## Autorzy
 
 - [Mateusz Stasiak](https://www.github.com/M-Stasiak)
