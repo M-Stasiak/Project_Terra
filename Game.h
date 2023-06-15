@@ -49,7 +49,11 @@ private:
 	void initBackground();
 	void setGameView();
 	void updateItemsOnTheGround(GameWorld& world, Time &elapsed);
-	
+	void destroyBlock(GameWorld& world, map <IDs, Block*>& Blocks, map <IDs, Texture*>& BlocksTextures, map <IDs, Texture*>& ItemsTextures, map <IDs, Item*>& Items);
+	void updateEntities(vector<Entity*>& entities, Time& elapsed, GameWorld& world);
+	void updateBlocks(GameWorld& world, map <IDs, Block*>& Blocks);
+	void dropMouseItemsRight(GameWorld& world, map <IDs, Block*>& Blocks, map <IDs, Texture*>& BlocksTextures, map <IDs, Texture*>& ItemsTextures, map <IDs, Item*>& Items);
+	void dropMouseItemsLeft(GameWorld& world, map <IDs, Block*>& Blocks, map <IDs, Texture*>& BlocksTextures, map <IDs, Texture*>& ItemsTextures, map <IDs, Item*>& Items);
 
 public:
 	Game();

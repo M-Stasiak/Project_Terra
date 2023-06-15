@@ -101,6 +101,77 @@ void Game::updateItemsOnTheGround(GameWorld & world,Time &elapsed)
 
 }
 
+void Game::destroyBlock(GameWorld & world , map <IDs, Block*> & Blocks, map <IDs, Texture*>  & BlocksTextures, map <IDs, Texture*>  & ItemsTextures, map <IDs, Item*>  & Items)
+{
+	if (player.isBlockDestroyed() == true) {
+		world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), BlocksTextures, ItemsTextures, Blocks, Items, player.getDestroyedBlockPosition());
+		if (player.getDestroyedBlockID() == ChestID) {
+			auto a = find_if(world.chests.begin(), world.chests.end(), [this](const pair<Vector2f, vector<pair<unique_ptr<Item>, int>>>& chest) {return chest.first == player.getDestroyedBlockPosition(); });
+			world.chests.erase(a);
+		}
+	}
+}
+
+void Game::updateEntities(vector<Entity*> & entities,Time & elapsed, GameWorld & world)
+{
+	for (auto entity : entities)
+	{
+		entity->GravityUpdate(0.02, 20);
+		if (!entity->getIsPlayer()) entity->UpdateAI(elapsed.asSeconds(), player, world.world);
+		for (int i = max((int)entity->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)entity->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
+		{
+			for (int j = max((int)entity->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)entity->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
+			{
+				entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
+			}
+		}
+		entity->playerDistance = getPlayerDistance(player.getPosition(), entity->getPosition());
+		entity->Update(elapsed.asSeconds());
+		entity->Draw(gameWindow);
+		if (!entity->getIsPlayer() and entity->getIsDeadTime() > 5)
+		{
+			delete entity;
+			entities.erase(remove(entities.begin(), entities.end(), entity), entities.end());
+		}
+	}
+}
+
+void Game::updateBlocks(GameWorld & world, map <IDs, Block*> & Blocks)
+{
+	for (int i = gameWindow.getView().getCenter().x - gameWindow.getView().getSize().x / 2; i < gameWindow.getView().getCenter().x + gameWindow.getView().getSize().x / 2 + 16; i += 16)
+	{
+		for (int j = gameWindow.getView().getCenter().y - gameWindow.getView().getSize().y / 2; j < gameWindow.getView().getCenter().y + gameWindow.getView().getSize().y / 2 + 16; j += 16)
+		{
+			if (world.world[i / 16][j / 16].ID != IDs::AirID)
+			{
+				Blocks[world.world[i / 16][j / 16].ID]->setPosition(world.world[i / 16][j / 16].rect.left, world.world[i / 16][j / 16].rect.top);
+				gameWindow.draw(*Blocks[world.world[i / 16][j / 16].ID]);
+				if (world.world[i / 16][j / 16].ID == CraftingTableID && player.playerReach->intersects(world.world[i / 16][j / 16].rect)) {
+
+					inventory->setIsCraftingTableNear(true);
+				}
+				if (world.world[i / 16][j / 16].ID == FurnaceID && player.playerReach->intersects(world.world[i / 16][j / 16].rect)) {
+
+					inventory->setIsFurnaceNear(true);
+				}
+
+			}
+		}
+	}
+}
+
+void Game::dropMouseItemsRight(GameWorld& world, map <IDs, Block*>& Blocks, map <IDs, Texture*>& BlocksTextures, map <IDs, Texture*>& ItemsTextures, map <IDs, Item*>& Items)
+{
+	for (int i = 1; i <= inventory->mouseItem.second; i++) {
+		world.dropItem(inventory->mouseItem.first->getID(), BlocksTextures, ItemsTextures, Blocks, Items, Vector2f(player.getPosition().x + 50, player.getPosition().y));
+	}
+}
+void Game::dropMouseItemsLeft(GameWorld& world, map <IDs, Block*>& Blocks, map <IDs, Texture*>& BlocksTextures, map <IDs, Texture*>& ItemsTextures, map <IDs, Item*>& Items)
+{
+	for (int i = 1; i <= inventory->mouseItem.second; i++) {
+		world.dropItem(inventory->mouseItem.first->getID(), BlocksTextures, ItemsTextures, Blocks, Items, Vector2f(player.getPosition().x - 75, player.getPosition().y));
+	}
+}
 
 
 Game::Game()
@@ -111,7 +182,7 @@ Game::Game()
 	pauseMenu = new PauseMenu(gameFont, gameWindow);
 	deathScreen = new DeathScreen(gameFont, gameWindow);
 	currentGameMode = gameMode::mainMenu;
-	
+	player.setPosition(500 * 16, 100);
 }
 
 void Game::dispGame()
@@ -214,25 +285,14 @@ void Game::dispGame()
 					{
 						inventory->selectedItem->Use();
 						player.DestroyBlock(world.world, gameWindow,inventory->getSelectedToolBlockDamage());
-						if (player.isBlockDestroyed() == true) {
-							world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), BlocksTextures,ItemsTextures, Blocks,Items,player.getDestroyedBlockPosition());
-							if (player.getDestroyedBlockID() == ChestID) {
-								auto a = find_if(world.chests.begin(), world.chests.end(), [this](const pair<Vector2f, vector<pair<unique_ptr<Item>, int>>>& chest) {return chest.first == player.getDestroyedBlockPosition(); });
-								world.chests.erase(a);
-							}
-						}
+						
+						destroyBlock(world, Blocks, BlocksTextures, ItemsTextures, Items);
 						
 					}
 					else if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem->getID() == IDs::AppleID) {}
 					else {
 						player.DestroyBlock(world.world, gameWindow, inventory->getSelectedToolBlockDamage());
-						if (player.isBlockDestroyed() == true) {
-							world.dropItem(Blocks[player.getDestroyedBlockID()]->getDropID(), BlocksTextures, ItemsTextures, Blocks, Items, player.getDestroyedBlockPosition());
-							if (player.getDestroyedBlockID() == ChestID) {
-								auto a = find_if(world.chests.begin(), world.chests.end(), [this](const pair<Vector2f, vector<pair<unique_ptr<Item>, int>>>& chest) {return chest.first == player.getDestroyedBlockPosition(); });
-								world.chests.erase(a);
-							}
-						}
+						destroyBlock(world, Blocks, BlocksTextures, ItemsTextures, Items);
 					}
 				}
 				if (gameWindow.pollEvent(gameEvent)) {
@@ -307,47 +367,12 @@ void Game::dispGame()
 				background.Render(gameWindow);
 				inventory->setIsCraftingTableNear(false);
 				inventory->setIsFurnaceNear(false);
-				for (int i = gameWindow.getView().getCenter().x - gameWindow.getView().getSize().x / 2; i < gameWindow.getView().getCenter().x + gameWindow.getView().getSize().x / 2 + 16; i += 16)
-				{
-					for (int j = gameWindow.getView().getCenter().y - gameWindow.getView().getSize().y / 2; j < gameWindow.getView().getCenter().y + gameWindow.getView().getSize().y / 2 + 16; j += 16)
-					{
-						if (world.world[i / 16][j / 16].ID != IDs::AirID)
-						{
-							Blocks[world.world[i / 16][j / 16].ID]->setPosition(world.world[i / 16][j / 16].rect.left, world.world[i / 16][j / 16].rect.top);
-							gameWindow.draw(*Blocks[world.world[i / 16][j / 16].ID]);
-							if (world.world[i / 16][j / 16].ID == CraftingTableID && player.playerReach->intersects(world.world[i / 16][j / 16].rect)){
-								
-								inventory->setIsCraftingTableNear(true);
-							}
-							if (world.world[i / 16][j / 16].ID == FurnaceID && player.playerReach->intersects(world.world[i / 16][j / 16].rect)) {
+				
 
-								inventory->setIsFurnaceNear(true);
-							}
-							
-						}
-					}
-				}
+				updateBlocks(world,Blocks);
 			
-				for (auto entity : entities)
-				{
-					entity->GravityUpdate(0.02, 20);
-					if (!entity->getIsPlayer()) entity->UpdateAI(elapsed.asSeconds(), player, world.world);
-					for (int i = max((int)entity->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)entity->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
-					{
-						for (int j = max((int)entity->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)entity->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
-						{
-							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
-						}
-					}
-					entity->playerDistance = getPlayerDistance(player.getPosition(), entity->getPosition());
-					entity->Update(elapsed.asSeconds());
-					entity->Draw(gameWindow);
-					if (!entity->getIsPlayer() and entity->getIsDeadTime() > 5)
-					{
-						delete entity;
-						entities.erase(remove(entities.begin(), entities.end(), entity), entities.end());
-					}
-				}
+				updateEntities(entities, elapsed, world);
+
 				if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool)
 				{
 					inventory->selectedItem->Update(elapsed.asSeconds(), player, entities);
@@ -415,31 +440,8 @@ void Game::dispGame()
 				setGameView();
 				gameWindow.clear();
 				background.Render(gameWindow);
-				for (int i = gameWindow.getView().getCenter().x - gameWindow.getView().getSize().x / 2; i < gameWindow.getView().getCenter().x + gameWindow.getView().getSize().x / 2 + 16; i += 16)
-				{
-					for (int j = gameWindow.getView().getCenter().y - gameWindow.getView().getSize().y / 2; j < gameWindow.getView().getCenter().y + gameWindow.getView().getSize().y / 2 + 16; j += 16)
-					{
-						if (world.world[i / 16][j / 16].ID != IDs::AirID)
-						{
-							Blocks[world.world[i / 16][j / 16].ID]->setPosition(world.world[i / 16][j / 16].rect.left, world.world[i / 16][j / 16].rect.top);
-							gameWindow.draw(*Blocks[world.world[i / 16][j / 16].ID]);
-						}
-					}
-				}
-
-				for (auto entity : entities)
-				{
-					entity->GravityUpdate(0.02, 20);
-					for (int i = max((int)entity->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)entity->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
-					{
-						for (int j = max((int)entity->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)entity->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
-						{
-							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
-						}
-					}
-					entity->Update(elapsed.asSeconds());
-					entity->Draw(gameWindow);
-				}
+				updateBlocks(world, Blocks);
+				updateEntities(entities, elapsed, world);
 				updateItemsOnTheGround(world, elapsed);
 				inventory->displayInventory(gameWindow,player.isChestOpened());
 				if (player.isChestOpened() == true) {
@@ -553,27 +555,21 @@ void Game::dispGame()
 							}
 							if ((inventory->isMouseOnInventory(gameWindow) == false  && inventory->getMouseOnCraft() == -1 ) && player.isChestOpened() == false && inventory->isMouseOnCraftingRequired(gameWindow) == false) {
 								if (Mouse::getPosition().x > gameWindow.getSize().x / 2) {
-									for (int i = 1; i <= inventory->mouseItem.second; i++) {
-										world.dropItem(inventory->mouseItem.first->getID(), BlocksTextures, ItemsTextures, Blocks, Items, Vector2f(player.getPosition().x + 50, player.getPosition().y));
-									}
+									
+									dropMouseItemsRight(world, Blocks, BlocksTextures, ItemsTextures, Items);
+
 								}
 								else if (Mouse::getPosition().x < gameWindow.getSize().x / 2){
-									for (int i = 1; i <= inventory->mouseItem.second; i++) {
-										world.dropItem(inventory->mouseItem.first->getID(), BlocksTextures, ItemsTextures, Blocks, Items, Vector2f(player.getPosition().x - 75, player.getPosition().y));
-									}
+									dropMouseItemsLeft(world, Blocks, BlocksTextures, ItemsTextures, Items);
 								}
 								inventory->mouseItem.second = 0;
 							}
 							else if ((inventory->isMouseOnInventory(gameWindow) == false && inventory->isMouseOnChest(gameWindow) == false) && player.isChestOpened() == true) {
 								if (Mouse::getPosition().x > gameWindow.getSize().x / 2) {
-									for (int i = 1; i <= inventory->mouseItem.second; i++) {
-										world.dropItem(inventory->mouseItem.first->getID(), BlocksTextures, ItemsTextures, Blocks, Items, Vector2f(player.getPosition().x + 50, player.getPosition().y));
-									}
+									dropMouseItemsRight(world, Blocks, BlocksTextures, ItemsTextures, Items);
 								}
 								else if (Mouse::getPosition().x < gameWindow.getSize().x / 2) {
-									for (int i = 1; i <= inventory->mouseItem.second; i++) {
-										world.dropItem(inventory->mouseItem.first->getID(), BlocksTextures, ItemsTextures, Blocks, Items, Vector2f(player.getPosition().x - 75, player.getPosition().y));
-									}
+									dropMouseItemsLeft(world, Blocks, BlocksTextures, ItemsTextures, Items);
 								}
 								inventory->mouseItem.second = 0;
 							}

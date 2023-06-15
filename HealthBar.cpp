@@ -45,6 +45,7 @@ void HealthBar::setPlayerHealthBar(int _value, int _max)
 void HealthBar::Draw(RenderWindow& gameWindow, int _value, FloatRect entityGlobalBounds)
 {
 	value = _value;
+	if (value < 0) { value = 0; }
 	float percentage = float(value) / max;
 	backgroundBar.setPosition(entityGlobalBounds.left - (backgroundBar.getGlobalBounds().width - entityGlobalBounds.width) / 2, entityGlobalBounds.top + entityGlobalBounds.height + 5);
 	bar.setPosition(backgroundBar.getPosition().x + 1, backgroundBar.getPosition().y + 1);
@@ -59,6 +60,7 @@ void HealthBar::Draw(RenderWindow& gameWindow, int _value, FloatRect entityGloba
 void HealthBar::Draw(RenderWindow& gameWindow, int _value)
 {
 	value = _value;
+	if (value < 0) { value = 0; }
 	float percentage = float(value) / max;
 	int n = max / 10;
 	for (int i = 1; i <= n; i++)
