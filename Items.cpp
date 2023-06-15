@@ -369,7 +369,7 @@ void Tool_Item::Update(float elapsed, Entity& entity, vector<Entity*>& entities)
 
 	if (isUsing)
 	{
-		if (ID == WoodenSwordID || ID == StoneSwordID) {
+		if (ID >= WoodenSwordID && ID <= EmeraldSwordID) {
 			for (auto i : entities)
 			{
 				if (i->getIsAlive())
@@ -413,7 +413,7 @@ void Tool_Item::Update(float elapsed, Entity& entity, vector<Entity*>& entities)
 				else rotate(-500 * elapsed);
 			}
 		}
-		if (ID == WoodenPickaxeID || ID == StonePickaxeID) {
+		if (ID >= WoodenPickaxeID && ID <= EmeraldPickaxeID) {
 			if (getScale().x >= 0)
 			{
 				//cout << getRotation() << endl;

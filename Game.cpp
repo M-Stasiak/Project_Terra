@@ -108,6 +108,10 @@ void Game::dispGame()
 	world.dropItem(IDs::IronIngotID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	world.dropItem(IDs::DiamondItemID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	world.dropItem(IDs::EmeraldItemID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
+	world.dropItem(IDs::IronPickaxeID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
+	world.dropItem(IDs::DiamondPickaxeID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
+	world.dropItem(IDs::IronSwordID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
+	world.dropItem(IDs::DiamondSwordID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	while (gameWindow.isOpen()) {
 		//test.clear();
 		//world.test(test);
