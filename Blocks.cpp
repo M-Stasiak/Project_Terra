@@ -99,7 +99,7 @@ Plank::Plank(std::map <IDs, sf::Texture*>& arg)
 Leaves::Leaves(std::map <IDs, sf::Texture*>& arg)
 {
 	ID = IDs::LeavesID;
-	dropID = IDs::StickID;
+	dropID = IDs::AppleID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(0, 256, 16, 16));
 	

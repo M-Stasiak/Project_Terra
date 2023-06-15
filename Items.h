@@ -160,3 +160,16 @@ public:
 
 };
 
+class Apple : public Item
+{
+public:
+	Apple(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		return std::make_unique<Apple>(*this);
+	}
+
+};
+

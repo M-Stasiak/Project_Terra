@@ -10,12 +10,19 @@
 #include "Block.h"
 #include "Item.h"
 #include "Items.h"
+#include "Zombie.h"
+#include "Skeleton.h"
+#include "Mushroom.h"
+#include "Slime.h"
 
 
 using namespace std;
 
 class GameWorld
 {
+private:
+	float zombieTime, skeletonTime, mushroomTime, slimeTime;
+	bool checkWorld(int _i, int _j, int r);
 public:
 	map<int, map<int, B>> world;
 	vector<unique_ptr<Item>> items_on_ground;
@@ -24,6 +31,7 @@ public:
 public:
 	GameWorld();
 	void test(RenderWindow& gameWindow);
+	void GenerateEntities(float elapsed, Entity& player, vector<Entity*>& entities);
 	void GenerateTree(int i, int j);
 	void dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Texture*>& arg2, map <IDs, Block*>& arg3, map <IDs, Item*>& arg4, Vector2f pos);
 	void drawItemsOnGround(RenderWindow& gameWindow, Vector2f playerPosition, int renderWidth, int renderHeight);

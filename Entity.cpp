@@ -31,7 +31,7 @@ void Entity::setEntity(sf::Texture _texture, std::vector<std::vector<int>> optio
     animations[AnimationName::Walk] = new Animation(texture, options[1], options.size() > 2 ? options[2] : vector<int>{ 0,0,0,0 });
 }
 
-void Entity::Up(float elapsed) { if (!jumping) { jumping = true; jumpVelocity = -jumpSpeed; } }
+void Entity::Up(float elapsed) { if (!jumping) { jumping = true; jumpVelocity = -jumpSpeed; soundJump.play(); } }
 void Entity::Down(float elapsed) { velocity.y += speed * elapsed; }
 void Entity::Left(float elapsed) { setScale({ (float)(-1)*abs(getScale().x), getScale().y }); velocity.x += -speed * elapsed; }
 void Entity::Right(float elapsed) { setScale({ (float)abs(getScale().x), getScale().y }); velocity.x += speed * elapsed; }
@@ -71,6 +71,7 @@ void Entity::CheckCollisions(const sf::FloatRect *arg)
         {
             velocity.y = 0;
             setPosition(playerBounds.left + origin.x, argBounds.top - playerBounds.height + origin.y);
+            if (jumping == true) soundLand.play();
             jumping = false;
         }
 
@@ -128,6 +129,15 @@ void Entity::Update(float elapsed)
             move(velocity);
             if (getPosition() != lastPosition)
             {
+                if (getIsPlayer() and velocity.y == 0)
+                {
+                    stepSoundTime += elapsed;
+                    if (stepSoundTime >= 0.4)
+                    {
+                        soundStep.play();
+                        stepSoundTime = 0;
+                    }
+                }
                 animations[AnimationName::Walk]->Update(elapsed);
                 animations[AnimationName::Walk]->ApplyToSprite(this);
             }

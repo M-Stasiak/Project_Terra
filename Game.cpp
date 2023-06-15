@@ -1,9 +1,10 @@
 #include "Game.h"
-#include "Zombie.h"
 
 void Game::initFont()
 {
 	if (!gameFont.loadFromFile("Fonts/font.ttf")) { cout << "No font file found"; }
+	if (!gameMusic.openFromFile("Textures/gameMusic.wav")) { cout << "No wav file found"; }
+	gameMusic.setVolume(50);
 }
 
 void Game::initWindow()
@@ -16,6 +17,31 @@ void Game::initWindow()
 void Game::setGameView()
 {
 	gameWindow.setView(player.getEntityView());
+	if (gameWindow.getView().getCenter().x - gameWindow.getView().getSize().x / 2 < 0)
+	{
+		View pom = gameWindow.getView();
+		pom.setCenter(gameWindow.getView().getSize().x / 2, gameWindow.getView().getCenter().y);
+		gameWindow.setView(pom);
+	}
+	else if (gameWindow.getView().getCenter().x + gameWindow.getView().getSize().x / 2 > 16 * 1000)
+	{
+		View pom = gameWindow.getView();
+		pom.setCenter(16 * 1000 - gameWindow.getView().getSize().x / 2, gameWindow.getView().getCenter().y);
+		gameWindow.setView(pom);
+	}
+
+	if (gameWindow.getView().getCenter().y - gameWindow.getView().getSize().y / 2 < 0)
+	{
+		View pom = gameWindow.getView();
+		pom.setCenter(gameWindow.getView().getCenter().x, gameWindow.getView().getSize().y / 2);
+		gameWindow.setView(pom);
+	}
+	else if (gameWindow.getView().getCenter().x + gameWindow.getView().getSize().x / 2 > 16 * 1000)
+	{
+		View pom = gameWindow.getView();
+		pom.setCenter(gameWindow.getView().getCenter().x, 16 * 1000 - gameWindow.getView().getSize().y / 2);
+		gameWindow.setView(pom);
+	}
 }
 
 
@@ -36,6 +62,9 @@ void Game::dispGame()
 	vector<Entity*> entities;
 	entities.push_back(&player);
 	entities.push_back(new Zombie);
+	entities.push_back(new Skeleton);
+	entities.push_back(new Mushroom);
+	entities.push_back(new Slime);
 	RectangleShape rectangle;
 	RectangleShape rectangle1;
 
@@ -101,7 +130,10 @@ void Game::dispGame()
 
 			else if (currentGameMode == gameMode::playing)
 			{
+				appleUseTime -= elapsed.asSeconds();
+				world.GenerateEntities(elapsed.asSeconds(), player, entities);
 				mainMenu->musicOff();
+				if (gameMusic.getStatus() != Music::Playing) gameMusic.play();
 				setGameView();
 				inventory->checkSelectedItem();
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) and player.getIsAlive()) player.Up(0.02);
@@ -109,10 +141,16 @@ void Game::dispGame()
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) and player.getIsAlive()) player.Left(0.02);
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) and player.getIsAlive()) player.Right(0.02);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) and player.getIsAlive()) {
-					if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool && inventory->getSelectedToolBlockDamage() == 0)
+					if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and (inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool or inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::material) && inventory->getSelectedToolBlockDamage() == 0)
 					{
 						//inventory->inv_vector[inventory->getQInventorySelected()].first->Use();
 						inventory->selectedItem->Use();
+						if (inventory->selectedItem->getID() == IDs::AppleID and appleUseTime < 0)
+						{
+							player.Heal(40);
+							inventory->inv_vector[inventory->getQInventorySelected()].second--;
+							appleUseTime = 1;
+						}
 						if (gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView()).x > player.getPosition().x)
 							player.setScale({ (float)abs(player.getScale().x), player.getScale().y });
 						else
@@ -131,6 +169,7 @@ void Game::dispGame()
 						}
 						
 					}
+					else if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem->getID() == IDs::AppleID) {}
 					else {
 						player.DestroyBlock(world.world, gameWindow, inventory->getSelectedToolBlockDamage());
 						if (player.isBlockDestroyed() == true) {
@@ -211,9 +250,9 @@ void Game::dispGame()
 				gameWindow.clear();
 				background.Render(gameWindow);
 				inventory->setIsCraftingTableNear(false);
-				for (int i = max((int)player.getPosition().x - renderWidth * 16, 0); i < min((int)player.getPosition().x + renderWidth * 16, 16000); i += 16)
+				for (int i = gameWindow.getView().getCenter().x - gameWindow.getView().getSize().x / 2; i < gameWindow.getView().getCenter().x + gameWindow.getView().getSize().x / 2 + 16; i += 16)
 				{
-					for (int j = max((int)player.getPosition().y - renderHeight * 16, 0); j < min((int)player.getPosition().y + renderHeight * 16, 16000); j += 16)
+					for (int j = gameWindow.getView().getCenter().y - gameWindow.getView().getSize().y / 2; j < gameWindow.getView().getCenter().y + gameWindow.getView().getSize().y / 2 + 16; j += 16)
 					{
 						if (world.world[i / 16][j / 16].ID != IDs::AirID)
 						{
@@ -231,6 +270,7 @@ void Game::dispGame()
 				for (auto entity : entities)
 				{
 					entity->GravityUpdate(0.02, 20);
+					if (!entity->getIsPlayer()) entity->UpdateAI(elapsed.asSeconds(), player, world.world);
 					for (int i = max((int)entity->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)entity->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
 					{
 						for (int j = max((int)entity->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)entity->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
@@ -238,7 +278,6 @@ void Game::dispGame()
 							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
 						}
 					}
-					if (!entity->getIsPlayer()) entity->UpdateAI(elapsed.asSeconds(), player, world.world);
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 					if (!entity->getIsPlayer() and entity->getIsDeadTime() > 5)
@@ -297,12 +336,12 @@ void Game::dispGame()
 				}
 				world.drawItemsOnGround(gameWindow, player.getPosition(), renderWidth, renderHeight);
 
-				rectangle.setFillColor(sf::Color::Transparent);
+				/*rectangle.setFillColor(sf::Color::Transparent);
 				rectangle.setOutlineThickness(1);
 				rectangle.setOutlineColor(Color::White);
-				rectangle.setPosition(player.getGlobalBounds().left, player.getGlobalBounds().top);
-				rectangle.setSize(Vector2f(player.getGlobalBounds().width, player.getGlobalBounds().height));
-				//gameWindow.draw(rectangle);
+				rectangle.setPosition(entities[3]->getGlobalBounds().left, entities[3]->getGlobalBounds().top);
+				rectangle.setSize(Vector2f(entities[3]->getGlobalBounds().width, entities[3]->getGlobalBounds().height));
+				gameWindow.draw(rectangle);*/
 				
 				
 				
@@ -359,9 +398,9 @@ void Game::dispGame()
 				setGameView();
 				gameWindow.clear();
 				background.Render(gameWindow);
-				for (int i = max((int)player.getPosition().x - renderWidth * 16, 0); i < min((int)player.getPosition().x + renderWidth * 16, 16000); i += 16)
+				for (int i = gameWindow.getView().getCenter().x - gameWindow.getView().getSize().x / 2; i < gameWindow.getView().getCenter().x + gameWindow.getView().getSize().x / 2 + 16; i += 16)
 				{
-					for (int j = max((int)player.getPosition().y - renderHeight * 16, 0); j < min((int)player.getPosition().y + renderHeight * 16, 16000); j += 16)
+					for (int j = gameWindow.getView().getCenter().y - gameWindow.getView().getSize().y / 2; j < gameWindow.getView().getCenter().y + gameWindow.getView().getSize().y / 2 + 16; j += 16)
 					{
 						if (world.world[i / 16][j / 16].ID != IDs::AirID)
 						{

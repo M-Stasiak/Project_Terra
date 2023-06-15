@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <cmath>
 #include <iostream>
 #include "Animation.h"
@@ -31,7 +32,7 @@ private:
 
 protected:
     bool isAlive = true, isPlayer = false;
-    float isDeadTime = 0, healingTime = 0;
+    float isDeadTime = 0, healingTime = 0, stepSoundTime = 0;
     int health = 100, maxHealth = 100;
     float speed = 200;
     float jumpSpeed = 400;
@@ -40,6 +41,8 @@ protected:
     Vector2f origin;
     HealthBar healthBar;
     std::map<AnimationName, Animation*> animations;
+    SoundBuffer bufferStep, bufferJump, bufferLand;
+    Sound soundStep, soundJump, soundLand;
 
 public:
     Entity();

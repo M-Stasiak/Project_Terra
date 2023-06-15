@@ -17,6 +17,13 @@ Player::Player()
 	playerReach = new FloatRect(0, 0, 150, 150);
 	playerPickUpRange = new FloatRect(0, 0, 100, 100);
 	blockDamage = 10;
+
+	bufferStep.loadFromFile("Textures/step.wav");
+	bufferJump.loadFromFile("Textures/jump.wav");
+	bufferLand.loadFromFile("Textures/land.wav");
+	soundStep.setBuffer(bufferStep);
+	soundJump.setBuffer(bufferJump);
+	soundLand.setBuffer(bufferLand);
 }
 
 void Player::DestroyBlock(map<int, map<int, B>> &world, RenderWindow& gameWindow, int dmg)

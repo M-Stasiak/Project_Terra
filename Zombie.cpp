@@ -23,19 +23,22 @@ void Zombie::UpdateAI(float elapsed, Entity& player, map<int, map<int, B>>& worl
 {
 	if (isAlive and player.getIsAlive())
 	{
-		if (player.getPosition().x - 10 > getPosition().x)
-			Right(elapsed);
-		else if (player.getPosition().x + 10 < getPosition().x)
-			Left(elapsed);
-
-		if (getScale().x > 0 and world[getPosition().x / 16 + 2][getPosition().y / 16].ID != IDs::AirID)
-			Up(elapsed);
-		else if (getScale().x < 0 and world[getPosition().x / 16 - 2][getPosition().y / 16].ID != IDs::AirID)
-			Up(elapsed);
-
-		if (this->getGlobalBounds().intersects(player.getGlobalBounds()))
+		if (player.getPosition().x + 10 > getPosition().x and player.getPosition().x - 10 < getPosition().x)
 		{
-			Attack(elapsed, player);
+			if (player.getGlobalBounds().intersects(getGlobalBounds()))
+				Attack(elapsed, player);
+		}
+		else
+		{
+			if (player.getPosition().x - 10 > getPosition().x)
+				Right(elapsed);
+			else if (player.getPosition().x + 10 < getPosition().x)
+				Left(elapsed);
+
+			if (getScale().x > 0 and world[(getGlobalBounds().left + getGlobalBounds().width) / 16 + 1][(getGlobalBounds().top + getGlobalBounds().height - 8) / 16].ID != IDs::AirID and world[(getGlobalBounds().left + getGlobalBounds().width) / 16 + 1][(getGlobalBounds().top + getGlobalBounds().height - 8) / 16].rect.width != 0)
+				Up(elapsed);
+			else if (getScale().x < 0 and world[(getGlobalBounds().left) / 16 - 1][(getGlobalBounds().top + getGlobalBounds().height - 8) / 16].ID != IDs::AirID and world[(getGlobalBounds().left) / 16 - 1][(getGlobalBounds().top + getGlobalBounds().height - 8) / 16].rect.width != 0)
+				Up(elapsed);
 		}
 	}
 }

@@ -231,3 +231,172 @@ void GameWorld::drawItemsOnGround(RenderWindow& gameWindow, Vector2f playerPosit
 		
 	}
 }
+
+bool GameWorld::checkWorld(int _i, int _j, int r)
+{
+	for (int i = _i - r; i < _i + r; i++)
+	{
+		for (int j = _j - r; j < _j + r; j++)
+		{
+			if (world[i][j].ID != AirID)
+				return false;
+		}
+	}
+	return true;
+}
+
+void GameWorld::GenerateEntities(float elapsed, Entity& player, vector<Entity*>& entities)
+{
+	if (entities.size() < 50)
+	{
+		zombieTime += elapsed; skeletonTime += elapsed; mushroomTime += elapsed; slimeTime += elapsed;
+
+		if (zombieTime > 20)
+		{
+			int randPom = rand() % 100;
+
+			if (randPom < 50)
+			{
+				if (player.getPosition().x - 50 > 0)
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x - 50, pom, 3)) pom--;
+					entities.push_back(new Zombie);
+				}
+				else
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x + 50, pom, 3)) pom--;
+					entities.push_back(new Zombie);
+				}
+			}
+			else
+			{
+				if (player.getPosition().x + 50 < 16 * 1000)
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x + 50, pom, 3)) pom--;
+					entities.push_back(new Zombie);
+				}
+				else
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x - 50, pom, 3)) pom--;
+					entities.push_back(new Zombie);
+				}
+			}
+			zombieTime = 0;
+		}
+
+		if (slimeTime > 10)
+		{
+			int randPom = rand() % 100;
+
+			if (randPom < 50)
+			{
+				if (player.getPosition().x - 50 > 0)
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x - 50, pom, 3)) pom--;
+					entities.push_back(new Slime);
+				}
+				else
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x + 50, pom, 3)) pom--;
+					entities.push_back(new Slime);
+				}
+			}
+			else
+			{
+				if (player.getPosition().x + 50 < 16 * 1000)
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x + 50, pom, 3)) pom--;
+					entities.push_back(new Slime);
+				}
+				else
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x - 50, pom, 3)) pom--;
+					entities.push_back(new Slime);
+				}
+			}
+			slimeTime = 0;
+		}
+
+		if (skeletonTime > 40)
+		{
+			int randPom = rand() % 100;
+
+			if (randPom < 50)
+			{
+				if (player.getPosition().x - 50 > 0)
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x - 50, pom, 5)) pom--;
+					entities.push_back(new Skeleton);
+				}
+				else
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x + 50, pom, 5)) pom--;
+					entities.push_back(new Skeleton);
+				}
+			}
+			else
+			{
+				if (player.getPosition().x + 50 < 16 * 1000)
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x + 50, pom, 5)) pom--;
+					entities.push_back(new Skeleton);
+				}
+				else
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x - 50, pom, 5)) pom--;
+					entities.push_back(new Skeleton);
+				}
+			}
+			skeletonTime = 0;
+		}
+
+		if (mushroomTime > 40)
+		{
+			int randPom = rand() % 100;
+
+			if (randPom < 50)
+			{
+				if (player.getPosition().x - 50 > 0)
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x - 50, pom, 5)) pom--;
+					entities.push_back(new Mushroom);
+				}
+				else
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x + 50, pom, 5)) pom--;
+					entities.push_back(new Mushroom);
+				}
+			}
+			else
+			{
+				if (player.getPosition().x + 50 < 16 * 1000)
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x + 50, pom, 5)) pom--;
+					entities.push_back(new Mushroom);
+				}
+				else
+				{
+					int pom = player.getPosition().y;
+					while (checkWorld(player.getPosition().x - 50, pom, 5)) pom--;
+					entities.push_back(new Mushroom);
+				}
+			}
+			mushroomTime = 0;
+		}
+	}
+}

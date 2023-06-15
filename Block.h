@@ -31,6 +31,7 @@ enum IDs
 	StonePickaxeID,
 
 	StickID,
+	AppleID
 };
 
 class Block : public sf::Sprite

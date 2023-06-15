@@ -11,6 +11,10 @@
 #include "Background.h"
 #include "Entity.h"
 #include "Player.h"
+#include "Zombie.h"
+#include "Skeleton.h"
+#include "Mushroom.h"
+#include "Slime.h"
 #include "GameWorld.h"
 #include "Blocks.h"
 #include "Inventory.h"
@@ -22,7 +26,7 @@ using namespace std;
 class Game
 {
 private:
-	float deathScreenTime = 10;
+	float deathScreenTime = 10, appleUseTime = 1;
 	int renderWidth = 32, renderHeight = 19;
 	//int renderWidth = 3, renderHeight = 3;
 	int collisionsCheckWidth = 3, collisionsCheckHeight = 3;
@@ -36,6 +40,7 @@ private:
 	DeathScreen* deathScreen;
 	Inventory* inventory;
 	Player player;
+	Music gameMusic;
 	
 	void initFont();
 	void initWindow();

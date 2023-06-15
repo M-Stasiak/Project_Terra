@@ -2,6 +2,7 @@
 
 
 void prepareItemsMap(std::map<IDs, Item*>& arg1, std::map <IDs, sf::Texture*>& arg2) {
+	arg1[IDs::AppleID] = new Apple(arg2);
 	arg1[IDs::StickID] = new Stick(arg2);
 	arg1[IDs::WoodenSwordID] = new Wooden_Sword(arg2);
 	arg1[IDs::StoneSwordID] = new Stone_Sword(arg2);
@@ -14,6 +15,7 @@ void prepareItemsTextures(std::map<IDs, sf::Texture*>& arg)
 	sf::Texture* tileset = new sf::Texture;
 	tileset->loadFromFile("Textures/itemsSpriteSheet.png");
 	arg[IDs::StickID] = tileset;
+	arg[IDs::AppleID] = tileset;
 	arg[IDs::WoodenSwordID] = tileset;
 	arg[IDs::StoneSwordID] = tileset;
 	arg[IDs::WoodenPickaxeID] = tileset;
@@ -156,6 +158,16 @@ Stick::Stick(std::map<IDs, sf::Texture*>& arg)
 
 }
 
+Apple::Apple(std::map<IDs, sf::Texture*>& arg)
+{
+	ID = IDs::AppleID;
+	setTexture(*arg[ID]);
+	setTextureRect(IntRect(48, 144, 16, 16));
+	isCraftingTableRequired = false;
+	type = material;
+
+}
+
 Material_Item::Material_Item(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Item*>& arg3, Vector2f pos)
 {
 	ID = id;
@@ -166,6 +178,11 @@ Material_Item::Material_Item(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, It
 	stackingQuantity = 64;
 	type = item_type::material;
 	if (id == IDs::StickID) {
+		craftedQuantity = 2;
+		this->itmsRequiredToCraft.emplace_back(IDs::PlankID, 1);
+		isCraftingTableRequired = false;
+	}
+	else if (id == IDs::AppleID) {
 		craftedQuantity = 2;
 		this->itmsRequiredToCraft.emplace_back(IDs::PlankID, 1);
 		isCraftingTableRequired = false;
