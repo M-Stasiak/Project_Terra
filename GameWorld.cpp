@@ -88,6 +88,7 @@ GameWorld::GameWorld()
 	PerlinNoise ironPn(rand());
 	PerlinNoise goldPn(rand());
 	PerlinNoise diamondPn(rand());
+	PerlinNoise emeraldPn(rand());
 
 	for (int i = 0; i < y.size(); i++)
 	{
@@ -113,10 +114,16 @@ GameWorld::GameWorld()
 				double n2 = ironPn.noise(100 * xPom, 100 * yPom, 0.8);
 				double n3 = goldPn.noise(100 * xPom, 100 * yPom, 0.2);
 				double n4 = diamondPn.noise(100 * xPom, 100 * yPom, 0.001);
-
+				double n5 = emeraldPn.noise(100 * xPom, 100 * yPom, 0.001);
 				if (n1 > 0.4)
 				{
-					if (n4 < 0.2 and j >(int)y[i] + 300)
+					if (n5 < 0.2 and j >(int)y[i] + 350)
+					{
+						sf::FloatRect p(i * 16, j * 16, 16, 16);
+						B a(IDs::EmeraldID, p);
+						pom[j] = a;
+					}
+					else if (n4 < 0.2 and j >(int)y[i] + 300)
 					{
 						sf::FloatRect p(i * 16, j * 16, 16, 16);
 						B a(IDs::DiamondID, p);

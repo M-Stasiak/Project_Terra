@@ -48,6 +48,7 @@ private:
 	void initWindow();
 	void initBackground();
 	void setGameView();
+	void updateItemsOnTheGround(GameWorld& world, Time &elapsed);
 	
 
 public:

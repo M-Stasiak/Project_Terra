@@ -55,6 +55,52 @@ void Game::setGameView()
 	}
 }
 
+void Game::updateItemsOnTheGround(GameWorld & world,Time &elapsed)
+{
+	for (auto& item : world.items_on_ground)
+	{
+		if (item != nullptr and (item->getPosition().x > player.getPosition().x - renderWidth * 16 and item->getPosition().x < player.getPosition().x + renderWidth * 16 and item->getPosition().y > player.getPosition().y - renderHeight * 16 and item->getPosition().y < player.getPosition().y + renderHeight * 16))
+		{
+			player.updatePickUpRange();
+			if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange()) && inventory->isInventoryFull(item->getID()) == false) {
+				item->goToPlayer(player.getPosition());
+				if (item->getGlobalBounds().intersects(player.getGlobalBounds())) {
+					soundItemPickUp.play();
+					auto it = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [&item](auto& el) {return el.first != nullptr && item->getID() == el.first->getID() && el.second < item->getStackingQuantity(); });
+					if (it != inventory->inv_vector.end()) {
+						it->second++;
+						auto ite = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
+						world.items_on_ground.erase(ite);
+					}
+					else {
+						auto ite1 = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [](auto& el) {return el.first == nullptr; });
+						ite1->first.swap(item);
+						ite1->second++;
+						if (item == nullptr) {
+							auto ite = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
+							world.items_on_ground.erase(ite);
+						}
+
+					}
+				}
+
+
+			}
+			else {
+				item->GravityUpdate(elapsed.asSeconds(), 5);
+				for (int i = max((int)item->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)item->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
+				{
+					for (int j = max((int)item->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)item->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
+					{
+						item->CheckCollisions(&world.world[i / 16][j / 16].rect);
+					}
+				}
+			}
+		}
+	}
+
+}
+
 
 
 Game::Game()
@@ -326,48 +372,8 @@ void Game::dispGame()
 					inventory->selectedItem->Update(elapsed.asSeconds(), player, entities);
 					gameWindow.draw(*inventory->selectedItem);
 				}
+				updateItemsOnTheGround(world,elapsed);
 				
-				for (auto& item : world.items_on_ground)
-				{
-					if (item != nullptr and (item->getPosition().x > player.getPosition().x - renderWidth * 16 and item->getPosition().x < player.getPosition().x + renderWidth * 16 and item->getPosition().y > player.getPosition().y - renderHeight * 16 and item->getPosition().y < player.getPosition().y + renderHeight * 16))
-					{
-						player.updatePickUpRange();
-						if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange()) && inventory->isInventoryFull(item->getID()) == false) {
-							item->goToPlayer(player.getPosition());
-							if (item->getGlobalBounds().intersects(player.getGlobalBounds())) {
-								soundItemPickUp.play();
-								auto it = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [&item](auto& el) {return el.first != nullptr && item->getID() == el.first->getID() && el.second < item->getStackingQuantity(); });
-								if (it != inventory->inv_vector.end()) {
-									it->second++;
-									auto ite = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
-									world.items_on_ground.erase(ite);
-								}
-								else {
-									auto ite1 = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [](auto& el) {return el.first == nullptr; });
-									ite1->first.swap(item);
-									ite1->second++;
-									if (item == nullptr) {
-										auto ite = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
-										world.items_on_ground.erase(ite);
-									}
-
-								}
-							}
-								
-						
-						}
-						else {
-							item->GravityUpdate(elapsed.asSeconds(), 5);
-							for (int i = max((int)item->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)item->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
-							{
-								for (int j = max((int)item->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)item->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
-								{
-									item->CheckCollisions(&world.world[i / 16][j / 16].rect);
-								}
-							}
-						}
-					}
-				}
 				world.drawItemsOnGround(gameWindow, player.getPosition(), renderWidth, renderHeight);
 
 				/*rectangle.setFillColor(sf::Color::Transparent);
@@ -462,47 +468,7 @@ void Game::dispGame()
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 				}
-				for (auto& item : world.items_on_ground)
-				{
-					if (item != nullptr and (item->getPosition().x > player.getPosition().x - renderWidth * 16 and item->getPosition().x < player.getPosition().x + renderWidth * 16 and item->getPosition().y > player.getPosition().y - renderHeight * 16 and item->getPosition().y < player.getPosition().y + renderHeight * 16))
-					{
-						player.updatePickUpRange();
-						if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange()) && inventory->isInventoryFull(item->getID()) == false) {
-							item->goToPlayer(player.getPosition());
-							if (item->getGlobalBounds().intersects(player.getGlobalBounds())) {
-								soundItemPickUp.play();
-								auto it = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [&item](auto& el) {return el.first != nullptr && item->getID() == el.first->getID() && el.second < item->getStackingQuantity(); });
-								if (it != inventory->inv_vector.end()) {
-									it->second++;
-									auto ite = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
-									world.items_on_ground.erase(ite);
-								}
-								else {
-									auto ite1 = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [](auto& el) {return el.first == nullptr; });
-									ite1->first.swap(item);
-									ite1->second++;
-									if (item == nullptr) {
-										auto ite = find(world.items_on_ground.begin(), world.items_on_ground.end(), item);
-										world.items_on_ground.erase(ite);
-									}
-
-								}
-							}
-
-
-						}
-						else {
-							item->GravityUpdate(elapsed.asSeconds(), 5);
-							for (int i = max((int)item->getPosition().x - collisionsCheckWidth * 16, 0); i < min((int)item->getPosition().x + collisionsCheckWidth * 16, 16000); i += 16)
-							{
-								for (int j = max((int)item->getPosition().y - collisionsCheckHeight * 16, 0); j < min((int)item->getPosition().y + collisionsCheckHeight * 16, 16000); j += 16)
-								{
-									item->CheckCollisions(&world.world[i / 16][j / 16].rect);
-								}
-							}
-						}
-					}
-				}
+				updateItemsOnTheGround(world, elapsed);
 				inventory->displayInventory(gameWindow,player.isChestOpened());
 				if (player.isChestOpened() == true) {
 					for(auto &el : world.chests){

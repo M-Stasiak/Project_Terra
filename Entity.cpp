@@ -90,6 +90,7 @@ void Entity::CheckCollisions(const sf::FloatRect *arg)
             and playerBounds.left < argBounds.left + argBounds.width
             and playerBounds.left + playerBounds.width > argBounds.left)
         {
+            jumpVelocity = 0;
             velocity.y = 0;
             setPosition(playerBounds.left + origin.x, argBounds.top + argBounds.height + origin.y);
         }
