@@ -1,15 +1,26 @@
 #include "Game.h"
 
+float getPlayerDistance(Vector2f player, Vector2f entity)
+{
+	return sqrt((player.x - entity.x) * (player.x - entity.x) + (player.y - entity.y) * (player.y - entity.y));
+}
+
 void Game::initFont()
 {
 	if (!gameFont.loadFromFile("Fonts/font.ttf")) { cout << "No font file found"; }
 	if (!gameMusic.openFromFile("Textures/gameMusic.wav")) { cout << "No wav file found"; }
-	gameMusic.setVolume(50);
+	gameMusic.setVolume(20);
+	bufferItemPickUp.loadFromFile("Textures/grab.wav");
+	bufferInventoryOpen.loadFromFile("Textures/inventoryOpen.wav");
+	bufferInventoryClose.loadFromFile("Textures/inventoryClose.wav");
+	soundItemPickUp.setBuffer(bufferItemPickUp);
+	soundInventoryOpen.setBuffer(bufferInventoryOpen);
+	soundInventoryClose.setBuffer(bufferInventoryClose);
 }
 
 void Game::initWindow()
 {
-	gameWindow.create(VideoMode::getDesktopMode(), "Project Terra", Style::Default);
+	gameWindow.create(VideoMode::getDesktopMode(), "Project Terra", Style::Fullscreen);
 	gameWindow.setFramerateLimit(60);
 	gameWindow.setVerticalSyncEnabled(true);
 }
@@ -137,7 +148,11 @@ void Game::dispGame()
 				appleUseTime -= elapsed.asSeconds();
 				world.GenerateEntities(elapsed.asSeconds(), player, entities);
 				mainMenu->musicOff();
-				if (gameMusic.getStatus() != Music::Playing) gameMusic.play();
+				if (gameMusic.getStatus() != Music::Playing)
+				{
+					gameMusic.setLoop(true);
+					gameMusic.play();
+				}
 				setGameView();
 				inventory->checkSelectedItem();
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) and player.getIsAlive()) player.Up(0.02);
@@ -152,9 +167,11 @@ void Game::dispGame()
 						if (inventory->selectedItem->getID() == IDs::AppleID and appleUseTime < 0)
 						{
 							player.Heal(40);
+							player.soundEat.play();
 							inventory->inv_vector[inventory->getQInventorySelected()].second--;
 							appleUseTime = 1;
 						}
+						else if (inventory->selectedItem->getItemType() == item_type::tool) player.Attack(0, player);
 						if (gameWindow.mapPixelToCoords(Mouse::getPosition(gameWindow), gameWindow.getView()).x > player.getPosition().x)
 							player.setScale({ (float)abs(player.getScale().x), player.getScale().y });
 						else
@@ -209,6 +226,7 @@ void Game::dispGame()
 						else if (gameEvent.key.code == Keyboard::E) {
 							
 							currentGameMode = gameMode::inventory;
+							soundInventoryOpen.play();
 						}
 						switch (gameEvent.key.code) {
 						case(Keyboard::Num1): {inventory->qInvSelect(0); break; }
@@ -229,6 +247,7 @@ void Game::dispGame()
 							player.UseBlock(gameWindow, world.world);
 							if (player.isChestOpened() == true) {
 								currentGameMode = gameMode::inventory;
+								soundInventoryOpen.play();
 							}
 							if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr)
 							{
@@ -287,6 +306,7 @@ void Game::dispGame()
 							entity->CheckCollisions(&world.world[i / 16][j / 16].rect);
 						}
 					}
+					entity->playerDistance = getPlayerDistance(player.getPosition(), entity->getPosition());
 					entity->Update(elapsed.asSeconds());
 					entity->Draw(gameWindow);
 					if (!entity->getIsPlayer() and entity->getIsDeadTime() > 5)
@@ -311,6 +331,7 @@ void Game::dispGame()
 						if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange()) && inventory->isInventoryFull(item->getID()) == false) {
 							item->goToPlayer(player.getPosition());
 							if (item->getGlobalBounds().intersects(player.getGlobalBounds())) {
+								soundItemPickUp.play();
 								auto it = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [&item](auto& el) {return el.first != nullptr && item->getID() == el.first->getID() && el.second < item->getStackingQuantity(); });
 								if (it != inventory->inv_vector.end()) {
 									it->second++;
@@ -360,16 +381,21 @@ void Game::dispGame()
 
 				if (!player.getIsAlive())
 				{
-					deathScreenTime -= elapsed.asSeconds();
-					deathScreen->update(deathScreenTime, gameWindow);
-					deathScreen->display(gameWindow);
+					currentGameMode = gameMode::dead;
+				}
+			}
+			else if (currentGameMode == gameMode::dead)
+			{
+				deathScreenTime -= elapsed.asSeconds();
+				deathScreen->update(deathScreenTime, gameWindow);
+				deathScreen->display(gameWindow);
 
-					if (deathScreenTime <= 0)
-					{
-						player.Respawn();
-						//player.setPosition(0, 0);
-						deathScreenTime = 10;
-					}
+				if (deathScreenTime <= 0)
+				{
+					currentGameMode = gameMode::playing;
+					player.Respawn();
+					//player.setPosition(0, 0);
+					deathScreenTime = 10;
 				}
 			}
 			else if (currentGameMode == gameMode::pauseMenu) {
@@ -440,6 +466,7 @@ void Game::dispGame()
 						if (item->getGlobalBounds().intersects(player.getPlayerPickUpRange()) && inventory->isInventoryFull(item->getID()) == false) {
 							item->goToPlayer(player.getPosition());
 							if (item->getGlobalBounds().intersects(player.getGlobalBounds())) {
+								soundItemPickUp.play();
 								auto it = find_if(inventory->inv_vector.begin(), inventory->inv_vector.end(), [&item](auto& el) {return el.first != nullptr && item->getID() == el.first->getID() && el.second < item->getStackingQuantity(); });
 								if (it != inventory->inv_vector.end()) {
 									it->second++;
@@ -502,6 +529,7 @@ void Game::dispGame()
 					if (gameEvent.type == sf::Event::KeyPressed) {
 						if (gameEvent.key.code == Keyboard::E) {
 							currentGameMode = gameMode::playing;
+							soundInventoryClose.play();
 							player.setChestOpened(false);
 						}
 						if (gameEvent.key.code == Keyboard::Escape) {

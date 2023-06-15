@@ -41,8 +41,8 @@ protected:
     Vector2f origin;
     HealthBar healthBar;
     std::map<AnimationName, Animation*> animations;
-    SoundBuffer bufferStep, bufferJump, bufferLand;
-    Sound soundStep, soundJump, soundLand;
+    SoundBuffer bufferStep, bufferJump, bufferLand, bufferAttack, bufferDamage, bufferEat;
+    Sound soundStep, soundJump, soundLand, soundAttack, soundDamage;
 
 public:
     Entity();
@@ -57,6 +57,8 @@ public:
     virtual void Update(float elapsed);
     virtual void UpdateAI(float elapsed, Entity& player, map<int, map<int, B>>& world) {};
     View getEntityView();
+    Sound soundEat;
+    float playerDistance;
     
 
     void GravityUpdate(float elapsed, float gravity);

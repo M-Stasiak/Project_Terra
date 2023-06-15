@@ -11,6 +11,16 @@ Zombie::Zombie()
 	origin.x = 16; origin.y = 16;
 	setOrigin(origin);
 	speed = 100;
+	bufferStep.loadFromFile("Textures/step.wav");
+	bufferJump.loadFromFile("Textures/jump.wav");
+	bufferLand.loadFromFile("Textures/land.wav");
+	bufferAttack.loadFromFile("Textures/attack.wav");
+	bufferDamage.loadFromFile("Textures/zombieHit.wav");
+	soundStep.setBuffer(bufferStep);
+	soundJump.setBuffer(bufferJump);
+	soundLand.setBuffer(bufferLand);
+	soundAttack.setBuffer(bufferAttack);
+	soundDamage.setBuffer(bufferDamage);
 }
 
 void Zombie::Draw(RenderWindow& gameWindow)

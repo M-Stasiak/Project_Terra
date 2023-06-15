@@ -14,6 +14,16 @@ Skeleton::Skeleton()
 	health = 200;
 	maxHealth = 200;
 	healthBar.setHealthBar(health, maxHealth);
+	bufferStep.loadFromFile("Textures/step.wav");
+	bufferJump.loadFromFile("Textures/jump.wav");
+	bufferLand.loadFromFile("Textures/land.wav");
+	bufferAttack.loadFromFile("Textures/attack.wav");
+	bufferDamage.loadFromFile("Textures/skeletonHit.wav");
+	soundStep.setBuffer(bufferStep);
+	soundJump.setBuffer(bufferJump);
+	soundLand.setBuffer(bufferLand);
+	soundAttack.setBuffer(bufferAttack);
+	soundDamage.setBuffer(bufferDamage);
 }
 
 void Skeleton::Draw(RenderWindow& gameWindow)
@@ -28,7 +38,8 @@ void Skeleton::UpdateAI(float elapsed, Entity& player, map<int, map<int, B>>& wo
 	{
 		if (player.getPosition().x + 10 > getPosition().x and player.getPosition().x - 10 < getPosition().x)
 		{
-			Attack(elapsed, player);
+			if (player.getGlobalBounds().intersects(getGlobalBounds()))
+				Attack(elapsed, player);
 		}
 		else
 		{

@@ -14,6 +14,16 @@ Mushroom::Mushroom()
 	health = 150;
 	maxHealth = 150;
 	healthBar.setHealthBar(health, maxHealth);
+	bufferStep.loadFromFile("Textures/step.wav");
+	bufferJump.loadFromFile("Textures/jump.wav");
+	bufferLand.loadFromFile("Textures/land.wav");
+	bufferAttack.loadFromFile("Textures/attack.wav");
+	bufferDamage.loadFromFile("Textures/mushroomHit.wav");
+	soundStep.setBuffer(bufferStep);
+	soundJump.setBuffer(bufferJump);
+	soundLand.setBuffer(bufferLand);
+	soundAttack.setBuffer(bufferAttack);
+	soundDamage.setBuffer(bufferDamage);
 }
 
 void Mushroom::Draw(RenderWindow& gameWindow)
@@ -28,7 +38,8 @@ void Mushroom::UpdateAI(float elapsed, Entity& player, map<int, map<int, B>>& wo
 	{
 		if (player.getPosition().x + 10 > getPosition().x and player.getPosition().x - 10 < getPosition().x)
 		{
-			Attack(elapsed, player);
+			if (player.getGlobalBounds().intersects(getGlobalBounds()))
+				Attack(elapsed, player);
 		}
 		else
 		{

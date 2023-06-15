@@ -14,6 +14,11 @@ Slime::Slime()
 	health = 20;
 	maxHealth = 20;
 	healthBar.setHealthBar(health, maxHealth);
+	healthBar.setHealthBar(health, maxHealth);
+	bufferAttack.loadFromFile("Textures/slimeHit.wav");
+	bufferDamage.loadFromFile("Textures/slimeDamage.wav");
+	soundAttack.setBuffer(bufferAttack);
+	soundDamage.setBuffer(bufferDamage);
 }
 
 void Slime::Draw(RenderWindow& gameWindow)
@@ -28,7 +33,8 @@ void Slime::UpdateAI(float elapsed, Entity& player, map<int, map<int, B>>& world
 	{
 		if (player.getPosition().x + 10 > getPosition().x and player.getPosition().x - 10 < getPosition().x)
 		{
-			Attack(elapsed, player);
+			if (player.getGlobalBounds().intersects(getGlobalBounds()))
+				Attack(elapsed, player);
 		}
 		else
 		{

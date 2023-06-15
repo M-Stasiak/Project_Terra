@@ -212,7 +212,7 @@ void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Textur
 	if (id != 0 && id<= FurnaceID){
 	items_on_ground.emplace_back(new Block_Item(arg1, arg3, id, pos));
 	}
-	else if (id != 0 && id >= WoodenSwordID && id <= StonePickaxeID) {
+	else if (id != 0 && id >= WoodenSwordID && id <= EmeraldPickaxeID) {
 		items_on_ground.emplace_back(new Tool_Item(id, arg2, arg4, pos));
 	}
 	else if (id != 0 && id >= StickID) {
@@ -247,6 +247,7 @@ bool GameWorld::checkWorld(int _i, int _j, int r)
 
 void GameWorld::GenerateEntities(float elapsed, Entity& player, vector<Entity*>& entities)
 {
+	srand(time(NULL));
 	if (entities.size() < 50)
 	{
 		zombieTime += elapsed; skeletonTime += elapsed; mushroomTime += elapsed; slimeTime += elapsed;

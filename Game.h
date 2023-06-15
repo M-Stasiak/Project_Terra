@@ -30,7 +30,7 @@ private:
 	int renderWidth = 32, renderHeight = 19;
 	//int renderWidth = 3, renderHeight = 3;
 	int collisionsCheckWidth = 3, collisionsCheckHeight = 3;
-	enum class gameMode{mainMenu,pauseMenu,playing,inventory};
+	enum class gameMode{mainMenu,pauseMenu,playing,inventory,dead};
 	gameMode currentGameMode;
 	RenderWindow gameWindow;
 	Event gameEvent;
@@ -41,6 +41,8 @@ private:
 	Inventory* inventory;
 	Player player;
 	Music gameMusic;
+	SoundBuffer bufferItemPickUp, bufferInventoryOpen, bufferInventoryClose;
+	Sound soundItemPickUp, soundInventoryOpen, soundInventoryClose;
 	
 	void initFont();
 	void initWindow();

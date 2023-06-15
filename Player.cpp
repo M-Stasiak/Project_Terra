@@ -21,9 +21,15 @@ Player::Player()
 	bufferStep.loadFromFile("Textures/step.wav");
 	bufferJump.loadFromFile("Textures/jump.wav");
 	bufferLand.loadFromFile("Textures/land.wav");
+	bufferAttack.loadFromFile("Textures/attack.wav");
+	bufferDamage.loadFromFile("Textures/damage.wav");
+	bufferEat.loadFromFile("Textures/appleEat.wav");
 	soundStep.setBuffer(bufferStep);
 	soundJump.setBuffer(bufferJump);
 	soundLand.setBuffer(bufferLand);
+	soundAttack.setBuffer(bufferAttack);
+	soundDamage.setBuffer(bufferDamage);
+	soundEat.setBuffer(bufferEat);
 }
 
 void Player::DestroyBlock(map<int, map<int, B>> &world, RenderWindow& gameWindow, int dmg)

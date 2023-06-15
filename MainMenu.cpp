@@ -7,6 +7,9 @@ void MainMenu::initTextures()
 	if (!background_texture.loadFromFile("Textures/mainMenu_background.png")) { cout << "No texture found" << endl; }
 	background_texture.setRepeated(true);
 	if (!music.openFromFile("Textures/wino.wav")) { cout << "No music found" << endl; }
+	music.setVolume(30);
+	bufferTick.loadFromFile("Textures/menuTick.wav");
+	soundTick.setBuffer(bufferTick);
 }
 
 void MainMenu::initSprites(RenderWindow& gameWindow)
@@ -53,10 +56,12 @@ void MainMenu::initTexts(Font& gameFont, RenderWindow& gameWindow)
 void MainMenu::update(RenderWindow& gameWindow)
 {
 	if (Mouse::getPosition(gameWindow).x > texts[1].getGlobalBounds().left && Mouse::getPosition(gameWindow).x < (texts[1].getGlobalBounds().left + texts[1].getGlobalBounds().width) && Mouse::getPosition(gameWindow).y > texts[1].getGlobalBounds().top && Mouse::getPosition(gameWindow).y < texts[1].getGlobalBounds().top + texts[1].getGlobalBounds().height) {
+		if (selectedButton != Play) soundTick.play();
 		selectedButton = Play;
 		mouseOnButton = play;
 	}
 	else if (Mouse::getPosition(gameWindow).x > texts[2].getGlobalBounds().left && Mouse::getPosition(gameWindow).x < texts[2].getGlobalBounds().left + texts[2].getGlobalBounds().width && Mouse::getPosition(gameWindow).y > texts[2].getGlobalBounds().top && Mouse::getPosition(gameWindow).y < texts[2].getGlobalBounds().top + texts[2].getGlobalBounds().height) {
+		if (selectedButton != Exit) soundTick.play();
 		selectedButton = Exit;
 		mouseOnButton = exit;
 	}
@@ -97,11 +102,13 @@ void MainMenu::display(RenderWindow& gameWindow, Time *elapsed)
 
 void MainMenu::selectUp()
 {
+	if (selectedButton != Play) soundTick.play();
 	selectedButton = Play;
 }
 
 void MainMenu::selectDown()
 {
+	if (selectedButton != Exit) soundTick.play();
 	selectedButton = Exit;
 }
 

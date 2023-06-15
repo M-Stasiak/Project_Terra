@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include "Animation.h"
 using namespace std;
@@ -16,6 +17,8 @@ private:
 	select selectedButton;
 	enum mouse { continue1 = 1, exit = 0, none = 2 };
 	mouse mouseOnButton;
+	SoundBuffer bufferTick;
+	Sound soundTick;
 
 	void initTextures();
 	void initSprites(RenderWindow& gameWindow);

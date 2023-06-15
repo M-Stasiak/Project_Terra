@@ -15,6 +15,8 @@ private:
 	Sprite sprite;
 	Sprite background;
 	Music music;
+	SoundBuffer bufferTick;
+	Sound soundTick;
 	Animation *animation;
 	Text texts[3];
 	enum select { Play = 1, Exit = 0 };

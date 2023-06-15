@@ -37,13 +37,21 @@ void Entity::Left(float elapsed) { setScale({ (float)(-1)*abs(getScale().x), get
 void Entity::Right(float elapsed) { setScale({ (float)abs(getScale().x), getScale().y }); velocity.x += speed * elapsed; }
 void Entity::Attack(float elapsed, Entity& entity)
 {
-    attackTime += elapsed;
-    if (attackTime > holdAttackTime)
+    if (!getIsPlayer())
     {
-        state = AnimationName::Attack;
-        entity.setState(AnimationName::Damage);
-        entity.TakeDamage(10);
-        attackTime = 0;
+        attackTime += elapsed;
+        if (attackTime > holdAttackTime)
+        {
+            soundAttack.play();
+            state = AnimationName::Attack;
+            entity.setState(AnimationName::Damage);
+            entity.TakeDamage(10);
+            attackTime = 0;
+        }
+    }
+    else
+    {
+        soundAttack.play();
     }
 }
 
@@ -51,6 +59,7 @@ void Entity::TakeDamage(int damage)
 {
     health -= damage;
     if (health <= 0) setState(AnimationName::Death);
+    soundDamage.play();
 }
 
 void Entity::CheckCollisions(const sf::FloatRect *arg)
@@ -115,6 +124,13 @@ void Entity::GravityUpdate(float elapsed, float gravity)
 
 void Entity::Update(float elapsed)
 {
+    int pom = 200 - playerDistance;
+    if (pom < 0) pom = 0;
+    soundStep.setVolume(pom);
+    soundJump.setVolume(pom);
+    soundLand.setVolume(pom);
+    soundAttack.setVolume(pom);
+    soundDamage.setVolume(pom);
    // if (isPlayer) cout << state << endl;
     if (isAlive)
     {
@@ -129,7 +145,7 @@ void Entity::Update(float elapsed)
             move(velocity);
             if (getPosition() != lastPosition)
             {
-                if (getIsPlayer() and velocity.y == 0)
+                if (velocity.y == 0)
                 {
                     stepSoundTime += elapsed;
                     if (stepSoundTime >= 0.4)
