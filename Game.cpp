@@ -118,12 +118,6 @@ void Game::dispGame()
 {
 	vector<Entity*> entities;
 	entities.push_back(&player);
-	entities.push_back(new Zombie);
-	entities.push_back(new Skeleton);
-	entities.push_back(new Mushroom);
-	entities.push_back(new Slime);
-	RectangleShape rectangle;
-	RectangleShape rectangle1;
 
 	map <IDs, Texture*> BlocksTextures;
 	map <IDs, Texture*> ItemsTextures;
@@ -136,19 +130,9 @@ void Game::dispGame()
 	inventory = new Inventory(gameWindow, gameFont,BlocksTextures,ItemsTextures,Blocks,Items);
 	Background background;
 
-	/*Wooden_Sword sword1;
-	Stone_Sword sword2;
-	Gold_Sword sword3;
-	sword1.setPosition(100, 100);
-	sword2.setPosition(200, 100);
-	sword3.setPosition(300, 100);*/
-	//RenderWindow test(VideoMode::getDesktopMode(), "X", Style::Default);
 	GameWorld world;
-	/*world.items_on_ground.emplace_back(&sword1);
-	world.items_on_ground.emplace_back(&sword2);
-	world.items_on_ground.emplace_back(&sword3);*/
 	Clock clock;
-	world.dropItem(IDs::GoldID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
+	/*world.dropItem(IDs::GoldID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	world.dropItem(IDs::ChestID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	world.dropItem(IDs::FurnaceID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	world.dropItem(IDs::IronIngotID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
@@ -157,7 +141,7 @@ void Game::dispGame()
 	world.dropItem(IDs::IronPickaxeID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	world.dropItem(IDs::DiamondPickaxeID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	world.dropItem(IDs::IronSwordID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
-	world.dropItem(IDs::DiamondSwordID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
+	world.dropItem(IDs::DiamondSwordID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());*/
 	while (gameWindow.isOpen()) {
 		//test.clear();
 		//world.test(test);
@@ -212,7 +196,6 @@ void Game::dispGame()
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) and player.getIsAlive()) {
 					if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and (inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool or inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::material) && inventory->getSelectedToolBlockDamage() == 0)
 					{
-						//inventory->inv_vector[inventory->getQInventorySelected()].first->Use();
 						inventory->selectedItem->Use();
 						if (inventory->selectedItem->getID() == IDs::AppleID and appleUseTime < 0)
 						{
@@ -367,23 +350,12 @@ void Game::dispGame()
 				}
 				if (inventory->inv_vector[inventory->getQInventorySelected()].first != nullptr and inventory->selectedItem != nullptr and inventory->inv_vector[inventory->getQInventorySelected()].first->getItemType() == item_type::tool)
 				{
-					//inventory->inv_vector[inventory->getQInventorySelected()].first->Update(elapsed.asSeconds(), player, entities);
-					//gameWindow.draw(*inventory->inv_vector[inventory->getQInventorySelected()].first);
 					inventory->selectedItem->Update(elapsed.asSeconds(), player, entities);
 					gameWindow.draw(*inventory->selectedItem);
 				}
 				updateItemsOnTheGround(world,elapsed);
 				
 				world.drawItemsOnGround(gameWindow, player.getPosition(), renderWidth, renderHeight);
-
-				/*rectangle.setFillColor(sf::Color::Transparent);
-				rectangle.setOutlineThickness(1);
-				rectangle.setOutlineColor(Color::White);
-				rectangle.setPosition(entities[3]->getGlobalBounds().left, entities[3]->getGlobalBounds().top);
-				rectangle.setSize(Vector2f(entities[3]->getGlobalBounds().width, entities[3]->getGlobalBounds().height));
-				gameWindow.draw(rectangle);*/
-				
-				
 				
 				player.updateReach();
 			
@@ -404,7 +376,7 @@ void Game::dispGame()
 				{
 					currentGameMode = gameMode::playing;
 					player.Respawn();
-					//player.setPosition(0, 0);
+					player.setPosition(500*16, 100);
 					deathScreenTime = 10;
 				}
 			}
