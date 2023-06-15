@@ -27,6 +27,7 @@ protected:
     int stackingQuantity;
     bool isUsing = false;
     bool isCraftingTableRequired;
+    bool isFurnaceRequired;
     item_type type;
     vector<pair<IDs, int>> itmsRequiredToCraft;
     int craftedQuantity;
@@ -50,6 +51,7 @@ public:
     vector<pair<IDs, int>> getItemsRequiredToCraft();
     int getCraftedQuantity();
     bool getIsCraftingTableRequired();
+    bool getIsFurnaceRequired();
     int getBlockDamage();
 };
 

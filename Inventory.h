@@ -38,6 +38,7 @@ private:
 	Text chestItemQuantity[24];
 	
 	unique_ptr<Item> craftingTableRequired;
+	unique_ptr<Item> furnaceRequired;
 	
 	int qInvSelected;
 	int invSelected;
@@ -45,6 +46,7 @@ private:
 	int mouseOnCraft;
 	bool mouseOnCrafting;
 	bool isCraftingTableNear;
+	bool isFurnaceNear;
 	int chestSelected;
 
 	void initFont(Font& gameFont);
@@ -90,6 +92,7 @@ private:
 	 void setChestItemQuantityTextString(string a, int i);
 	 void setChestItemQuantityTextScale(float x, float y, int i);
 	 bool isMouseOnCraftingRequired(RenderWindow& gameWindow);
+	 void setIsFurnaceNear(bool i);
 	 
 };
 

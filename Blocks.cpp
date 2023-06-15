@@ -16,6 +16,8 @@ void prepareBlocksTextures(std::map <IDs, sf::Texture*> &arg)
 	arg[IDs::ClayID] = tileset;
 	arg[IDs::BricksID] = tileset;
 	arg[IDs::HayID] = tileset;
+	arg[IDs::FurnaceID] = tileset;
+	
 
 	sf::Texture* tileset2 = new sf::Texture;
 	tileset2->loadFromFile("Textures/Destructible Objects Sprite Sheet.png");
@@ -48,6 +50,7 @@ void prepareBlocksMap(std::map<IDs, Block*> &arg1, std::map <IDs, sf::Texture*> 
 	arg1[IDs::IronID] = new Iron(arg2);
 	arg1[IDs::EmeraldID] = new Emerald(arg2);
 	arg1[IDs::GoldID] = new Gold(arg2);
+	arg1[IDs::FurnaceID] = new Furnace(arg2);
 
 }
 
@@ -172,7 +175,7 @@ Hay::Hay(std::map<IDs, sf::Texture*>& arg)
 Diamond::Diamond(std::map<IDs, sf::Texture*>& arg)
 {
 	ID = IDs::DiamondID;
-	dropID = IDs::DiamondID;
+	dropID = IDs::DiamondItemID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(60, 190, 160, 160));
 	setScale(0.1, 0.1);
@@ -181,7 +184,7 @@ Diamond::Diamond(std::map<IDs, sf::Texture*>& arg)
 Emerald::Emerald(std::map<IDs, sf::Texture*>& arg)
 {
 	ID = IDs::EmeraldID;
-	dropID = IDs::EmeraldID;
+	dropID = IDs::EmeraldItemID;
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(490, 190, 160, 160));
 	setScale(0.1, 0.1);
@@ -203,5 +206,14 @@ Gold::Gold(std::map<IDs, sf::Texture*>& arg)
 	setTexture(*arg[ID]);
 	setTextureRect(sf::IntRect(1210, 190, 160, 160));
 	setScale(0.1, 0.1);
+
+}
+
+Furnace::Furnace(std::map<IDs, sf::Texture*>& arg)
+{
+	ID = IDs::FurnaceID;
+	dropID = IDs::FurnaceID;
+	setTexture(*arg[ID]);
+	setTextureRect(sf::IntRect(64, 32, 16, 16));
 
 }

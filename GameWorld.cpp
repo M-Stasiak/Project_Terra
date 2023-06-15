@@ -209,7 +209,7 @@ void GameWorld::test(RenderWindow& gameWindow)
 
 void GameWorld::dropItem(IDs id, map <IDs, sf::Texture*>& arg1, map <IDs, Texture*>& arg2, map <IDs, Block*>& arg3, map <IDs, Item*>& arg4, Vector2f pos)
 {
-	if (id != 0 && id<= GoldID){
+	if (id != 0 && id<= FurnaceID){
 	items_on_ground.emplace_back(new Block_Item(arg1, arg3, id, pos));
 	}
 	else if (id != 0 && id >= WoodenSwordID && id <= StonePickaxeID) {

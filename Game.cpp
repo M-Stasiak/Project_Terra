@@ -93,6 +93,10 @@ void Game::dispGame()
 	Clock clock;
 	world.dropItem(IDs::GoldID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	world.dropItem(IDs::ChestID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
+	world.dropItem(IDs::FurnaceID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
+	world.dropItem(IDs::IronIngotID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
+	world.dropItem(IDs::DiamondItemID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
+	world.dropItem(IDs::EmeraldItemID, BlocksTextures, ItemsTextures, Blocks, Items, player.getPosition());
 	while (gameWindow.isOpen()) {
 		//test.clear();
 		//world.test(test);
@@ -250,6 +254,7 @@ void Game::dispGame()
 				gameWindow.clear();
 				background.Render(gameWindow);
 				inventory->setIsCraftingTableNear(false);
+				inventory->setIsFurnaceNear(false);
 				for (int i = gameWindow.getView().getCenter().x - gameWindow.getView().getSize().x / 2; i < gameWindow.getView().getCenter().x + gameWindow.getView().getSize().x / 2 + 16; i += 16)
 				{
 					for (int j = gameWindow.getView().getCenter().y - gameWindow.getView().getSize().y / 2; j < gameWindow.getView().getCenter().y + gameWindow.getView().getSize().y / 2 + 16; j += 16)
@@ -261,6 +266,10 @@ void Game::dispGame()
 							if (world.world[i / 16][j / 16].ID == CraftingTableID && player.playerReach->intersects(world.world[i / 16][j / 16].rect)){
 								
 								inventory->setIsCraftingTableNear(true);
+							}
+							if (world.world[i / 16][j / 16].ID == FurnaceID && player.playerReach->intersects(world.world[i / 16][j / 16].rect)) {
+
+								inventory->setIsFurnaceNear(true);
 							}
 							
 						}

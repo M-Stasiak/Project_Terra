@@ -95,3 +95,7 @@ int Item::getStackingQuantity()
 bool Item::getIsCraftingTableRequired() {
     return isCraftingTableRequired;
 }
+
+bool Item::getIsFurnaceRequired() {
+    return isFurnaceRequired;
+}

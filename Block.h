@@ -23,15 +23,27 @@ enum IDs
 	IronID,
 	EmeraldID,
 	GoldID,
+	FurnaceID,
 
 	WoodenSwordID,
 	StoneSwordID,
+	IronSwordID,
 	GoldenSwordID,
+	DiamondSwordID,
+	EmeraldSwordID,
 	WoodenPickaxeID,
 	StonePickaxeID,
+	IronPickaxeID,
+	GoldenPickaxeID,
+	DiamondPickaxeID,
+	EmeraldPickaxeID,
 
 	StickID,
-	AppleID
+	AppleID,
+	IronIngotID,
+	GoldIngotID,
+	DiamondItemID,
+	EmeraldItemID
 };
 
 class Block : public sf::Sprite
@@ -77,6 +89,7 @@ public:
 		case(IDs::IronID): { durability = 2000; break; }
 		case(IDs::EmeraldID): { durability = 3000; break; }
 		case(IDs::GoldID): { durability = 3000; break; }
+		case(IDs::FurnaceID): { durability = 1000; break; }
 		}
 	}
 };

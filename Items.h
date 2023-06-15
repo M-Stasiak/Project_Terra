@@ -133,19 +133,7 @@ public:
 	}
 
 };
-//
-//class Gold_Sword : public Sword
-//{
-//public:
-//	Gold_Sword();
-//	unique_ptr<Item> clone() const override {
-//		unique_ptr<Item> result = make_unique<Gold_Sword>(*this);
-//		result->setOrigin(result->getSpecialOrigin());
-//		result->setScale(1, 1);
-//		return result;
-//	}
-//
-//};
+
 
 class Stick : public Item
 {
@@ -173,3 +161,170 @@ public:
 
 };
 
+class IronIngot : public Item {
+
+public:
+	IronIngot(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		return std::make_unique<IronIngot>(*this);
+	}
+};
+class GoldIngot : public Item {
+
+public:
+	GoldIngot(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		return std::make_unique<GoldIngot>(*this);
+	}
+};
+class EmeraldItem : public Item {
+
+public:
+	EmeraldItem(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		return std::make_unique<EmeraldItem>(*this);
+	}
+};
+class DiamondItem : public Item {
+
+public:
+	DiamondItem(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		return std::make_unique<DiamondItem>(*this);
+	}
+};
+
+
+class Golden_Pickaxe : public Item
+{
+public:
+	Golden_Pickaxe(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		unique_ptr<Item> result = make_unique<Golden_Pickaxe>(*this);
+		result->setOrigin(result->getSpecialOrigin());
+		result->setScale(1, 1);
+		return result;
+	}
+
+};
+class Diamond_Pickaxe : public Item
+{
+public:
+	Diamond_Pickaxe(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		unique_ptr<Item> result = make_unique<Diamond_Pickaxe>(*this);
+		result->setOrigin(result->getSpecialOrigin());
+		result->setScale(1, 1);
+		return result;
+	}
+
+};
+class Emerald_Pickaxe : public Item
+{
+public:
+	Emerald_Pickaxe(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		unique_ptr<Item> result = make_unique<Emerald_Pickaxe>(*this);
+		result->setOrigin(result->getSpecialOrigin());
+		result->setScale(1, 1);
+		return result;
+	}
+
+};
+class Iron_Pickaxe : public Item
+{
+public:
+	Iron_Pickaxe(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		unique_ptr<Item> result = make_unique<Iron_Pickaxe>(*this);
+		result->setOrigin(result->getSpecialOrigin());
+		result->setScale(1, 1);
+		return result;
+	}
+
+};
+
+class Iron_Sword : public Item
+{
+public:
+	Iron_Sword(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		unique_ptr<Item> result = make_unique<Iron_Sword>(*this);
+		result->setOrigin(result->getSpecialOrigin());
+		result->setScale(1, 1);
+		return result;
+	}
+
+};
+class Golden_Sword : public Item
+{
+public:
+	Golden_Sword(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		unique_ptr<Item> result = make_unique<Golden_Sword>(*this);
+		result->setOrigin(result->getSpecialOrigin());
+		result->setScale(1, 1);
+		return result;
+	}
+
+};
+class Diamond_Sword : public Item
+{
+public:
+	Diamond_Sword(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		unique_ptr<Item> result = make_unique<Diamond_Sword>(*this);
+		result->setOrigin(result->getSpecialOrigin());
+		result->setScale(1, 1);
+		return result;
+	}
+
+};
+class Emerald_Sword : public Item
+{
+public:
+ Emerald_Sword(std::map<IDs, sf::Texture*>& arg);
+	void nothing() {};
+	void Update(float elapsed, Entity& entity, vector<Entity*>& entities) {};
+	void Use() {};
+	unique_ptr<Item> clone() const override {
+		unique_ptr<Item> result = make_unique<Emerald_Sword>(*this);
+		result->setOrigin(result->getSpecialOrigin());
+		result->setScale(1, 1);
+		return result;
+	}
+
+};

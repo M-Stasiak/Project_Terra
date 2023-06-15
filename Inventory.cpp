@@ -274,7 +274,10 @@ void Inventory::updateInventory(RenderWindow& gameWindow,bool chestOpened)
 
 
 	craftingTableRequired->setPosition(reqBackground.getPosition().x + 10, reqBackground.getPosition().y + 20 + 6 * (itemsRequiredToCraft[0]->getGlobalBounds().height + 3));
+	furnaceRequired->setPosition(reqBackground.getPosition().x + 10, reqBackground.getPosition().y + 20 + 6 * 35);
 	no_yes.setPosition(craftingTableRequired->getPosition());
+	no_yes.setPosition(furnaceRequired->getPosition());
+
 	isAbleToCraftYN.setPosition(itemsToCraft[craftSelected]->getPosition().x+19, itemsToCraft[craftSelected]->getPosition().y + 19);
 
 
@@ -344,13 +347,25 @@ void Inventory::initInventory(map <IDs, sf::Texture*>& arg1, map <IDs, sf::Textu
 
 	
 	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::PlankID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Material_Item(IDs::StickID, arg4, arg3, craftingSelectedSprite.getPosition()));
 	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::CraftingTableID, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::FurnaceID, craftingSelectedSprite.getPosition()));
 	itemsToCraft.emplace_back(new Block_Item(arg1, arg2, IDs::ChestID, craftingSelectedSprite.getPosition()));
-	itemsToCraft.emplace_back(new Material_Item(IDs::StickID,arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Material_Item(IDs::IronIngotID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Material_Item(IDs::GoldIngotID, arg4, arg3, craftingSelectedSprite.getPosition()));
 	itemsToCraft.emplace_back(new Tool_Item(IDs::WoodenSwordID, arg4, arg3, craftingSelectedSprite.getPosition()));
-	itemsToCraft.emplace_back(new Tool_Item(IDs::StoneSwordID, arg4, arg3, craftingSelectedSprite.getPosition()));
 	itemsToCraft.emplace_back(new Tool_Item(IDs::WoodenPickaxeID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::StoneSwordID, arg4, arg3, craftingSelectedSprite.getPosition()));
 	itemsToCraft.emplace_back(new Tool_Item(IDs::StonePickaxeID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::IronSwordID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::IronPickaxeID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::GoldenSwordID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::GoldenPickaxeID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::DiamondSwordID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::DiamondPickaxeID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::EmeraldSwordID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	itemsToCraft.emplace_back(new Tool_Item(IDs::EmeraldPickaxeID, arg4, arg3, craftingSelectedSprite.getPosition()));
+	
 
 	for (int i = 0; i < itemsToCraft.size(); i++) {
 		slotSprites.emplace_back(new Sprite);
@@ -364,6 +379,8 @@ void Inventory::initInventory(map <IDs, sf::Texture*>& arg1, map <IDs, sf::Textu
 	itemsRequiredToCraftQuantity[0]->setScale(0.4, 0.4);
 	craftingTableRequired = unique_ptr<Item>(new  Block_Item(arg1, arg2, IDs::CraftingTableID, craftingSelectedSprite.getPosition()));
 	craftingTableRequired->setScale(2, 2);
+	furnaceRequired = unique_ptr<Item>(new Block_Item(arg1, arg2, IDs::FurnaceID, craftingSelectedSprite.getPosition()));
+	furnaceRequired->setScale(2, 2);
 	
 }
 
@@ -455,6 +472,9 @@ void Inventory::displayInventory(RenderWindow& gameWindow, bool chestOpened)
 		gameWindow.draw(itemsRequired);
 
 		for (auto& el : itemsRequiredToCraft) {
+			if (el->getID() >= IDs::ClayID && el->getID() <= GoldID) {
+				el->setScale(0.2, 0.2);
+			}
 			gameWindow.draw(*el);
 		}
 
@@ -465,18 +485,29 @@ void Inventory::displayInventory(RenderWindow& gameWindow, bool chestOpened)
 		}
 		if (itemsToCraft[craftSelected]->getIsCraftingTableRequired() == true) {
 			gameWindow.draw(*craftingTableRequired);
+			cout << craftingTableRequired->getPosition().x << " " << craftingTableRequired->getPosition().y << endl;
 			if (isCraftingTableNear) {
 				no_yes.setTextureRect(IntRect(20, 0, 20, 20));
 			}
 			else { no_yes.setTextureRect(IntRect(0, 0, 20, 20)); }
 			gameWindow.draw(no_yes);
 		}
+		
 		if (mouseOnCraft == craftSelected) {
 			if (isAbleToCraft()) {
 				isAbleToCraftYN.setTextureRect(IntRect(20, 0, 20, 20));
 			}
 			else { isAbleToCraftYN.setTextureRect(IntRect(0, 0, 20, 20)); }
 			gameWindow.draw(isAbleToCraftYN);
+		}
+		if (itemsToCraft[craftSelected]->getIsFurnaceRequired() == true) {
+			gameWindow.draw(*furnaceRequired);
+			cout << furnaceRequired->getPosition().x << " " << furnaceRequired->getPosition().y << endl;
+			if (isFurnaceNear) {
+				no_yes.setTextureRect(IntRect(20, 0, 20, 20));
+			}
+			else { no_yes.setTextureRect(IntRect(0, 0, 20, 20)); }
+			gameWindow.draw(no_yes);
 		}
 
 	}
@@ -584,9 +615,12 @@ void Inventory::setCraftSelected(int s, map <IDs, sf::Texture*>& arg1, map <IDs,
 	itemsRequiredToCraft.clear();
 	itemsRequiredToCraftQuantity.clear();
 		for (int i = 0; i < itemsToCraft[craftSelected]->getItemsRequiredToCraft().size(); i++) {
-			if (itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first <= 9) {
+			if (itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first <= FurnaceID) {
 
 				itemsRequiredToCraft.emplace_back(new Block_Item(arg1, arg2, itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first, craftingSelectedSprite.getPosition()));
+				if (itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first >= IDs::ClayID && itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first <= GoldID) {
+					itemsRequiredToCraft.back()->setScale(0.1, 0.1);
+				}
 				itemsRequiredToCraftQuantity.emplace_back(new Text);
 				itemsRequiredToCraftQuantity[i]->setFont(gameFont);
 				itemsRequiredToCraftQuantity[i]->setString(to_string(itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].second));
@@ -595,7 +629,7 @@ void Inventory::setCraftSelected(int s, map <IDs, sf::Texture*>& arg1, map <IDs,
 
 
 			}
-			if (itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first >= 16) {
+			if (itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first >= StickID) {
 
 				itemsRequiredToCraft.emplace_back(new Material_Item(itemsToCraft[craftSelected]->getItemsRequiredToCraft()[i].first,arg3, arg4,craftingSelectedSprite.getPosition()));
 				itemsRequiredToCraftQuantity.emplace_back(new Text);
@@ -635,7 +669,7 @@ bool Inventory::isAbleToCraft()
 	if (mouseOnCraft == craftSelected) {
 		for (auto& ite : itemsToCraft[craftSelected]->getItemsRequiredToCraft()) {
 			auto i = find_if(inv_vector.begin(), inv_vector.end(), [&ite](auto& it) {if (it.first != nullptr) { return ite.first == it.first->getID() && it.second >= ite.second; } });
-			if (i == inv_vector.end() || (itemsToCraft[craftSelected]->getIsCraftingTableRequired() == true && isCraftingTableNear == false)) {
+			if (i == inv_vector.end() || (itemsToCraft[craftSelected]->getIsCraftingTableRequired() == true && isCraftingTableNear == false)|| (itemsToCraft[craftSelected]->getIsFurnaceRequired() == true && isFurnaceNear == false)) {
 				return false;
 			}
 		}
@@ -722,4 +756,8 @@ int Inventory::getCraftSelected() {
 
 void Inventory::setChestItemQuantityTextString(string a, int i) {
 	chestItemQuantity[i].setString(a);
+}
+
+void Inventory::setIsFurnaceNear(bool i) {
+	isFurnaceNear = i;
 }
